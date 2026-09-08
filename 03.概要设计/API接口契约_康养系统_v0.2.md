@@ -1,5 +1,5 @@
 <!-- ============================================================
-     基于 AI 智能体的康养系统 · API 接口契约 v0.1
+     基于 AI 智能体的康养系统 · API 接口契约 v0.2
      用途：前后端并行开发的对齐基准；前端据此 mock，后端据此实现
      维护：接口变更必须先改本文档，双方确认后再改代码
      责任人：丘宇乾（后端实现）· 梁霁鸣/周彦龙（前端使用）
@@ -7,9 +7,10 @@
 
 # 基于 AI 智能体的康养系统 · API 接口契约
 
-> 版本：v0.1（初稿，随概要设计评审细化）
+> 版本：v0.2（依据《设计决策记录 v1.0》修订，随概要设计评审细化）
 > 编写日期：2026-09-08
 > 用途：前后端并行开发对齐基准
+> 配套文档：`03.概要设计/设计决策记录_康养系统_v1.0.md`（D-01~D-06 的设计依据）
 
 ---
 
@@ -17,10 +18,24 @@
 
 | 项 | 内容 |
 |---|---|
-| 文档版本 | v0.1（待评审） |
+| 文档版本 | v0.2（待评审） |
 | 编写日期 | 2026-09-08 |
-| 上游文档 | 需求分析说明书 v1.0（122 条 FR） |
-| 接口总数 | 36 个 |
+| 上游文档 | 需求分析说明书 v1.0（125 条 FR：核心 101 + 选配 24）、设计决策记录 v1.0 |
+| 接口总数 | 45 个（其中 1 个标注【选配】本期不实现） |
+| 本次变更 | 见下方 v0.2 变更清单 |
+
+### v0.2 变更清单（2026-09-08）
+
+| 编号 | 变更 | 依据 |
+|---|---|---|
+| C-01 | 注册接口角色白名单收紧为 `ELDER` / `FAMILY`，`CARE` / `ADMIN` 拒绝自助注册；新增管理员建号接口 | D-01 |
+| C-02 | 家属绑定改为"申请 → 确认 → 生效"三段式，新增待确认列表与确认 / 拒绝接口 | D-02 |
+| C-03 | 明确通知范围为站内通知，新增未读数轮询接口；电话号码仅作档案展示 | D-03 |
+| C-04 | 预警 `ai_summary` 允许为空，新增 `summary_status` 与摘要重试接口；AI 失败不阻断主流程 | D-04 |
+| C-05 | 预警处理状态（四态）与接收人已读状态（二态）拆分为两个字段 / 两张表 | D-05 |
+| C-06 | 新增 `alert_receiver` 接收人概念，预警列表返回 `my_read_status` | D-05 |
+| C-07 | 修正 `agent` 字段示例值 `RISK_AGENT` → `RISK` | E-04 |
+| C-08 | 知识库文档上传接口标注【选配】，本期不实现 | E-03 |
 
 ### 变更约定
 
@@ -87,7 +102,13 @@ Token 过期或无效时返回 `code: 1001`，前端收到后跳转登录页并�
 | 2002 | 资源不存在 | 提示记录不存在 |
 | 3001 | AI 服务异常 | 提示"AI 助手暂时不可用，请稍后再试" |
 | 3002 | AI 调用超频 | 提示"今日咨询次数已达上限" |
+| 4001 | 绑定申请已存在，请勿重复提交 | 提示并展示当前状态 |
+| 4002 | 绑定关系已达上限 | 提示"该老人绑定的家属数量已达上限" |
+| 4003 | 该角色不允许自助注册 | 提示"护工与管理员账号由管理员创建"（见 D-01） |
+| 4004 | 绑定关系未生效 | 提示"请先完成老人确认"（见 D-02） |
 | 5001 | 服务器内部错误 | 通用错误提示 |
+
+> 错误码 `3001` 出现时，**健康数据录入、预警生成、预警处理等主流程必须仍然可用**（见 D-04）。前端不得因为该错误码阻断用户操作。
 
 ---
 
@@ -112,7 +133,8 @@ POST /api/auth/register
 }
 ```
 
-`role` 取值：`ELDER` / `FAMILY` / `CARE` / `ADMIN`
+**角色白名单（D-01）**：`role` 只能是 `ELDER` 或 `FAMILY`，不传时默认 `ELDER`。
+**`CARE` 与 `ADMIN` 不允许自助注册**——传入时后端返回 `code: 4003`，**不做静默降级**。这两类账号由管理员通过 `POST /api/admin/users` 创建，初始管理员由数据库初始化脚本预置。
 
 响应：
 
@@ -126,6 +148,16 @@ POST /api/auth/register
     "name": "张桂兰",
     "role": "ELDER"
   }
+}
+```
+
+拒绝示例（传入 `ADMIN`）：
+
+```json
+{
+  "code": 4003,
+  "message": "该角色不允许自助注册，护工与管理员账号由管理员创建",
+  "data": null
 }
 ```
 
@@ -352,7 +384,7 @@ POST /api/ai/chat
     "message_id": 60001,
     "answer": "我查了您近 7 天的记录，血压平均 142/90 mmHg……",
     "intent": "ABNORMAL",
-    "agent": "RISK_AGENT",
+    "agent": "RISK",
     "safety_level": "L3",
     "risk_level": 2,
     "sources": ["高血压日常管理指南", "老年晨起头晕处理建议"],
@@ -386,13 +418,30 @@ POST /api/ai/chat
 
 ## 6. 主动预警（ALERT）
 
+> 本章按《设计决策记录 v1.0》D-04、D-05 重写。核心变化两点：
+> 1. **AI 摘要是异步增强**，`ai_summary` 可能为空，前端必须能处理（D-04）
+> 2. **处理状态与已读状态分离**，处理状态属预警本身，已读状态属当前用户（D-05）
+
+### 6.0 两套状态的定义
+
+| 维度 | 存储位置 | 取值 | 说明 |
+|---|---|---|---|
+| 处理状态 `status` | `health_warning`（全局唯一） | `PENDING` → `PROCESSING` → `RESOLVED` / `IGNORED` | 这条预警处理到哪一步 |
+| 已读状态 `my_read_status` | `alert_receiver`（每人一条） | `UNREAD` / `READ` | 当前登录用户看没看过 |
+
+补充规则：
+
+- 任一人点开详情 → 只更新自己那条 `alert_receiver`，**不影响其他接收人**
+- 任一人提交处理结果 → `status = RESOLVED`，写入 `warning_handle_record`，其余人界面显示"已由 XXX 于 XX 时间处理"
+- **已处理不等于已读**：未读的接收人仍应看到该预警及其处理结果
+
 ### 6.1 预警列表
 
 ```
 GET /api/alerts?status=PENDING&level=3&page=1&page_size=20
 ```
 
-`status`：`PENDING` / `VIEWED` / `HANDLED`；`level`：0~3
+`status`：`PENDING` / `PROCESSING` / `RESOLVED` / `IGNORED`；`level`：0~3
 
 响应：
 
@@ -413,7 +462,9 @@ GET /api/alerts?status=PENDING&level=3&page=1&page_size=20
         "level": 3,
         "level_text": "高风险",
         "ai_summary": "该老人近 3 天血压持续在 165~178 区间，呈上升趋势……",
+        "summary_status": "SUCCESS",
         "status": "PENDING",
+        "my_read_status": "UNREAD",
         "trigger_source": "DATA_INPUT",
         "created_at": "2026-09-08 07:42:00",
         "handler_name": null,
@@ -427,7 +478,14 @@ GET /api/alerts?status=PENDING&level=3&page=1&page_size=20
 }
 ```
 
-`trigger_source`：`DATA_INPUT`（录入触发）/ `AI_CHAT`（咨询识别触发）
+字段说明：
+
+| 字段 | 说明 |
+|---|---|
+| `ai_summary` | **可空**。为 `null` 时前端显示"AI 摘要生成中"或"生成失败，可查看原始数据"，不得隐藏整条预警 |
+| `summary_status` | `PENDING`（生成中）/ `SUCCESS` / `FAILED` / `SKIPPED`（低级别预警不生成） |
+| `my_read_status` | 当前登录用户对该预警的已读状态，用于列表红点 |
+| `trigger_source` | `DATA_INPUT`（录入触发）/ `AI_CHAT`（咨询识别触发）/ `MANUAL`（人工创建） |
 
 ### 6.2 预警详情
 
@@ -435,7 +493,9 @@ GET /api/alerts?status=PENDING&level=3&page=1&page_size=20
 GET /api/alerts/{id}
 ```
 
-在列表字段基础上增加 `history_trend`（近 7 天该指标数据，供详情图表）。
+在列表字段基础上增加 `history_trend`（近 7 天该指标数据，供详情图表）与 `handles`（处理记录数组）。
+
+访问详情时，后端自动将**当前用户**的 `alert_receiver.read_status` 置为 `READ`。
 
 ### 6.3 处理预警
 
@@ -454,15 +514,34 @@ POST /api/alerts/{id}/handle
 
 `action`：`CONTACTED` / `ARRANGED_VISIT` / `SENT_HOSPITAL` / `OBSERVE`
 
-处理后状态自动流转为 `HANDLED`，并写入 `warning_handle_record`。
+处理后 `status` 流转为 `RESOLVED`，并写入 `warning_handle_record`（记录处理人、方式、说明、时间）。
 
-### 6.4 标记已读
+处理过程中可先置为中间态（护工已接单但尚未完成）：
+
+```
+PUT /api/alerts/{id}/status
+```
+
+请求体 `{ "status": "PROCESSING" }`；取值 `PROCESSING` / `IGNORED`。
+
+### 6.4 标记已读（作用于当前用户）
 
 ```
 POST /api/alerts/{id}/read
 ```
 
-### 6.5 预警统计
+只更新**当前登录用户**的 `alert_receiver.read_status`，不影响其他接收人，也不改变预警的 `status`。
+
+### 6.5 AI 摘要重试（D-04）
+
+```
+POST /api/alerts/{id}/summary/retry
+```
+
+`summary_status = FAILED` 时，由用户或管理员手动触发重新生成。
+返回 `3001` 时前端提示"AI 助手暂时不可用"，**预警本身保持可见可用**。
+
+### 6.6 预警统计
 
 ```
 GET /api/alerts/statistics
@@ -478,20 +557,82 @@ GET /api/alerts/statistics
     "pending": 3,
     "high_risk": 1,
     "today_new": 7,
-    "handled": 12
+    "handled": 12,
+    "unread": 5
   }
 }
 ```
+
+> 口径说明：`pending` 为全局未处理条数；`unread` 为**当前用户**未读条数（D-05）。
+
+### 6.7 通知未读数（D-03）
+
+```
+GET /api/notifications/unread
+```
+
+响应：
+
+```json
+{ "code": 0, "message": "success", "data": { "unread": 5, "latest_level": 3 } }
+```
+
+前端以 30 秒周期轮询本接口（数据量极小），用于红点提示。
+**本期通知范围 = 站内通知**。短信 / 电话外呼需第三方通道与资质，列为【选配】，本期不实现；档案中的紧急联系人电话仅作展示与人工联系依据。
 
 ---
 
 ## 7. 家属绑定（FAMILY）
 
+> 本章按 D-02 重写：绑定必须经老人确认，未确认前不产生任何数据访问权限。
+
+### 7.1 绑定状态机
+
+```
+（家属提交）PENDING ──确认──> APPROVED ──任一方解绑──> REVOKED
+                  └──拒绝──> REJECTED
+```
+
+| 状态 | 含义 | 数据权限 |
+|---|---|---|
+| `PENDING` | 待老人（或管理员 / 护工代）确认 | 无 |
+| `APPROVED` | 已生效 | 可查看该老人档案、指标、预警、咨询记录 |
+| `REJECTED` | 已拒绝 | 无 |
+| `REVOKED` | 已解绑 | 立即收回 |
+
+### 7.2 接口清单
+
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| POST | `/api/family/bind` | 绑定老人，请求体 `{ "phone": "13800138000", "relation": "儿子" }` |
-| GET | `/api/family/elders` | 代管老人列表 |
-| DELETE | `/api/family/bind/{profile_id}` | 解绑 |
+| POST | `/api/family/bind` | **提交绑定申请**（家属端），请求体 `{ "phone": "13800138000", "relation": "儿子", "note": "" }` |
+| GET | `/api/family/bind-requests` | **待我确认的申请**（老人端 / 管理员端） |
+| PUT | `/api/family/bind/{id}/confirm` | 确认或拒绝，请求体 `{ "action": "APPROVE", "note": "" }` |
+| GET | `/api/family/elders` | 已生效（APPROVED）的代管老人列表 |
+| DELETE | `/api/family/bind/{id}` | 解绑，任一方发起即时生效 |
+
+请求 / 响应要点：
+
+- 提交申请时，后端校验老人手机号是否存在；不存在返回 `2002`
+- 同一对"家属-老人"已存在 `PENDING` 或 `APPROVED` 记录时，返回 `4001`
+- 老人绑定家属数达上限（默认 5，入 `sys_config` 的 `family_bind_max`）时返回 `4002`
+- 解绑（`REVOKED`）为状态变更而非物理删除，历史处理记录保留用于追溯
+- 代确认时写入 `approved_by`（操作人）与 `approve_note`（原因）；老人本人确认时 `approved_by` 为其本人
+
+绑定申请对象：
+
+```json
+{
+  "bind_id": 9001,
+  "profile_id": 2001,
+  "elder_name": "李凤英",
+  "elder_phone_masked": "138****8000",
+  "family_name": "李强",
+  "relation": "儿子",
+  "note": "我是李凤英的儿子",
+  "status": "PENDING",
+  "created_at": "2026-09-08 10:12:00"
+}
+```
 
 ---
 
@@ -530,13 +671,39 @@ GET /api/alerts/statistics
 | 方法 | 路径 | 说明 |
 |---|---|---|
 | GET | `/api/admin/users?role=&keyword=` | 用户列表 |
+| POST | `/api/admin/users` | **创建护工 / 管理员账号**（D-01），见下方 |
 | PUT | `/api/admin/users/{id}/status` | 禁用 / 启用，请求体 `{ "enabled": false }` |
 | GET | `/api/admin/thresholds` | 预警阈值配置列表 |
 | PUT | `/api/admin/thresholds/{id}` | 更新阈值，保存后即时生效 |
 | GET | `/api/admin/indicators` | 健康指标配置（类型、单位、范围） |
 | GET | `/api/admin/knowledge` | 知识库条目列表 |
 | POST | `/api/admin/knowledge` | 新增知识条目 |
+| POST | `/api/admin/knowledge/upload` | 【选配】上传文档自动解析建索引（FR-KB-005，本期不实现） |
 | GET | `/api/admin/statistics?range=7d` | 统计（用户数、咨询数、预警数） |
+
+### 9.1 创建护工 / 管理员账号（D-01）
+
+```
+POST /api/admin/users
+```
+
+权限：仅 `ADMIN`。
+
+请求体：
+
+```json
+{
+  "phone": "13700137000",
+  "password": "Init@2026",
+  "name": "王护工",
+  "role": "CARE"
+}
+```
+
+`role` 仅允许 `CARE` 或 `ADMIN`；传 `ELDER` / `FAMILY` 时返回 `2001`（这两类走公开注册）。
+响应返回新建用户基本信息，密码由后端 bcrypt 加密存储，不回显。
+
+> 初始管理员账号由数据库初始化脚本 `init_data.sql` 预置，不依赖本接口。
 
 阈值对象结构：
 
@@ -567,11 +734,29 @@ GET /api/alerts/statistics
 
 ## 11. 待确认事项
 
-1. AI 咨询是否需要**流式输出**（SSE）？当前契约按一次性返回设计，【选配】项可后补
-2. 预警通知是否需要**服务端推送**（WebSocket）？当前按前端轮询设计，演示规模足够
-3. 文件上传（知识库文档、头像）接口未在 v0.1 中定义，待【选配】项确认后补充
-4. 后端技术栈已确认为 **Python FastAPI**，本契约的 URL 与响应结构即为最终形态（FastAPI 原生支持自动生成 /docs 接口文档，联调时可直接对照）
+| 编号 | 事项 | 当前状态 |
+|---|---|---|
+| 1 | AI 咨询是否需要**流式输出**（SSE） | 【选配】。v0.2 按一次性返回设计，主闭环跑通后再议 |
+| 2 | 预警通知是否需要**服务端推送**（WebSocket） | 【选配】。v0.2 按 30 秒轮询未读数实现（D-03），已满足演示 |
+| 3 | 文件上传（知识库文档、头像）接口 | 【选配】。知识库上传已标【选配】并列入 9 章但不实现（FR-KB-005）；头像本期不做 |
+| 4 | 大模型选型（DeepSeek / 通义千问 / GLM-4） | **仍未定**。代码层按"换模型只改 `.env` 的 `LLM_PROVIDER`"设计，不影响本契约 |
+| 5 | 短信 / 电话外呼通知 | 【选配】。需第三方通道与资质，本期明确不实现，需求端已同步降级（D-03） |
+| 6 | 后端技术栈 | 已确认为 **Python FastAPI**，本契约的 URL 与响应结构即为最终形态（FastAPI 原生支持自动生成 /docs，联调时可直接对照） |
+
+---
+
+## 12. 数据模型补充（v0.2 新增，供 9/24 数据库设计参考）
+
+D-05 引入的接收人概念需要新增一张表，v0.1 契约未体现：
+
+| 表 | 作用 | 关键字段 |
+|---|---|---|
+| `alert_receiver` | 预警接收人（每条预警 × 每个接收人一条） | `warning_id`、`user_id`、`read_status`、`created_at` |
+| `family_bind` | 家属绑定关系（含申请确认过程） | `bind_id`、`family_user_id`、`profile_id`、`relation`、`status`、`approved_by`、`approve_note` |
+
+`health_warning` 表需增加 `summary_status` 字段；`ai_summary` 字段允许为 NULL。
 
 ---
 
 > 本契约是前后端并行的基础。接口有变，先改文档，再改代码。
+> 设计层面的裁决见 `03.概要设计/设计决策记录_康养系统_v1.0.md`。
