@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>预警通知中心 - 康养系统</title>
+<link rel="stylesheet" href="prototype.css">
+<style>
+  .wrap { padding: 24px 28px 32px; }
+  .crumb { font-size: 14px; color: #909399; margin-bottom: 16px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 22px; }
+  .stat {
+    background:#fff; border:1px solid #ebeef5; border-radius:8px; padding: 20px 24px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .stat-ico { width: 52px; height: 52px; border-radius: 10px; display:flex;
+    align-items:center; justify-content:center; font-size: 24px; color:#fff; }
+  .stat-n { font-size: 28px; font-weight: 600; color: #303133; line-height: 1.2; }
+  .stat-l { font-size: 14px; color: #909399; margin-top: 4px; }
+  .bg-danger { background: #f56c6c; }
+  .bg-warn { background: #e6a23c; }
+  .bg-info { background: #409eff; }
+  .bg-ok { background: #67c23a; }
+
+  .panel { background:#fff; border:1px solid #ebeef5; border-radius:8px; }
+  .panel-head {
+    padding: 16px 24px; border-bottom: 1px solid #ebeef5;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .panel-title { font-size: 17px; font-weight: 600; color: #303133; }
+  .tabs { display: flex; gap: 6px; margin-left: auto; }
+  .tab {
+    padding: 7px 18px; border-radius: 4px; font-size: 14px; cursor: pointer;
+    color: #606266; border: 1px solid transparent;
+  }
+  .tab.on { background: #ecf5ff; color: #409eff; border-color: #d9ecff; }
+
+  .alert {
+    display: flex; gap: 18px; padding: 20px 24px;
+    border-bottom: 1px solid #ebeef5; position: relative;
+  }
+  .alert:last-child { border-bottom: none; }
+  .level-bar { width: 5px; border-radius: 3px; flex-shrink: 0; }
+  .lv3 { background: #c03639; }
+  .lv2 { background: #f56c6c; }
+  .lv1 { background: #e6a23c; }
+
+  .alert-main { flex: 1; min-width: 0; }
+  .alert-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .who { font-size: 17px; font-weight: 600; color: #303133; }
+  .who-sub { font-size: 14px; color: #909399; }
+  .alert-top .tag { font-size: 13px; }
+
+  .metric-line {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px;
+  }
+  .m-name { font-size: 15px; color: #606266; }
+  .m-val { font-size: 24px; font-weight: 600; color: #c03639; }
+  .m-th { font-size: 14px; color: #909399; }
+
+  .ai-summary {
+    background: #f8fafc; border-left: 3px solid #409eff; border-radius: 0 6px 6px 0;
+    padding: 12px 16px; font-size: 14px; color: #606266; line-height: 1.75;
+  }
+  .ai-summary b { color: #409eff; font-weight: 500; }
+
+  .alert-foot {
+    display: flex; align-items: center; gap: 16px; margin-top: 12px;
+    font-size: 13px; color: #909399;
+  }
+  .alert-act { margin-left: auto; display: flex; gap: 10px; }
+  .alert-act .btn { font-size: 13px; padding: 7px 16px; }
+
+  .done-mask { opacity: .62; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <div class="logo"><span class="logo-mark">康</span>智能康养系统</div>
+    <div class="topbar-title">预警通知中心</div>
+    <div class="topbar-right">
+      <span>护工 周敏</span>
+      <div class="avatar">周</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="crumb">首页 / 预警中心</div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-ico bg-danger">!</div>
+        <div><div class="stat-n">3</div><div class="stat-l">待处理预警</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-ico bg-warn">高</div>
+        <div><div class="stat-n">1</div><div class="stat-l">高风险</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-ico bg-info">今</div>
+        <div><div class="stat-n">7</div><div class="stat-l">今日新增</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-ico bg-ok">已</div>
+        <div><div class="stat-n">12</div><div class="stat-l">已处理</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">预警列表</span>
+        <div class="tabs">
+          <span class="tab on">全部 4</span>
+          <span class="tab">待处理 3</span>
+          <span class="tab">高风险 1</span>
+          <span class="tab">已处理 1</span>
+        </div>
+      </div>
+
+      <div class="alert">
+        <div class="level-bar lv3"></div>
+        <div class="alert-main">
+          <div class="alert-top">
+            <span class="who">李凤英</span>
+            <span class="who-sub">78 岁 · 高血压 III 级</span>
+            <span class="tag tag-danger">高风险</span>
+            <span class="tag tag-warning">待处理</span>
+          </div>
+          <div class="metric-line">
+            <span class="m-name">血压</span>
+            <span class="m-val">178 / 102</span>
+            <span class="m-th">mmHg　（高风险阈值 ≥180/110，已接近）</span>
+          </div>
+          <div class="ai-summary">
+            <b>AI 预警摘要：</b>该老人近 3 天血压持续在 165~178 / 98~102 区间，呈上升趋势且今日为最高值；结合其 III 级高血压病史与昨日漏服记录，建议立即电话联系确认服药情况并安排复诊，如伴头痛胸闷请即刻就医。
+          </div>
+          <div class="alert-foot">
+            <span>2026-09-08 07:42 触发</span><span>·</span><span>已通知家属 李伟</span><span>·</span><span>Alert Agent 自动生成</span>
+            <div class="alert-act">
+              <button class="btn btn-primary">立即处理</button>
+              <button class="btn">查看详情</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert">
+        <div class="level-bar lv2"></div>
+        <div class="alert-main">
+          <div class="alert-top">
+            <span class="who">王德胜</span>
+            <span class="who-sub">81 岁 · 糖尿病</span>
+            <span class="tag tag-danger">较高风险</span>
+            <span class="tag tag-warning">待处理</span>
+          </div>
+          <div class="metric-line">
+            <span class="m-name">空腹血糖</span>
+            <span class="m-val">11.8</span>
+            <span class="m-th">mmol/L　（正常 3.9~6.1，超出 93%）</span>
+          </div>
+          <div class="ai-summary">
+            <b>AI 预警摘要：</b>空腹血糖 11.8 mmol/L 明显高于既往均值（7.2），且昨日晚餐记录显示摄入较多主食。建议核查饮食与胰岛素用量，明日复测空腹血糖，若持续高于 11.1 需联系社区医生调整用药方案。
+          </div>
+          <div class="alert-foot">
+            <span>2026-09-08 06:55 触发</span><span>·</span><span>已通知家属 王芳</span>
+            <div class="alert-act">
+              <button class="btn btn-primary">立即处理</button>
+              <button class="btn">查看详情</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert">
+        <div class="level-bar lv2"></div>
+        <div class="alert-main">
+          <div class="alert-top">
+            <span class="who">张桂兰</span>
+            <span class="who-sub">72 岁 · 高血压</span>
+            <span class="tag tag-danger">较高风险</span>
+            <span class="tag tag-warning">待处理</span>
+          </div>
+          <div class="metric-line">
+            <span class="m-name">血压</span>
+            <span class="m-val">148 / 94</span>
+            <span class="m-th">mmHg　（正常 90~139 / 60~89）</span>
+          </div>
+          <div class="ai-summary">
+            <b>AI 预警摘要：</b>由 AI 咨询环节识别异常后触发（老人主诉晨起头晕）。近 7 天血压均值 142/90 呈缓慢上升，建议提醒按时服药、减少钠盐摄入，并安排本周内社区随访测量。
+          </div>
+          <div class="alert-foot">
+            <span>2026-09-08 09:12 触发</span><span>·</span><span>来源：AI 咨询 Risk Agent</span>
+            <div class="alert-act">
+              <button class="btn btn-primary">立即处理</button>
+              <button class="btn">查看详情</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert done-mask">
+        <div class="level-bar lv1"></div>
+        <div class="alert-main">
+          <div class="alert-top">
+            <span class="who">陈秀英</span>
+            <span class="who-sub">69 岁 · 睡眠障碍</span>
+            <span class="tag tag-warning">轻度</span>
+            <span class="tag tag-success">已处理</span>
+          </div>
+          <div class="metric-line">
+            <span class="m-name">睡眠时长</span>
+            <span class="m-val">4.2</span>
+            <span class="m-th">小时　（正常 7~9 小时）</span>
+          </div>
+          <div class="ai-summary">
+            <b>AI 预警摘要：</b>连续 3 天睡眠不足 5 小时，可能与近期作息改变有关。建议调整睡前习惯、减少午睡时长，观察一周。
+          </div>
+          <div class="alert-foot">
+            <span>2026-09-07 08:10 触发</span><span>·</span><span>处理人：周敏</span><span>·</span><span>处理结论：已电话沟通，建议调整作息，持续观察</span>
+            <div class="alert-act">
+              <button class="btn">查看处理记录</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

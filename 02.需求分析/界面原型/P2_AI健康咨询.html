@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI 健康咨询 - 康养系统</title>
+<link rel="stylesheet" href="prototype.css">
+<style>
+  .body { display: flex; align-items: stretch; }
+  .sidebar { display: flex; flex-direction: column; }
+
+  /* 左侧会话栏 */
+  .sidebar {
+    width: 268px; background: #fff; border-right: 1px solid #e4e7ed;
+    display: flex; flex-direction: column;
+  }
+  .side-head { padding: 18px 20px; border-bottom: 1px solid #ebeef5; }
+  .side-head .btn { width: 100%; font-size: 16px; padding: 12px; }
+  .side-list { flex: 1; overflow: hidden; padding: 12px; }
+  .side-item {
+    padding: 14px 16px; border-radius: 8px; margin-bottom: 8px; cursor: pointer;
+  }
+  .side-item.active { background: #ecf5ff; }
+  .side-t { font-size: 16px; color: #303133; font-weight: 500; margin-bottom: 6px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .side-d { font-size: 13px; color: #909399; }
+
+  .main { flex: 1; display: flex; flex-direction: column; background: #f5f7fa; }
+  .chat-head {
+    background: #fff; border-bottom: 1px solid #e4e7ed; padding: 16px 28px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .profile { font-size: 17px; font-weight: 600; color: #303133; }
+  .profile-sub { font-size: 14px; color: #909399; margin-top: 3px; }
+  .router {
+    margin-left: auto; display: flex; align-items: center; gap: 10px;
+    background: #fdf6ec; border: 1px solid #faecd8; border-radius: 8px;
+    padding: 9px 16px; font-size: 14px; color: #b88230;
+  }
+  .router b { color: #e6a23c; }
+
+  .chat-body { padding: 24px 32px 8px; }
+
+  .msg { display: flex; gap: 14px; margin-bottom: 26px; }
+  .msg-av {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: #fff;
+  }
+  .av-user { background: #409eff; }
+  .av-ai { background: #67c23a; }
+  .msg-main { max-width: 880px; }
+  .msg-name { font-size: 14px; color: #909399; margin-bottom: 8px; }
+
+  .bubble-user {
+    background: #409eff; color: #fff;
+    padding: 16px 22px; border-radius: 4px 12px 12px 12px;
+    font-size: 19px; line-height: 1.7;
+  }
+  .bubble-ai {
+    background: #fff; border: 1px solid #ebeef5;
+    padding: 22px 26px; border-radius: 12px 12px 12px 4px;
+    font-size: 18px; line-height: 1.85; color: #303133;
+  }
+
+  .intent-bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px dashed #ebeef5;
+  }
+  .intent-bar .tag { font-size: 14px; }
+
+  .ai-p { margin-bottom: 14px; }
+  .ai-p:last-child { margin-bottom: 0; }
+  .ai-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #ecf5ff; color: #409eff; font-size: 15px; font-weight: 600;
+    margin-right: 10px;
+  }
+  .ai-alert {
+    background: #fef0f0; border: 1px solid #fde2e2; border-radius: 8px;
+    padding: 14px 18px; margin-top: 16px; font-size: 16px; color: #c45656;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .source {
+    margin-top: 16px; padding-top: 14px; border-top: 1px dashed #ebeef5;
+    font-size: 14px; color: #909399; display: flex; align-items: center; gap: 8px;
+  }
+  .source .tag { font-size: 13px; }
+
+  /* 底部输入 */
+  .chat-foot { background: #fff; border-top: 1px solid #e4e7ed; padding: 18px 32px 22px; }
+  .quick { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .quick button {
+    border: 1px solid #d9ecff; background: #ecf5ff; color: #409eff;
+    border-radius: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer;
+    font-family: inherit;
+  }
+  .input-row { display: flex; gap: 14px; align-items: center; }
+  .input-row input {
+    flex: 1; height: 56px; border: 1px solid #dcdfe6; border-radius: 8px;
+    padding: 0 20px; font-size: 18px; font-family: inherit; color: #303133;
+    background: #fff;
+  }
+  .input-row input::placeholder { color: #c0c4cc; }
+  .send {
+    height: 56px; padding: 0 34px; background: #409eff; color: #fff;
+    border: none; border-radius: 8px; font-size: 18px; cursor: pointer;
+    font-family: inherit;
+  }
+  .mic {
+    width: 56px; height: 56px; border-radius: 8px; border: 1px solid #dcdfe6;
+    background: #fff; font-size: 22px; cursor: pointer;
+  }
+  .disclaimer { margin-top: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <div class="logo"><span class="logo-mark">康</span>智能康养系统</div>
+    <div class="topbar-title">AI 健康咨询</div>
+    <div class="topbar-right">
+      <span>返回首页</span>
+      <div class="avatar">张</div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="sidebar">
+      <div class="side-head"><button class="btn btn-primary">+ 新的咨询</button></div>
+      <div class="side-list">
+        <div class="side-item active">
+          <div class="side-t">血压偏高头晕怎么办</div>
+          <div class="side-d">今天 09:12 · 3 条对话</div>
+        </div>
+        <div class="side-item">
+          <div class="side-t">降压药什么时候吃</div>
+          <div class="side-d">昨天 · 4 条对话</div>
+        </div>
+        <div class="side-item">
+          <div class="side-t">老年人每天走多少步</div>
+          <div class="side-d">9月5日 · 2 条对话</div>
+        </div>
+        <div class="side-item">
+          <div class="side-t">晚上睡不好怎么调理</div>
+          <div class="side-d">9月3日 · 5 条对话</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="chat-head">
+        <div>
+          <div class="profile">张桂兰 · 72 岁</div>
+          <div class="profile-sub">高血压病史 8 年 · 近 7 天血压均值 142/90 mmHg</div>
+        </div>
+        <div class="router">
+          意图识别：<b>异常</b> → 路由至 <b>Risk Agent</b>
+        </div>
+      </div>
+
+      <div class="chat-body">
+        <div class="msg">
+          <div class="msg-av av-user">张</div>
+          <div class="msg-main">
+            <div class="msg-name">张桂兰 · 今天 09:12</div>
+            <div class="bubble-user">我最近血压有点高，早上起来头还有点晕，这要紧吗？</div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-av av-ai">AI</div>
+          <div class="msg-main">
+            <div class="msg-name">AI 健康助手 · 安全等级 L3（异常数据）</div>
+            <div class="bubble-ai">
+              <div class="intent-bar">
+                <span class="tag tag-danger">异常意图</span>
+                <span class="tag tag-primary">Risk Agent</span>
+                <span class="tag tag-info">已检索知识库 3 条</span>
+                <span class="tag tag-warning">已触发健康预警</span>
+              </div>
+
+              <div class="ai-p"><span class="ai-num">1</span>我查了您近 7 天的记录，血压平均 <b>142/90 mmHg</b>，其中今早 <b>148/94 mmHg</b>，已超过正常范围（90~139 / 60~89）。</div>
+
+              <div class="ai-p"><span class="ai-num">2</span>晨起头晕与血压偏高相关，建议您：先静坐休息 10 分钟再缓慢起身，避免猛然站起；今日饮食少盐（不超过 5 克），保持情绪平稳。</div>
+
+              <div class="ai-p"><span class="ai-num">3</span>如果头晕持续不缓解，或血压继续升高超过 160/100，请及时到医院就诊，不要自行加药。</div>
+
+              <div class="ai-alert">
+                <span>!</span>
+                <span>我已为您生成一条「较高风险」健康预警，并通知了家属 <b>李强（儿子）</b> 和责任护工 <b>周敏</b>，他们会尽快与您联系。</span>
+              </div>
+
+              <div class="source">
+                <span>知识来源：</span>
+                <span class="tag tag-info">高血压日常管理指南</span>
+                <span class="tag tag-info">老年晨起头晕处理建议</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-foot">
+        <div class="quick">
+          <button>血压高怎么办</button>
+          <button>降压药什么时候吃</button>
+          <button>每天走多少步合适</button>
+          <button>吃什么对血压好</button>
+        </div>
+        <div class="input-row">
+          <input type="text" placeholder="说出您的问题，也可以按住右边话筒说话">
+          <button class="mic">麦</button>
+          <button class="send">发送</button>
+        </div>
+        <div class="disclaimer">AI 回答内容仅供参考，不构成医疗诊断。身体不适请及时就医或拨打 120</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

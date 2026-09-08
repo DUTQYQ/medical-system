@@ -35,3 +35,6 @@ Thumbs.db
 # ===== æ–‡æ¡£ä¸´æ—¶æ–‡ä»¶ =====
 ~$*.docx
 ~$*.xlsx
+
+# ===== WorkBuddy ±¾µØ¼ÇÒä =====
+.workbuddy/

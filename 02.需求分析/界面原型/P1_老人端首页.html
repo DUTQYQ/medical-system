@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>老人端首页 - 康养系统</title>
+<link rel="stylesheet" href="prototype.css">
+<style>
+  /* 适老化基线：正文 20px、数值 38px、主按钮 88px */
+  .elder { font-size: 20px; }
+  .topbar { height: 76px; padding: 0 32px; }
+  .logo { font-size: 24px; }
+  .logo-mark { width: 42px; height: 42px; font-size: 20px; }
+  .topbar-right { font-size: 18px; gap: 20px; }
+  .avatar { width: 46px; height: 46px; font-size: 17px; }
+
+  .wrap { padding: 28px 32px 40px; }
+
+  .greet {
+    background: linear-gradient(180deg, #ecf5ff 0%, #ffffff 100%);
+    border: 1px solid #d9ecff;
+    border-radius: 12px;
+    padding: 26px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 26px;
+  }
+  .greet-hi { font-size: 30px; font-weight: 600; color: #303133; }
+  .greet-sub { font-size: 19px; color: #606266; margin-top: 8px; }
+  .greet-date { font-size: 19px; color: #909399; text-align: right; line-height: 1.7; }
+
+  .sec-title {
+    font-size: 23px; font-weight: 600; color: #303133;
+    margin: 0 0 18px; display: flex; align-items: center; gap: 10px;
+  }
+  .sec-title::before { content:""; width: 6px; height: 24px; background:#409eff; border-radius:3px; }
+
+  .metric-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+  .metric {
+    background: #fff; border: 1px solid #ebeef5; border-radius: 12px;
+    padding: 22px 24px; position: relative;
+  }
+  .metric-name { font-size: 19px; color: #909399; margin-bottom: 10px; }
+  .metric-val { font-size: 38px; font-weight: 600; color: #303133; line-height: 1.2; }
+  .metric-unit { font-size: 17px; color: #909399; font-weight: 400; margin-left: 6px; }
+  .metric-foot { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; }
+  .metric-time { font-size: 16px; color: #c0c4cc; }
+  .metric .tag { font-size: 16px; padding: 4px 14px; line-height: 26px; }
+
+  .action-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 22px; margin-bottom: 32px; }
+  .action {
+    border-radius: 14px; border: none; cursor: pointer;
+    min-height: 120px; padding: 22px 26px;
+    display: flex; align-items: center; gap: 20px;
+    font-family: inherit; text-align: left;
+    transition: transform .15s;
+  }
+  .action-ai { background: #409eff; color: #fff; }
+  .action-rec { background: #67c23a; color: #fff; }
+  .action-warn { background: #e6a23c; color: #fff; position: relative; }
+  .action-ico {
+    width: 62px; height: 62px; border-radius: 50%;
+    background: rgba(255,255,255,.24);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; flex-shrink: 0;
+  }
+  .action-txt { display: block; font-size: 26px; font-weight: 600; line-height: 1.35; }
+  .action-desc { display: block; font-size: 17px; opacity: .88; margin-top: 6px; }
+  .badge-num {
+    position: absolute; top: -10px; right: -10px;
+    min-width: 40px; height: 40px; padding: 0 8px;
+    background: #f56c6c; color: #fff; border: 3px solid #f5f7fa;
+    border-radius: 20px; font-size: 20px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .remind { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding: 22px 28px; }
+  .remind-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 0; font-size: 20px; color: #606266;
+    border-bottom: 1px dashed #ebeef5;
+  }
+  .remind-item:last-child { border-bottom: none; }
+  .remind-ico { width: 40px; height: 40px; border-radius: 50%; background:#fdf6ec; color:#e6a23c;
+    display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+
+  .disclaimer { margin-top: 24px; font-size: 16px; padding: 14px 20px; }
+</style>
+</head>
+<body>
+<div class="page elder">
+  <div class="topbar">
+    <div class="logo"><span class="logo-mark">康</span>智能康养系统</div>
+    <div class="topbar-right">
+      <span>字体放大 A+</span>
+      <span>朗读</span>
+      <div class="avatar">张</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="greet">
+      <div>
+        <div class="greet-hi">张桂兰 您好</div>
+        <div class="greet-sub">72 岁 · 高血压 · 今日已测量 2 项指标</div>
+      </div>
+      <div class="greet-date">2026年9月8日 星期二<br>晴 24℃</div>
+    </div>
+
+    <div class="sec-title">今日健康</div>
+    <div class="metric-row">
+      <div class="metric">
+        <div class="metric-name">血压</div>
+        <div class="metric-val">128/82<span class="metric-unit">mmHg</span></div>
+        <div class="metric-foot"><span class="metric-time">08:20</span><span class="tag tag-success">正常</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-name">心率</div>
+        <div class="metric-val">76<span class="metric-unit">次/分</span></div>
+        <div class="metric-foot"><span class="metric-time">08:20</span><span class="tag tag-success">正常</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-name">血糖</div>
+        <div class="metric-val">6.8<span class="metric-unit">mmol/L</span></div>
+        <div class="metric-foot"><span class="metric-time">07:10</span><span class="tag tag-warning">偏高</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-name">睡眠</div>
+        <div class="metric-val">5.5<span class="metric-unit">小时</span></div>
+        <div class="metric-foot"><span class="metric-time">昨日</span><span class="tag tag-warning">偏少</span></div>
+      </div>
+    </div>
+
+    <div class="sec-title">快捷服务</div>
+    <div class="action-row">
+      <button class="action action-ai">
+        <span class="action-ico">AI</span>
+        <span>
+          <span class="action-txt">问 AI 健康助手</span>
+          <span class="action-desc">不舒服？点这里说出来</span>
+        </span>
+      </button>
+      <button class="action action-rec">
+        <span class="action-ico">+</span>
+        <span>
+          <span class="action-txt">录入健康指标</span>
+          <span class="action-desc">血压 血糖 心率</span>
+        </span>
+      </button>
+      <button class="action action-warn">
+        <span class="badge-num">2</span>
+        <span class="action-ico">!</span>
+        <span>
+          <span class="action-txt">查看我的预警</span>
+          <span class="action-desc">有 2 条待处理</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="sec-title">今日提醒</div>
+    <div class="remind">
+      <div class="remind-item"><span class="remind-ico">药</span>下午 15:00 服用苯磺酸氨氯地平片 5mg</div>
+      <div class="remind-item"><span class="remind-ico">测</span>今晚睡前记得测量一次血压</div>
+      <div class="remind-item"><span class="remind-ico">动</span>今日步数 3200 步，建议再走动 20 分钟</div>
+    </div>
+
+    <div class="disclaimer">本页健康数据仅供参考，不构成医疗诊断，身体不适请及时就医</div>
+  </div>
+</div>
+</body>
+</html>

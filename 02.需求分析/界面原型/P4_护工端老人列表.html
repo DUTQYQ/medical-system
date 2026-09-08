@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>护工端老人列表 - 康养系统</title>
+<link rel="stylesheet" href="prototype.css">
+<style>
+  .body { display: flex; min-height: 836px; }
+  .nav { width: 208px; background: #fff; border-right: 1px solid #e4e7ed; padding: 18px 0; }
+  .nav-item {
+    padding: 13px 26px; font-size: 15px; color: #606266; cursor: pointer;
+    display: flex; align-items: center; gap: 12px; border-left: 3px solid transparent;
+  }
+  .nav-item.on { background: #ecf5ff; color: #409eff; border-left-color: #409eff; font-weight: 500; }
+  .nav-ico { width: 20px; text-align: center; font-size: 15px; }
+
+  .main { flex: 1; padding: 24px 28px 32px; }
+  .crumb { font-size: 14px; color: #909399; margin-bottom: 16px; }
+  .page-title { font-size: 22px; font-weight: 600; color: #303133; margin-bottom: 20px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 22px; }
+  .stat { background:#fff; border:1px solid #ebeef5; border-radius:8px; padding: 18px 22px; }
+  .stat-n { font-size: 30px; font-weight: 600; line-height: 1.2; }
+  .stat-l { font-size: 14px; color: #909399; margin-top: 5px; }
+  .n-danger { color: #f56c6c; }
+  .n-warn { color: #e6a23c; }
+  .n-main { color: #409eff; }
+  .n-ok { color: #67c23a; }
+
+  .panel { background:#fff; border:1px solid #ebeef5; border-radius:8px; }
+  .panel-head { padding: 16px 24px; border-bottom: 1px solid #ebeef5; display: flex; align-items: center; gap: 12px; }
+  .panel-title { font-size: 17px; font-weight: 600; color: #303133; }
+  .filters { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .filters input, .filters select {
+    height: 34px; border: 1px solid #dcdfe6; border-radius: 4px;
+    padding: 0 12px; font-size: 14px; font-family: inherit; color: #606266; background: #fff;
+  }
+  .filters input { width: 180px; }
+
+  .elder-cell { display: flex; align-items: center; gap: 12px; }
+  .elder-av { width: 40px; height: 40px; border-radius: 50%; background: #409eff; color: #fff;
+    display:flex; align-items:center; justify-content:center; font-size: 15px; font-weight: 500; }
+  .elder-name { font-size: 15px; color: #303133; font-weight: 500; }
+  .elder-sub { font-size: 13px; color: #909399; margin-top: 2px; }
+
+  .val-danger { color: #f56c6c; font-weight: 600; }
+  .val-warn { color: #e6a23c; font-weight: 600; }
+  .val-ok { color: #606266; }
+
+  .warn-pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; height: 22px; padding: 0 7px; border-radius: 11px;
+    background: #fef0f0; color: #f56c6c; font-size: 13px; font-weight: 600;
+    border: 1px solid #fde2e2;
+  }
+  .warn-zero { background: #f4f4f5; color: #c0c4cc; border-color: #e9e9eb; font-weight: 400; }
+
+  .tbl th, .tbl td { padding: 13px 16px; }
+  tr.top-row { background: #fffaf9; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <div class="logo"><span class="logo-mark">康</span>智能康养系统</div>
+    <div class="topbar-title">护工工作台</div>
+    <div class="topbar-right">
+      <span>周敏 · 护工</span>
+      <div class="avatar">周</div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="nav">
+      <div class="nav-item on"><span class="nav-ico">台</span>工作台</div>
+      <div class="nav-item"><span class="nav-ico">老</span>老人管理</div>
+      <div class="nav-item"><span class="nav-ico">警</span>预警处理</div>
+      <div class="nav-item"><span class="nav-ico">录</span>处理记录</div>
+      <div class="nav-item"><span class="nav-ico">档</span>健康档案</div>
+      <div class="nav-item"><span class="nav-ico">我</span>个人中心</div>
+    </div>
+
+    <div class="main">
+      <div class="crumb">工作台 / 我的老人</div>
+      <div class="page-title">我的老人（12 人）</div>
+
+      <div class="stat-row">
+        <div class="stat"><div class="stat-n n-danger">2</div><div class="stat-l">异常 · 需立即关注</div></div>
+        <div class="stat"><div class="stat-n n-warn">3</div><div class="stat-l">关注 · 指标波动</div></div>
+        <div class="stat"><div class="stat-n n-ok">7</div><div class="stat-l">正常</div></div>
+        <div class="stat"><div class="stat-n n-main">5</div><div class="stat-l">今日待办</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">老人列表</span>
+          <div class="filters">
+            <input type="text" placeholder="搜索姓名 / 手机号">
+            <select><option>全部状态</option><option>异常</option><option>关注</option><option>正常</option></select>
+            <select><option>默认排序（异常优先）</option><option>最后更新时间</option><option>年龄</option></select>
+          </div>
+        </div>
+
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:190px">老人</th>
+              <th>状态</th>
+              <th>最近血压</th>
+              <th>最近血糖</th>
+              <th>昨日睡眠</th>
+              <th>未处理预警</th>
+              <th>最后更新</th>
+              <th style="width:150px">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="top-row">
+              <td>
+                <div class="elder-cell">
+                  <div class="elder-av" style="background:#f56c6c">李</div>
+                  <div><div class="elder-name">李凤英</div><div class="elder-sub">78 岁 · 女 · 3 号楼 201</div></div>
+                </div>
+              </td>
+              <td><span class="tag tag-danger"><span class="dot dot-danger"></span>异常</span></td>
+              <td><span class="val-danger">178/102</span></td>
+              <td><span class="val-ok">6.4</span></td>
+              <td><span class="val-warn">5.1 h</span></td>
+              <td><span class="warn-pill">1</span></td>
+              <td>07:42</td>
+              <td><button class="btn btn-sm btn-primary">处理预警</button></td>
+            </tr>
+            <tr class="top-row">
+              <td>
+                <div class="elder-cell">
+                  <div class="elder-av" style="background:#f56c6c">刘</div>
+                  <div><div class="elder-name">刘国栋</div><div class="elder-sub">85 岁 · 男 · 1 号楼 105</div></div>
+                </div>
+              </td>
+              <td><span class="tag tag-danger"><span class="dot dot-danger"></span>异常</span></td>
+              <td><span class="val-danger">165/98</span></td>
+              <td><span class="val-ok">5.9</span></td>
+              <td><span class="val-warn">4.8 h</span></td>
+              <td><span class="warn-pill">1</span></td>
+              <td>08:05</td>
+              <td><button class="btn btn-sm btn-primary">处理预警</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="elder-cell">
+                  <div class="elder-av" style="background:#e6a23c">王</div>
+                  <div><div class="elder-name">王德胜</div><div class="elder-sub">81 岁 · 男 · 2 号楼 308</div></div>
+                </div>
+              </td>
+              <td><span class="tag tag-warning"><span class="dot dot-watch"></span>关注</span></td>
+              <td><span class="val-ok">134/85</span></td>
+              <td><span class="val-danger">11.8</span></td>
+              <td><span class="val-ok">7.2 h</span></td>
+              <td><span class="warn-pill">1</span></td>
+              <td>06:55</td>
+              <td><button class="btn btn-sm btn-primary">处理预警</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="elder-cell">
+                  <div class="elder-av" style="background:#e6a23c">张</div>
+                  <div><div class="elder-name">张桂兰</div><div class="elder-sub">72 岁 · 女 · 3 号楼 202</div></div>
+                </div>
+              </td>
+              <td><span class="tag tag-warning"><span class="dot dot-watch"></span>关注</span></td>
+              <td><span class="val-warn">148/94</span></td>
+              <td><span class="val-warn">6.8</span></td>
+              <td><span class="val-warn">5.5 h</span></td>
+              <td><span class="warn-pill">1</span></td>
+              <td>09:12</td>
+              <td><button class="btn btn-sm btn-primary">处理预警</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="elder-cell">
+                  <div class="elder-av" style="background:#e6a23c">赵</div>
+                  <div><div class="elder-name">赵淑珍</div><div class="elder-sub">76 岁 · 女 · 1 号楼 402</div></div>
+                </div>
+              </td>
+              <td><span class="tag tag-warning"><span class="dot dot-watch"></span>关注</span></td>
+              <td><span class="val-ok">136/86</span></td>
+              <td><span class="val-ok">6.0</span></td>
+              <td><span class="val-warn">5.9 h</span></td>
+              <td><span class="warn-pill warn-zero">0</span></td>
+              <td>08:30</td>
+              <td><button class="btn btn-sm">查看档案</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="elder-cell">
+                  <div class="elder-av">陈</div>
+                  <div><div class="elder-name">陈秀英</div><div class="elder-sub">69 岁 · 女 · 2 号楼 110</div></div>
+                </div>
+              </td>
+              <td><span class="tag tag-success"><span class="dot dot-normal"></span>正常</span></td>
+              <td><span class="val-ok">126/79</span></td>
+              <td><span class="val-ok">5.5</span></td>
+              <td><span class="val-ok">7.5 h</span></td>
+              <td><span class="warn-pill warn-zero">0</span></td>
+              <td>08:15</td>
+              <td><button class="btn btn-sm">查看档案</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="elder-cell">
+                  <div class="elder-av">孙</div>
+                  <div><div class="elder-name">孙立国</div><div class="elder-sub">70 岁 · 男 · 1 号楼 208</div></div>
+                </div>
+              </td>
+              <td><span class="tag tag-success"><span class="dot dot-normal"></span>正常</span></td>
+              <td><span class="val-ok">122/78</span></td>
+              <td><span class="val-ok">5.2</span></td>
+              <td><span class="val-ok">8.0 h</span></td>
+              <td><span class="warn-pill warn-zero">0</span></td>
+              <td>08:02</td>
+              <td><button class="btn btn-sm">查看档案</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="elder-cell">
+                  <div class="elder-av">吴</div>
+                  <div><div class="elder-name">吴桂芳</div><div class="elder-sub">74 岁 · 女 · 3 号楼 305</div></div>
+                </div>
+              </td>
+              <td><span class="tag tag-success"><span class="dot dot-normal"></span>正常</span></td>
+              <td><span class="val-ok">130/82</span></td>
+              <td><span class="val-ok">5.8</span></td>
+              <td><span class="val-ok">7.0 h</span></td>
+              <td><span class="warn-pill warn-zero">0</span></td>
+              <td>07:50</td>
+              <td><button class="btn btn-sm">查看档案</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
