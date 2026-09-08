@@ -4,23 +4,28 @@
 
 ---
 
-## 技术栈（待确认）
+## 技术栈（已确认）
 
 | 项 | 选型 | 状态 |
 |---|---|---|
-| 主选 | Python 3.11 + FastAPI | 文档倾向方案，AI 生态友好 |
-| 备选 | Java + SSM（Spring + SpringMVC + MyBatis） | ⚠️ 需老师确认是否强制 |
+| 后端框架 | **Python 3.11 + FastAPI** | 已确认（2026-09-08） |
 | 数据库 | MySQL 8 | 已定 |
+| ORM | SQLAlchemy 2.0 | 随 FastAPI 确定 |
+| 数据校验 | Pydantic v2 | FastAPI 内置 |
 | AI 编排 | LangChain / LangGraph | 已定 |
-| 大模型 | DeepSeek / 通义千问 / GLM-4（三选一） | ⚠️ 待定 |
+| 大模型 | DeepSeek / 通义千问 / GLM-4（三选一） | 待定，见下方 |
 | 向量库 | Chroma 或 FAISS | 已定方向 |
 
-> **重要**：若老师要求改用 Java SSM，本目录结构需整体调整，请在编码开始前（9/28 前）确认。
-> 前端不受影响——前后端通过 HTTP 接口解耦，前端代码无需改动。
+> Java SSM 方案已排除。前后端通过 HTTP 接口解耦，后端选型不影响前端代码。
+
+### 仍待确认：大模型选型
+
+DeepSeek / 通义千问 / GLM-4 三选一，影响 API Key 申请与调用成本。
+业务代码通过统一封装调用 LLM，选定后只需在 `.env` 中设置 `LLM_PROVIDER` 与对应 Key，**切换模型不改代码**。
 
 ---
 
-## 目录说明（按 FastAPI 规划）
+## 目录说明（FastAPI）
 
 ```
 app/

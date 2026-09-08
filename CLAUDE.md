@@ -7,7 +7,7 @@
 
 ## 技术栈（企划书 v1.0 已定）
 - 前端：Vue3 + Element Plus + ECharts（趋势图）；语音用浏览器 Web Speech API（零成本）
-- 后端：Python FastAPI（⚠️ 待老师确认是否强制 Java SSM）
+- 后端：**Python FastAPI**（2026-09-08 已确认，不再考虑 Java SSM）
 - 数据库：MySQL 8
 - AI：LangChain/LangGraph 编排 + 千问/DeepSeek/GLM API（选 1~2 家，国内直连）；RAG = Embedding + Chroma/FAISS
 - 用户（丘宇乾）负责模块：**AI Agent + LLM 集成**；组员零基础
