@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>登录注册 - 康养系统</title>
+<link rel="stylesheet" href="prototype.css">
+<style>
+  body { background: linear-gradient(135deg, #ecf5ff 0%, #f5f7fa 58%, #f0f9eb 100%); }
+  .auth-page { min-height: 900px; display: flex; flex-direction: column; }
+  .auth-head { height: 76px; background: #fff; border-bottom: 1px solid #e4e7ed; display:flex; align-items:center; padding:0 48px; }
+  .auth-head .logo { font-size: 24px; }
+  .auth-main { flex:1; display:grid; grid-template-columns: 420px 470px 1fr; gap:32px; align-items:center; padding: 36px 72px 58px; }
+  .intro { grid-column:1; padding: 30px 12px; }
+  .intro-kicker { color:#409eff; font-size:17px; font-weight:600; letter-spacing:1px; }
+  .intro h1 { font-size:38px; line-height:1.35; color:#303133; margin:16px 0 18px; }
+  .intro p { font-size:19px; line-height:1.8; color:#606266; max-width:390px; }
+  .benefit { display:flex; gap:12px; align-items:center; margin-top:26px; font-size:17px; color:#606266; }
+  .benefit-mark { width:30px; height:30px; border-radius:50%; background:#e1f3d8; color:#529b2e; display:flex; align-items:center; justify-content:center; font-weight:600; }
+  .auth-card { grid-column:2; background:#fff; border:1px solid #ebeef5; border-radius:14px; box-shadow:0 12px 34px rgba(48,49,51,.08); padding:32px 36px 28px; }
+  .auth-title { font-size:26px; font-weight:600; color:#303133; text-align:center; }
+  .auth-sub { color:#909399; text-align:center; margin:8px 0 24px; font-size:15px; }
+  .auth-tabs { display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid #ebeef5; margin-bottom:24px; }
+  .auth-tab { text-align:center; padding:12px; font-size:17px; color:#909399; }
+  .auth-tab.on { color:#409eff; border-bottom:2px solid #409eff; font-weight:600; }
+  .field { margin-bottom:18px; }
+  .field label { display:block; font-size:15px; color:#606266; margin-bottom:8px; }
+  .field input { width:100%; height:48px; border:1px solid #dcdfe6; border-radius:6px; padding:0 14px; font:inherit; color:#303133; background:#fff; }
+  .auth-options { display:flex; justify-content:space-between; align-items:center; margin:4px 0 22px; color:#909399; font-size:14px; }
+  .auth-options span:last-child { color:#409eff; }
+  .auth-submit { width:100%; height:52px; border:0; border-radius:6px; background:#409eff; color:#fff; font-size:18px; font-family:inherit; }
+  .auth-hint { background:#fdf6ec; border:1px solid #faecd8; color:#b88230; border-radius:6px; padding:10px 12px; margin-top:16px; font-size:13px; line-height:1.6; }
+  .auth-foot { text-align:center; color:#909399; font-size:13px; padding-bottom:20px; }
+</style>
+</head>
+<body>
+<div class="page auth-page">
+  <div class="auth-head"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div></div>
+  <div class="auth-main">
+    <div class="intro">
+      <div class="intro-kicker">AI 主动式健康管理</div>
+      <h1>让每一次健康记录<br>都有人及时关注</h1>
+      <p>老人记录健康数据后，系统会自动分析异常并通知已授权的家属或护工，形成从发现到处理的完整闭环。</p>
+      <div class="benefit"><span class="benefit-mark">1</span>适老化大字号与语音入口</div>
+      <div class="benefit"><span class="benefit-mark">2</span>异常数据自动生成预警</div>
+      <div class="benefit"><span class="benefit-mark">3</span>处理过程全程留痕</div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-title">欢迎使用康养系统</div>
+      <div class="auth-sub">登录后进入与身份匹配的工作台</div>
+      <div class="auth-tabs"><div class="auth-tab on">登录</div><div class="auth-tab">注册</div></div>
+      <div class="field"><label>手机号</label><input placeholder="请输入 11 位手机号" value="138****8001"></div>
+      <div class="field"><label>密码</label><input type="password" placeholder="请输入密码" value="12345678"></div>
+      <div class="auth-options"><span>登录即代表已阅读并同意隐私授权说明</span><span>忘记密码？</span></div>
+      <button class="auth-submit">登录</button>
+      <div class="auth-hint">角色将根据账号权限自动跳转。若账号被禁用或会话已过期，系统会提示原因并返回登录页。</div>
+    </div>
+  </div>
+  <div class="auth-foot">健康数据仅用于本系统健康管理服务 · 内容仅供参考，不构成医疗诊断</div>
+</div>
+</body>
+</html>
