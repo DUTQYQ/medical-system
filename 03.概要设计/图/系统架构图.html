@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #ffffff; }
+  .page {
+    width: 1180px; padding: 30px 32px; background: #ffffff;
+    font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+    color: #1e293b;
+  }
+  .row { display: flex; align-items: stretch; margin-bottom: 10px; }
+  .tag {
+    width: 128px; flex: 0 0 128px; border-radius: 10px 0 0 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 1px;
+  }
+  .tag small { font-weight: 400; font-size: 10.5px; opacity: .9; margin-top: 2px; letter-spacing: 0; }
+  .body {
+    flex: 1; border-radius: 0 10px 10px 0; padding: 13px 18px;
+    border: 1px solid #e2e8f0; border-left: none;
+    font-size: 13.5px; line-height: 1.65; color: #334155;
+  }
+  .body b { color: #0f172a; }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+  .chip {
+    background: #eef2ff; border: 1px solid #c7d2fe; color: #3730a3;
+    border-radius: 8px; padding: 7px 16px; font-size: 13.5px; font-weight: 600;
+  }
+  .sub { color: #64748b; font-size: 12px; margin-top: 5px; }
+
+  /* layer colors */
+  .c-user .tag { background: #6366f1; } .c-user .body { background: #f5f6ff; }
+  .c-view .tag { background: #0ea5e9; } .c-view .body { background: #f0f9ff; }
+  .c-api  .tag { background: #f59e0b; } .c-api  .body { background: #fffbeb; }
+  .c-svc  .tag { background: #10b981; } .c-svc  .body { background: #ecfdf5; }
+  .c-ai   .tag { background: #8b5cf6; } .c-ai   .body { background: #faf5ff; }
+  .c-orm  .tag { background: #14b8a6; } .c-orm  .body { background: #f0fdfa; }
+  .c-db   .tag { background: #64748b; } .c-db   .body { background: #f8fafc; }
+
+  .flow {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin: 2px 0 12px; color: #475569; font-size: 12.5px; font-weight: 600;
+  }
+  .flow .line { flex: 1; height: 2px; background: repeating-linear-gradient(90deg,#94a3b8 0 8px,transparent 8px 14px); }
+  .flow .pill {
+    background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 999px;
+    padding: 5px 14px; color: #334155;
+  }
+  .cross {
+    margin-top: 14px; border: 1px dashed #94a3b8; border-radius: 10px;
+    padding: 12px 18px; background: #fbfdff; font-size: 12.8px; color: #334155;
+  }
+  .cross .h { font-weight: 700; color: #0f172a; margin-bottom: 6px; letter-spacing: .5px; }
+  .cross .items { display: flex; gap: 22px; flex-wrap: wrap; }
+  .cross .items span b { color: #1d4ed8; }
+  .note { font-size: 11.5px; color: #64748b; margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="row c-user">
+      <div class="tag">用户层<small>4 类角色</small></div>
+      <div class="body">
+        <div class="chips">
+          <span class="chip">老年用户 ELDER</span>
+          <span class="chip">家属 FAMILY</span>
+          <span class="chip">护工 CARE</span>
+          <span class="chip">管理员 ADMIN</span>
+          <span class="chip" style="background:#f8fafc;border-color:#e2e8f0;color:#64748b">浏览器 / 响应式</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row c-view">
+      <div class="tag">表示层<small>前端 SPA</small></div>
+      <div class="body">
+        <b>Vue3 + Element Plus + ECharts + Vite</b>　｜　老人端 / 家属端 / 护工端 / 管理员端（路由分文件，各端独立）
+        <div class="sub">适老化：正文 ≥18px · 主按钮 ≥48px · 主流程 ≤3 步　｜　不写死阈值 · 免责声明固定页脚 · 仅调用 src/api/ 封装</div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="line"></div>
+      <div class="pill">HTTP / JSON　·　JWT 鉴权　·　统一响应 {code, message, data}　·　45 个接口（API 契约 v0.2）</div>
+      <div class="line"></div>
+    </div>
+
+    <div class="row c-api">
+      <div class="tag">接口层<small>FastAPI</small></div>
+      <div class="body">
+        <b>路由层 + 鉴权中间件 + 参数校验（Pydantic v2）</b>
+        <div class="sub">认证 · 档案 · 指标 · AI · 预警 · 家属 · 护工 · 管理员 · 配置　｜　统一错误码（1001/1002/3001…）　｜　自动 /docs</div>
+      </div>
+    </div>
+
+    <div class="row c-svc">
+      <div class="tag">应用服务层<small>业务逻辑</small></div>
+      <div class="body">
+        <b>档案服务　·　指标服务　·　预警规则引擎　·　通知服务　·　统计分析</b>
+        <div class="sub">同步主流程；阈值判定 / 权限校验 / 状态流转全部由代码实现（R-01）；阈值读取 sys_config，不硬编码</div>
+      </div>
+    </div>
+
+    <div class="row c-ai">
+      <div class="tag">AI Agent 层<small>LangGraph 编排</small></div>
+      <div class="body">
+        <b>意图识别 → Health ／ HealthData ／ Risk ／ Emergency　｜　Alert Agent（后台守护）</b>
+        <div class="sub">异步增强：AI 摘要失败 / 超时不阻断预警主流程（D-04）；工具白名单 · 契约固定 · 安全分级 L1~L4；模型可换（改 .env）</div>
+      </div>
+    </div>
+
+    <div class="row c-orm">
+      <div class="tag">数据访问层<small>ORM</small></div>
+      <div class="body">
+        <b>SQLAlchemy 2.0</b>　｜　对象—关系映射 · 事务 · 查询封装　｜　禁止模型生成并执行任意 SQL（R-04）
+      </div>
+    </div>
+
+    <div class="row c-db">
+      <div class="tag">数据存储层<small>持久化</small></div>
+      <div class="body">
+        <b>MySQL 8</b>（业务数据 + sys_config 阈值，utf8mb4）　｜　<b>向量库 Chroma / FAISS</b>（知识库 RAG）　｜　<b>外部 LLM API</b>（Key 仅存后端 .env）
+      </div>
+    </div>
+
+    <div class="cross">
+      <div class="h">横切关注点</div>
+      <div class="items">
+        <span><b>安全</b>　bcrypt 密码 · JWT 鉴权 · 后端强制数据隔离</span>
+        <span><b>配置化</b>　阈值 / 范围 / 上限入 sys_config，即时生效</span>
+        <span><b>降级</b>　ai_summary 可空，AI 异常不阻断主流程</span>
+        <span><b>可观测</b>　操作 / 异常 / 预警日志（ai_log 选配）</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

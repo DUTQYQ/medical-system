@@ -1,0 +1,27 @@
+digraph EROpt {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.5, ranksep=0.6, splines=spline, dpi=200, pad=0.25];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=16,
+         penwidth=1.5, margin="0.20,0.12", height=0.6];
+  edge  [fontname="Microsoft YaHei", fontsize=13, color="#94a3b8", fontcolor="#475569", penwidth=1.1];
+
+  subgraph cluster_ctx {
+    label="上下文（核心表）"; fontname="Microsoft YaHei"; fontsize=14; fontcolor="#94a3b8";
+    style="rounded,dashed"; color="#e2e8f0";
+    user          [label="user\n用户", fillcolor="#f1f5f9", color="#cbd5e1", fontcolor="#94a3b8"];
+    elder_profile [label="elder_profile\n老人档案", fillcolor="#f1f5f9", color="#cbd5e1", fontcolor="#94a3b8"];
+  }
+
+  subgraph cluster_opt {
+    label="选配表 4 张（本期可不实现）"; fontname="Microsoft YaHei"; fontsize=15; fontcolor="#64748b";
+    style="rounded,dashed"; color="#cbd5e1"; penwidth=1.1; margin=12;
+    medication         [label="medication\n用药信息", fillcolor="#f8fafc", color="#94a3b8", style="rounded,dashed,filled"];
+    knowledge_document [label="knowledge_document\n知识文档", fillcolor="#f8fafc", color="#94a3b8", style="rounded,dashed,filled"];
+    knowledge_chunk    [label="knowledge_chunk\n知识分块向量", fillcolor="#f8fafc", color="#94a3b8", style="rounded,dashed,filled"];
+    ai_log             [label="ai_log\nAI 调用日志", fillcolor="#f8fafc", color="#94a3b8", style="rounded,dashed,filled"];
+  }
+
+  elder_profile -> medication        [label="1 : N", style=dashed];
+  knowledge_document -> knowledge_chunk [label="1 : N", style=dashed];
+  user -> ai_log                     [label="1 : N", style=dashed];
+}
