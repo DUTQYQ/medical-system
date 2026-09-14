@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-03 档案编辑 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-03　档案编辑</b><span>覆盖状态：正常 / 字段越界校验 / 保存成功提示 / 删除二次确认 / 未登录</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item active">健康档案</div><div class="nav-item">指标录入</div><div class="nav-item">AI 健康咨询</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 32px 36px"><div class="crumb">健康档案 / <b>编辑档案</b></div><div class="grid-2-1"><div><div class="card"><div class="card-title">档案信息（带 * 为必填）</div><div class="form-row"><div class="form-label"><i>*</i>姓名</div><div class="form-ctrl"><div class="inp" style="color:#303133">张桂兰</div></div></div><div class="form-row"><div class="form-label">性别</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133">女</div><span class="unit">与身份证一致</span></div></div><div class="form-row"><div class="form-label">出生日期</div><div class="form-ctrl"><div class="inp" style="color:#303133">1954-03-12</div><span class="unit">自动计算 72 岁</span></div></div><div class="form-row"><div class="form-label">身高</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:130px">158</div><span class="unit">cm</span></div></div><div class="form-row"><div class="form-label">体重</div><div class="form-ctrl"><div class="inp inp-err" style="color:#303133;min-width:130px">6</div><span class="unit">kg</span><div class="hint-err">体重需在 20~200 kg 之间，请重新输入</div></div></div><div class="form-row"><div class="form-label">慢病标签</div><div class="form-ctrl"><span class="tag tag-danger">高血压</span> <span class="tag tag-warning">2 型糖尿病</span> <span class="tag tag-info">+ 添加标签</span><div class="hint">可多选，用于 AI 咨询时的个性化提示</div></div></div><div class="form-row"><div class="form-label">过敏史</div><div class="form-ctrl"><div class="inp ph" style="min-width:380px">如：青霉素过敏</div></div></div><div class="form-row"><div class="form-label">紧急联系人姓名</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:200px">李强</div><div class="inp inp-sel" style="color:#303133">儿子</div></div></div><div class="form-row"><div class="form-label">紧急联系人手机号</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:220px">130 0000 0003</div></div></div><div class="form-row"><div class="form-label">备注</div><div class="form-ctrl"><div class="inp ph" style="min-width:380px">其他需要记录的情况</div></div></div></div><div style="margin-top:18px;display:flex;gap:12px"><button class="btn btn-primary">保存档案</button><button class="btn">取消</button><span style="margin-left:auto"><button class="btn">新增档案</button></span></div></div><div class="mb"><div class="card"><div class="card-title">状态示意</div><div class="hint-err" style="margin-bottom:14px">体重填写 6 kg，超出合理范围，保存被拦截并在字段下方提示</div></div></div><div><div class="card"><div class="card-title">危险操作</div><div style="margin-bottom:14px;font-size:14px;color:#909399">档案删除需二次确认，避免误触</div><div style="border:1px solid #ebeef5;border-radius:10px;overflow:hidden">
+  <div style="background:#fafafa;padding:12px 16px;font-size:13px;color:#909399">弹窗形态示意：删除档案二次确认</div>
+  <div style="padding:20px 18px">
+    <div style="font-size:16px;font-weight:500;color:#303133;margin-bottom:10px">确认删除健康档案？</div>
+    <div style="font-size:14px;color:#606266;line-height:1.8;margin-bottom:18px">删除后，档案下的健康指标与趋势数据将一并不可访问，已产生的预警记录仍会保留以便追溯。此操作不可撤销。</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn">取消</button><button class="btn" style="background:#f56c6c;border-color:#f56c6c;color:#fff">确认删除</button></div>
+  </div>
+</div></div></div></div></div><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div>
+</div>
+</body>
+</html>

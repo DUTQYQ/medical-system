@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-AUTH-01 登录页 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.auth-wrap { min-height:830px; background:#f5f7fa; display:flex; align-items:center; justify-content:center; }
+.auth-box { width:480px; }
+.auth-logo { display:flex; align-items:center; gap:12px; font-size:25px; font-weight:600; color:#409eff;
+  justify-content:center; margin-bottom:10px; }
+.auth-slogan { text-align:center; font-size:14px; color:#909399; margin-bottom:24px; }
+.auth-h { font-size:20px; font-weight:600; color:#303133; text-align:center; margin-bottom:20px; }
+.fld { margin-bottom:18px; }
+.fld-l { font-size:14px; color:#606266; margin-bottom:8px; display:block; }
+.fld-inp { height:48px; border:1px solid #dcdfe6; border-radius:8px; padding:0 14px; display:flex;
+  align-items:center; font-size:15px; color:#303133; background:#fff; }
+.fld-inp.err { border-color:#f56c6c; }
+.fld-inp.ph { color:#c0c4cc; }
+.fld-inp .tail { margin-left:auto; font-size:14px; color:#409eff; }
+.alert-warn { background:#fdf6ec; border:1px solid #faecd8; color:#b88230; font-size:13px;
+  padding:10px 14px; border-radius:8px; margin-bottom:18px; }
+.alert-info { background:#ecf5ff; border:1px solid #d9ecff; color:#3a6f9e; font-size:13px;
+  padding:10px 14px; border-radius:8px; }
+.btn-block { width:100%; height:48px; font-size:17px; border-radius:8px; margin-top:8px; }
+.auth-foot { display:flex; justify-content:space-between; font-size:14px; margin-top:14px; }
+.auth-foot span { color:#409eff; }
+.auth-tip { margin-top:20px; background:#fff; border:1px solid #ebeef5; border-radius:8px;
+  padding:14px 16px; font-size:13px; color:#909399; line-height:1.85; }
+.auth-tip b { color:#606266; font-weight:500; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-AUTH-01　登录页</b><span>覆盖状态：正常 / 登录失败提示 / 会话过期 / 账号锁定风险提示</span></div>
+
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo"><span class="logo-mark" style="width:40px;height:40px;font-size:19px">康</span>智能康养系统</div>
+    <div class="auth-slogan">面向老年人的 AI 主动式健康管理平台</div>
+    <div class="card" style="padding:32px 38px">
+      <div class="auth-h">登录</div>
+      <div class="alert-warn">您的登录状态已过期，请重新登录</div>
+      <div class="fld"><span class="fld-l">手机号</span><div class="fld-inp">130 0000 0002</div></div>
+      <div class="fld"><span class="fld-l">密码</span><div class="fld-inp err">••••••••<span class="tail">显示</span></div>
+        <div class="hint-err" style="margin-top:8px">手机号或密码不正确，请重新输入（今日还可尝试 4 次）</div></div>
+      <button class="btn btn-primary btn-block">登 录</button>
+      <div class="auth-foot"><span>忘记密码</span><span>还没有账号？立即注册</span></div>
+    </div>
+    <div class="auth-tip">
+      <b>登录后按角色自动跳转</b>：老年用户 → 老人端首页；家属 → 家属端看板；护工 → 护工工作台；管理员 → 管理后台。<br>
+      <b>连续 5 次密码错误将锁定 15 分钟</b>，锁定期间不区分手机号是否注册，避免账号探测。
+    </div>
+    <div class="disclaimer">本系统提供健康管理辅助，不构成医疗诊断</div>
+  </div>
+</div>
+</div>
+</body>
+</html>

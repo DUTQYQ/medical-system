@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-08 咨询历史 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-08　咨询历史</b><span>覆盖状态：正常 / 空数据 / 按档案筛选 / 权限隔离（仅本人与已绑定家属）</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item">健康档案</div><div class="nav-item">指标录入</div><div class="nav-item active">AI 健康咨询</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 32px 36px"><div class="crumb">AI 健康咨询 / <b>咨询历史</b></div><div class="filter-bar"><div class="inp ph inp-sel">按档案：张桂兰（本人）</div><div class="inp ph inp-sel">意图：全部</div><div class="inp ph">开始日期</div><button class="btn btn-primary">查询</button></div><div class="grid-2-1"><div><div class="card"><div class="card-title">历史会话</div><table class="tbl "><thead><tr><th>时间</th><th>提问摘要</th><th>意图</th><th>依据</th></tr></thead><tbody><tr><td>2026-09-14 16:25</td><td>我胸口很痛，喘不上气</td><td><span class="tag tag-danger">EMERGENCY</span></td><td>已落预警 #40002</td></tr><tr><td>2026-09-14 16:23</td><td>高血压的人能吃鸡蛋吗？</td><td><span class="tag tag-info">NORMAL</span></td><td>知识库 3 条</td></tr><tr><td>2026-09-14 16:21</td><td>我最近的血压怎么样？</td><td><span class="tag tag-primary">DATA</span></td><td>指标 20 条 + 预警 2 条</td></tr><tr><td>2026-09-13 09:02</td><td>我这个预警是怎么回事？</td><td><span class="tag tag-warning">ABNORMAL</span></td><td>预警 #40001 + 趋势</td></tr><tr><td>2026-09-11 20:14</td><td>晚上总是睡不着</td><td><span class="tag tag-info">NORMAL</span></td><td>知识库 2 条</td></tr></tbody></table><div class="pager"><span style="margin-right:auto;color:#909399">共 28 条</span><span class="pg">上一页</span><span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">下一页</span></div></div></div><div><div class="card"><div class="card-title">会话回看</div><div class="bubble-row"><div class="bubble-av">AI</div><div><div class="bubble" style="font-size:14px">
+您 9 月 13 日的预警（#40001）是因为收缩压达到 178 mmHg，超过高风险阈值 180 附近的警戒区间，规则判定为 level 3 高风险。当时的处理结果是“已电话联系，安排复诊”。
+<div class="bubble-src">依据来源：<b>预警记录 #40001</b> · <b>近 7 天血压趋势</b></div></div></div></div><div style='height:8px'></div><div class='alert-info'>回看历史会话不消耗当日咨询次数，也不会重新生成回答。</div></div></div></div><div style="height:18px"></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">空数据状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">还没有咨询记录</div><div class="empty-d">到 AI 健康咨询页提第一个问题吧</div></div><div style='height:12px'></div><button class="btn btn-primary">去咨询</button></div></div><div><div class="card"><div class="card-title">保留与权限</div><div class="alert-info" style="margin-bottom:12px">会话按老人档案隔离：家属切换代管老人后，只能看到该老人的咨询记录，不串档。</div><div class="alert-warn">咨询历史默认保留 12 个月，超期自动清理；清理仅删除问答文本，不影响健康指标与预警记录。</div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-FAMILY-01 家属首页 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.fam-elder-tabs { display:flex; gap:12px; margin-bottom:18px; }
+.fam-elder { background:#fff; border:1px solid #ebeef5; border-radius:10px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px; font-size:15px; color:#606266; }
+.fam-elder.on { border-color:#409eff; background:#ecf5ff; color:#409eff; font-weight:500; }
+.fam-elder small { color:#909399; font-size:13px; }
+.warn-card { border:1px solid #fde2e2; background:#fef0f0; border-radius:10px; padding:14px 18px; margin-bottom:12px; }
+.warn-card.watch { border-color:#faecd8; background:#fdf6ec; }
+.warn-h { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500; color:#303133; }
+.warn-d { font-size:13px; color:#606266; margin-top:8px; line-height:1.8; }
+.choice { border:1px solid #d9ecff; background:#ecf5ff; color:#409eff; border-radius:8px;
+  padding:11px 16px; font-size:14px; }
+.choice.on { background:#409eff; border-color:#409eff; color:#fff; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-FAMILY-01　家属首页</b><span>覆盖状态：正常 / 多老人切换 / 无绑定老人（空态）/ 未读红点</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">家属端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>李强</span><div class="avatar">李</div></div></div><div class="nav"><div class="nav-item active">首页</div><div class="nav-item">绑定老人</div><div class="nav-item">健康概况</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 26px 34px"><div class="crumb">家属端 / <b>健康看板</b></div><div class="fam-elder-tabs">
+  <div class="fam-elder on">张桂兰　<small>母亲 · 72 岁 · 高风险</small></div>
+  <div class="fam-elder">王秀英　<small>岳母 · 78 岁 · 正常</small></div>
+  <div class="fam-elder" style="color:#c0c4cc">+ 绑定更多老人</div>
+</div><div class="stat-grid"><div class="stat"><div class="stat-label">今日血压</div><div class="stat-val">185/100<small>mmHg</small></div><div class="stat-foot">高风险 · 16:30 测量</div></div><div class="stat"><div class="stat-label">今日心率</div><div class="stat-val">78<small>次/分</small></div><div class="stat-foot">正常</div></div><div class="stat"><div class="stat-label">今日血糖</div><div class="stat-val">6.8<small>mmol/L</small></div><div class="stat-foot">偏高</div></div><div class="stat"><div class="stat-label">未读预警</div><div class="stat-val">1<small>条</small></div><div class="stat-foot">红点已亮</div></div></div><div class="grid-2-1"><div><div class="card"><div class="card-title">最近预警（按风险等级置顶）</div><div class="warn-card"><div class="warn-h"><span class="tag tag-danger">高风险</span>血压 185/100 mmHg，超出高风险阈值 ≥180 mmHg</div>
+<div class="warn-d">2026-09-14 16:30 · 未读 · 张桂兰</div></div><div class="warn-card"><div class="warn-h"><span class="tag tag-danger">高风险</span>血压 178/102 mmHg，超出高风险阈值</div>
+<div class="warn-d">2026-09-13 20:10 · 已处理 · 张桂兰</div></div><div class="warn-card watch"><div class="warn-h"><span class="tag tag-warning">关注</span>收缩压连续 3 天偏高（165→170→178）</div>
+<div class="warn-d">2026-09-12 08:05 · 已读 · 张桂兰</div></div><div style='height:6px'></div><button class="btn btn-sm">查看全部预警</button></div></div><div><div class="card"><div class="card-title">快捷操作</div><div style="display:flex;flex-direction:column;gap:12px">
+<button class="btn btn-primary" style="height:46px;font-size:15px">代老人录入指标</button>
+<button class="btn" style="height:46px;font-size:15px">代老人发起 AI 咨询</button>
+<button class="btn" style="height:46px;font-size:15px">查看健康趋势</button>
+<button class="btn" style="height:46px;font-size:15px">联系责任护工 王护工</button></div></div><div style="height:18px"></div><div class="card"><div class="card-title">数据归属</div><div class="alert-info" style="margin-bottom:10px">看板只展示你已生效绑定的老人数据，切换老人时上下文与 AI 会话会同步重置。</div><div class="alert-warn">未绑定的老人不会出现在上方选择器中，直接访问其地址返回 1002 无权限。</div></div></div></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">无绑定老人（空态）</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">你还没有绑定任何老人</div><div class="empty-d">绑定并得到老人确认后，这里会显示他的健康看板</div></div><div style='height:12px'></div><button class="btn btn-primary">去绑定老人</button></div></div><div><div class="card"><div class="card-title">权限隔离边界</div><div class="alert-info" style="margin-bottom:12px">家属只能看到已生效绑定的老人；绑定处于待确认时，接口返回 1002，界面提示“该老人尚未授权你查看数据”。</div><div class="alert-warn">多位家属绑定同一老人时，各自的处理记录互相可见，但已读状态彼此独立，避免出现“我看到了但没处理”的责任真空。</div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ADMIN-01 用户管理 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.tree { font-size:14px; }
+.tree-i { padding:9px 12px; border-radius:6px; color:#606266; display:flex; align-items:center; gap:8px; }
+.tree-i.on { background:#ecf5ff; color:#409eff; font-weight:500; }
+.tree-i.sub { padding-left:28px; }
+.kv { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.kv-l { font-size:13px; color:#909399; margin-bottom:6px; }
+.kv-v { font-size:15px; color:#303133; }
+.mod-card { border:1px solid #ebeef5; border-radius:10px; padding:16px 18px; background:#fff; }
+.mod-card.on { border-color:#409eff; background:#f5faff; }
+.mod-t { font-size:16px; font-weight:600; color:#303133; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.mod-d { font-size:13px; color:#909399; line-height:1.8; }
+.code { font-family:Consolas,Monaco,monospace; font-size:13px; color:#303133; background:#fafafa;
+  border:1px solid #ebeef5; border-radius:6px; padding:2px 8px; }
+.screen-stat { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding:20px 22px; }
+.screen-v { font-size:40px; font-weight:600; color:#303133; line-height:1.15; }
+.screen-l { font-size:15px; color:#909399; margin-bottom:10px; }
+.screen-s { font-size:13px; color:#67c23a; margin-top:8px; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-ADMIN-01　用户管理</b><span>覆盖状态：正常 / 筛选无结果 / 禁用后不可登录 / 新增校验失败 / 不允许禁用自己</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">管理后台</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>系统管理员</span><div class="avatar">管</div></div></div><div class="shell-body"><aside class="aside"><div class="aside-group">用户与权限</div><div class="aside-item active"><span class="aside-ico">用</span>用户管理</div><div class="aside-item "><span class="aside-ico">角</span>角色管理</div><div class="aside-group">健康与预警</div><div class="aside-item "><span class="aside-ico">警</span>预警规则配置</div><div class="aside-item "><span class="aside-ico">指</span>健康指标配置</div><div class="aside-item "><span class="aside-ico">库</span>知识库管理</div><div class="aside-item "><span class="aside-ico">统</span>统计报表</div><div class="aside-group">系统</div><div class="aside-item "><span class="aside-ico">览</span>概览大屏</div><div class="aside-item "><span class="aside-ico">志</span>系统日志</div><div class="aside-item "><span class="aside-ico">告</span>系统公告</div><div class="aside-item "><span class="aside-ico">模</span>AI 模型配置</div></aside><main class="main"><div class="crumb">用户与权限 / <b>用户管理</b></div><div class="stat-grid"><div class="stat"><div class="stat-label">用户总数</div><div class="stat-val">38<small>人</small></div><div class="stat-foot">本月新增 12</div></div><div class="stat"><div class="stat-label">老年用户</div><div class="stat-val">14<small>人</small></div><div class="stat-foot">含 2 位未完善档案</div></div><div class="stat"><div class="stat-label">家属账号</div><div class="stat-val">16<small>人</small></div><div class="stat-foot">已生效绑定 21 条</div></div><div class="stat"><div class="stat-label">护工 / 管理员</div><div class="stat-val">8<small>人</small></div><div class="stat-foot">护工 6 · 管理员 2</div></div></div><div class="filter-bar"><div class="inp ph">手机号 / 姓名</div><div class="inp ph inp-sel">全部角色</div><div class="inp ph inp-sel">全部状态</div><button class="btn btn-primary">查询</button><button class="btn">重置</button><button class="btn btn-primary">新增用户</button></div><div class="card"><div class="card-title">用户列表</div><table class="tbl "><thead><tr><th>手机号</th><th>姓名</th><th>角色</th><th>角色代码</th><th>状态</th><th>注册时间</th><th>操作</th></tr></thead><tbody><tr><td>130 0000 0001</td><td>系统管理员</td><td><span class="tag tag-primary">管理员</span></td><td>ADMIN</td><td><span class="tag tag-success">正常</span></td><td>2026-09-08 09:00</td><td><button class="btn btn-sm">编辑</button></td></tr><tr><td>130 0000 0002</td><td>张桂兰</td><td><span class="tag tag-info">老年用户</span></td><td>ELDER</td><td><span class="tag tag-success">正常</span></td><td>2026-09-08 09:14</td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">禁用</button></td></tr><tr><td>130 0000 0003</td><td>李强</td><td><span class="tag tag-warning">家属</span></td><td>FAMILY</td><td><span class="tag tag-success">正常</span></td><td>2026-09-13 19:02</td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">禁用</button></td></tr><tr><td>130 0000 0004</td><td>王护工</td><td><span class="tag tag-success">护工</span></td><td>CARE</td><td><span class="tag tag-success">正常</span></td><td>2026-09-10 09:00</td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">禁用</button></td></tr><tr><td>130 0000 0007</td><td>张敏</td><td><span class="tag tag-warning">家属</span></td><td>FAMILY</td><td><span class="tag tag-danger">已禁用</span></td><td>2026-09-14 10:31</td><td><button class="btn btn-primary btn-sm">启用</button></td></tr></tbody></table><div class="pager"><span style="margin-right:auto;color:#909399">共 38 条</span><span class="pg">上一页</span><span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">4</span><span class="pg">5</span><span class="pg">下一页</span></div></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">空结果状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">没有符合条件的用户</div><div class="empty-d">换个手机号或清空筛选条件再试</div></div></div></div><div><div class="card"><div class="card-title">禁用与权限说明</div><div class="alert-warn" style="margin-bottom:12px"><b>禁用后立即不可登录</b>，已签发的令牌在下次校验时失效；禁用不影响其历史产生的健康数据与处理记录。</div><div class="alert-info" style="margin-bottom:10px">管理员账号不可自助注册，只能由既有管理员创建，且不允许禁用自己。</div><div class="alert-info">删除用户为高危操作，本期不提供硬删除，统一使用禁用。</div></div></div></div></main></div>
+</div>
+</body>
+</html>

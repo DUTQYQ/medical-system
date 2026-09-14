@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-12 用药信息 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-12　用药信息</b><span>覆盖状态：正常 / 空数据 / 新增校验失败 / 停用药品</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item active">健康档案</div><div class="nav-item">指标录入</div><div class="nav-item">AI 健康咨询</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 32px 36px"><div class="crumb">健康档案 / <b>用药信息</b></div><div class="grid-2-1"><div><div class="card"><div class="card-title">在用药品</div><table class="tbl "><thead><tr><th>药品名称</th><th>剂量</th><th>服用时间</th><th>开始时间</th><th>状态</th></tr></thead><tbody><tr><td>苯磺酸氨氯地平片</td><td>5 mg</td><td>每日 1 次 · 15:00</td><td>2026-08-01 起</td><td><span class="tag tag-success">服用中</span></td></tr><tr><td>阿卡波糖片</td><td>50 mg</td><td>每日 3 次 · 随餐</td><td>2026-06-15 起</td><td><span class="tag tag-success">服用中</span></td></tr><tr><td>阿司匹林肠溶片</td><td>100 mg</td><td>每日 1 次 · 20:00</td><td>2026-08-01 起</td><td><span class="tag tag-success">服用中</span></td></tr></tbody></table><div class="pager"><span style="margin-right:auto;color:#909399">共 3 条</span><span class="pg">上一页</span><span class="pg on">1</span><span class="pg">下一页</span></div></div><div style="height:18px"></div><div class="card"><div class="card-title">空数据状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">还没有添加用药信息</div><div class="empty-d">添加后可在首页“今日提醒”中按时提示</div></div><div style='height:12px'></div><button class="btn btn-primary">添加药品</button></div></div><div><div class="card"><div class="card-title">新增用药</div><div class="form-row"><div class="form-label"><i>*</i>药品名称</div><div class="form-ctrl"><div class="inp ph" style="min-width:280px">如：苯磺酸氨氯地平片</div></div></div><div class="form-row"><div class="form-label">单次剂量</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:130px">5</div><div class="inp inp-sel" style="color:#303133">mg</div></div></div><div class="form-row"><div class="form-label">服用频次</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133">每日 1 次</div><div class="inp" style="color:#303133">15:00</div></div></div><div class="form-row"><div class="form-label">开始日期</div><div class="form-ctrl"><div class="inp" style="color:#303133">2026-08-01</div></div></div><div style='height:14px'></div><button class="btn btn-primary">保存</button>　<button class="btn">取消</button></div><div style="height:18px"></div><div class="card"><div class="card-title">说明</div><div class="alert-warn">【选配】用药信息为可裁剪项，对应 data 表 medication，本期仅记录与提醒，不做用药冲突校验。</div><div style="height:12px"></div><div class="alert-info">药品与剂量为用户自行录入，系统不提供用药建议，仅按时间提醒。</div></div></div></div><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div>
+</div>
+</body>
+</html>

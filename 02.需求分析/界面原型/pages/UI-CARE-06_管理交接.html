@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-CARE-06 管理交接 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.fam-elder-tabs { display:flex; gap:12px; margin-bottom:18px; }
+.fam-elder { background:#fff; border:1px solid #ebeef5; border-radius:10px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px; font-size:15px; color:#606266; }
+.fam-elder.on { border-color:#409eff; background:#ecf5ff; color:#409eff; font-weight:500; }
+.fam-elder small { color:#909399; font-size:13px; }
+.warn-card { border:1px solid #fde2e2; background:#fef0f0; border-radius:10px; padding:14px 18px; margin-bottom:12px; }
+.warn-card.watch { border-color:#faecd8; background:#fdf6ec; }
+.warn-h { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500; color:#303133; }
+.warn-d { font-size:13px; color:#606266; margin-top:8px; line-height:1.8; }
+.choice { border:1px solid #d9ecff; background:#ecf5ff; color:#409eff; border-radius:8px;
+  padding:11px 16px; font-size:14px; }
+.choice.on { background:#409eff; border-color:#409eff; color:#fff; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-CARE-06　管理交接</b><span>覆盖状态：正常 / 空数据 / 交接后权限立即切换 / 未处理预警转移</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">护工端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>王护工</span><div class="avatar">王</div></div></div><div class="nav"><div class="nav-item">工作台</div><div class="nav-item active">老人列表</div><div class="nav-item">预警处理</div><div class="nav-item">处理记录</div><div class="nav-item">我的</div></div><div style="padding:22px 26px 34px"><div class="crumb">护工端 / <b>管理交接</b></div><div class="grid-2-1"><div><div class="card"><div class="card-title">发起交接</div><div class="form-row"><div class="form-label"><i>*</i>选择老人</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133;min-width:220px">张桂兰（72 岁 · 高血压）</div></div></div><div class="form-row"><div class="form-label">交接类型</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133;min-width:180px">转交他人</div></div></div><div class="form-row"><div class="form-label">接收护工</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133;min-width:200px">刘护工（当前负责 4 位老人）</div></div></div><div class="form-row"><div class="form-label">生效时间</div><div class="form-ctrl"><div class="inp" style="color:#303133">2026-09-15 08:00</div></div></div><div class="form-row"><div class="form-label">交接说明</div><div class="form-ctrl"><div class="inp ph" style="min-width:330px">如：我下周休假，张桂兰近期血压不稳，需重点关注</div></div></div><div style='height:14px'></div><button class="btn btn-primary">提交交接</button></div><div style="height:18px"></div><div class="card"><div class="card-title">交接记录</div><table class="tbl "><thead><tr><th>时间</th><th>老人</th><th>交接路径</th><th>类型</th><th>状态</th></tr></thead><tbody><tr><td>2026-09-10 09:00</td><td>张桂兰</td><td>管理员 → 王护工</td><td>初始分配</td><td><span class="tag tag-success">已生效</span></td></tr><tr><td>2026-08-28 15:30</td><td>陈淑芬</td><td>李护工 → 王护工</td><td>休假交接</td><td><span class="tag tag-success">已生效</span></td></tr></tbody></table></div></div><div><div class="card"><div class="card-title">说明</div><div class="alert-warn" style="margin-bottom:12px">【选配】管理交接为可裁剪项，对应表 care_relation；本期核心流程中，老人由管理员在后台直接分配。</div><div class="alert-info" style="margin-bottom:10px">交接生效后，原护工立即失去该老人的查看与处理权限，未处理预警自动转给接收护工。</div><div class="alert-info">交接不会删除历史处理记录，接收护工可查到前任的全部处理痕迹，避免照护断层。</div></div><div style="height:18px"></div><div class="card"><div class="card-title">空数据状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">还没有交接记录</div><div class="empty-d">需要休假或调整负责范围时，可在此发起交接</div></div></div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

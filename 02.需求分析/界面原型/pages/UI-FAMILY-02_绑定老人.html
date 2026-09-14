@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-FAMILY-02 绑定老人 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.fam-elder-tabs { display:flex; gap:12px; margin-bottom:18px; }
+.fam-elder { background:#fff; border:1px solid #ebeef5; border-radius:10px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px; font-size:15px; color:#606266; }
+.fam-elder.on { border-color:#409eff; background:#ecf5ff; color:#409eff; font-weight:500; }
+.fam-elder small { color:#909399; font-size:13px; }
+.warn-card { border:1px solid #fde2e2; background:#fef0f0; border-radius:10px; padding:14px 18px; margin-bottom:12px; }
+.warn-card.watch { border-color:#faecd8; background:#fdf6ec; }
+.warn-h { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500; color:#303133; }
+.warn-d { font-size:13px; color:#606266; margin-top:8px; line-height:1.8; }
+.choice { border:1px solid #d9ecff; background:#ecf5ff; color:#409eff; border-radius:8px;
+  padding:11px 16px; font-size:14px; }
+.choice.on { background:#409eff; border-color:#409eff; color:#fff; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-FAMILY-02　绑定老人</b><span>覆盖状态：正常 / 待确认（数据不可见）/ 已被拒绝 / 解绑二次确认 / 超出绑定上限</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">家属端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>李强</span><div class="avatar">李</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item active">绑定老人</div><div class="nav-item">健康概况</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 26px 34px"><div class="crumb">家属端 / <b>绑定老人</b></div><div class="grid-1-2"><div><div class="card"><div class="card-title">提交绑定申请</div><div class="form-row"><div class="form-label"><i>*</i>老人手机号</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:230px">130 0000 0002</div><span class="unit">系统按手机号定位老人账号</span></div></div><div class="form-row"><div class="form-label">与老人的关系</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133">儿子</div></div></div><div class="form-row"><div class="form-label">真实姓名</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:200px">李强</div></div></div><div class="form-row"><div class="form-label">申请说明</div><div class="form-ctrl"><div class="inp ph" style="min-width:340px">选填，如：我是长子，负责日常照护</div></div></div><div style='height:14px'></div><button class="btn btn-primary">提交申请</button></div></div><div><div class="card"><div class="card-title">我的绑定关系</div><table class="tbl "><thead><tr><th>老人</th><th>关系</th><th>申请时间</th><th>状态</th><th>可见数据</th><th>操作</th></tr></thead><tbody><tr><td>张桂兰</td><td>儿子</td><td>2026-09-13 19:02</td><td><span class="tag tag-success">已生效</span></td><td>全部可见</td><td><button class="btn btn-sm">解除绑定</button></td></tr><tr><td>王秀英</td><td>女婿</td><td>2026-09-14 15:48</td><td><span class="tag tag-warning">待老人确认</span></td><td><span style="color:#c0c4cc">不可见</span></td><td><button class="btn btn-sm">撤回申请</button></td></tr><tr><td>刘建国</td><td>侄子</td><td>2026-09-10 11:20</td><td><span class="tag tag-danger">已被拒绝</span></td><td><span style="color:#c0c4cc">不可见</span></td><td><button class="btn btn-sm">重新申请</button></td></tr></tbody></table></div><div style="height:18px"></div><div class="card"><div class="card-title">绑定授权规则（关键）</div><div class="alert-warn" style="margin-bottom:12px"><b>申请提交后必须由老人本人在老人端同意，绑定才生效。</b>在待确认期间，家属端看不到该老人的任何数据，包括档案、指标、预警与 AI 咨询上下文。</div><div class="alert-info" style="margin-bottom:10px">解绑后权限立即失效，但历史处理记录仍保留可追溯，不会被删除。</div><div class="alert-info">同一老人最多可绑定 5 名家属，上限取自 sys_config（family_bind_max），不写死在代码里。</div></div></div></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">无申请记录（空态）</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">还没有绑定任何老人</div><div class="empty-d">提交申请后需要老人确认，确认通过才可查看数据</div></div></div></div><div><div class="card"><div class="card-title">解绑二次确认（弹窗形态示意）</div><div style="border:1px solid #ebeef5;border-radius:10px;overflow:hidden"><div style="background:#fafafa;padding:11px 15px;font-size:13px;color:#909399">解除与张桂兰的绑定？</div><div style="padding:18px"><div style="font-size:14px;color:#606266;line-height:1.8;margin-bottom:16px">解除后你将立即无法查看该老人的健康数据与预警通知。此操作可重新申请，但需老人再次确认。</div><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-sm">取消</button><button class="btn btn-sm" style="background:#f56c6c;border-color:#f56c6c;color:#fff">确认解除</button></div></div></div></div></div></div><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div>
+</div>
+</body>
+</html>

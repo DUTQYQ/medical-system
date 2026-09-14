@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-04 指标录入 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-04　指标录入</b><span>覆盖状态：正常 / 范围校验拦截 / 保存失败重试 / 录入即触发判定</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item">健康档案</div><div class="nav-item active">指标录入</div><div class="nav-item">AI 健康咨询</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 32px 36px"><div class="crumb">健康指标 / <b>录入指标</b></div><div class="grid-2-1"><div><div class="card"><div class="card-title">选择要录入的指标</div><div class="chip-row"><span class="chip">血压</span><span class="chip">血糖</span><span class="chip">心率</span><span class="chip">睡眠</span><span class="chip">步数</span></div><div style='height:6px'></div><div style='font-size:15px;color:#909399'>当前：血压（本图为老人端适老化大字号表单）</div></div><div style="height:18px"></div><div class="card"><div class="card-title">填写测量结果</div><div class="form-row"><div class="form-label">测量时间</div><div class="form-ctrl"><div class="inp" style="color:#303133">2026-09-14 16:30</div><span class="unit">默认当前时间</span></div></div><div class="form-row"><div class="form-label">收缩压（高压）</div><div class="form-ctrl"><div class="inp inp-err" style="color:#303133;min-width:170px;font-size:24px">185</div><span class="unit">mmHg</span><div class="hint-err">收缩压 ≥180 mmHg 属高风险，保存后将立即生成预警并通知家属</div></div></div><div class="form-row"><div class="form-label">舒张压（低压）</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:170px;font-size:24px">100</div><span class="unit">mmHg</span></div></div><div class="form-row"><div class="form-label">测量姿势</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133">坐姿 · 静息 5 分钟后</div></div></div><div class="form-row"><div class="form-label">备注</div><div class="form-ctrl"><div class="inp ph" style="min-width:330px">如：服药后测量 / 感觉头晕</div></div></div></div><div style="margin-top:20px;display:flex;gap:14px;align-items:center"><button class="btn btn-primary" style="height:56px;font-size:20px;padding:0 34px">保存并检测</button><button class="btn" style="height:56px;font-size:18px">取消</button><span style="font-size:16px;color:#909399">保存后自动判定，异常时会立刻通知家属</span></div></div><div class="mb"><div class="card"><div class="card-title">判定依据（配置化，不硬编码）</div><table class="tbl "><thead><tr><th>配置项</th><th>当前值（来自 sys_config）</th><th>来源</th></tr></thead><tbody><tr><td>收缩压正常上限</td><td>139 mmHg</td><td>sys_config</td></tr><tr><td>level 3 高风险阈值</td><td>≥180 mmHg</td><td>sys_config</td></tr><tr><td>预警接收人</td><td>已绑定的全部家属 + 责任护工</td><td>family_bind / care_relation</td></tr></tbody></table><div style='height:12px'></div><div class='alert-info'>阈值改动在管理端“预警规则配置”完成后即时生效，界面只展示、不写死。</div></div></div><div><div class="card"><div class="card-title">校验与失败状态</div><div class="alert-warn" style="margin-bottom:12px">舒张压大于收缩压时不允许保存，提示“低压不应高于高压”。</div><div class="alert-info">保存失败（网络异常）时保留已填内容，并在按钮上方给出“保存失败，请重试”，不清空表单。</div></div></div></div><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div>
+</div>
+</body>
+</html>

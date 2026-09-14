@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ADMIN-10 AI 模型配置 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.tree { font-size:14px; }
+.tree-i { padding:9px 12px; border-radius:6px; color:#606266; display:flex; align-items:center; gap:8px; }
+.tree-i.on { background:#ecf5ff; color:#409eff; font-weight:500; }
+.tree-i.sub { padding-left:28px; }
+.kv { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.kv-l { font-size:13px; color:#909399; margin-bottom:6px; }
+.kv-v { font-size:15px; color:#303133; }
+.mod-card { border:1px solid #ebeef5; border-radius:10px; padding:16px 18px; background:#fff; }
+.mod-card.on { border-color:#409eff; background:#f5faff; }
+.mod-t { font-size:16px; font-weight:600; color:#303133; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.mod-d { font-size:13px; color:#909399; line-height:1.8; }
+.code { font-family:Consolas,Monaco,monospace; font-size:13px; color:#303133; background:#fafafa;
+  border:1px solid #ebeef5; border-radius:6px; padding:2px 8px; }
+.screen-stat { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding:20px 22px; }
+.screen-v { font-size:40px; font-weight:600; color:#303133; line-height:1.15; }
+.screen-l { font-size:15px; color:#909399; margin-bottom:10px; }
+.screen-s { font-size:13px; color:#67c23a; margin-top:8px; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-ADMIN-10　AI 模型配置</b><span>覆盖状态：正常 / Key 未配置 / 测试连接失败 / 切换模型即时生效 / 超时降级</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">管理后台</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>系统管理员</span><div class="avatar">管</div></div></div><div class="shell-body"><aside class="aside"><div class="aside-group">用户与权限</div><div class="aside-item "><span class="aside-ico">用</span>用户管理</div><div class="aside-item "><span class="aside-ico">角</span>角色管理</div><div class="aside-group">健康与预警</div><div class="aside-item "><span class="aside-ico">警</span>预警规则配置</div><div class="aside-item "><span class="aside-ico">指</span>健康指标配置</div><div class="aside-item "><span class="aside-ico">库</span>知识库管理</div><div class="aside-item "><span class="aside-ico">统</span>统计报表</div><div class="aside-group">系统</div><div class="aside-item "><span class="aside-ico">览</span>概览大屏</div><div class="aside-item "><span class="aside-ico">志</span>系统日志</div><div class="aside-item "><span class="aside-ico">告</span>系统公告</div><div class="aside-item active"><span class="aside-ico">模</span>AI 模型配置</div></aside><main class="main"><div class="crumb">系统 / <b>AI 模型配置</b></div><div class="alert-warn mb">API Key 只保存在后端 <span class="code">.env</span> 中，<b>绝不下发到前端</b>，界面仅展示脱敏后的尾部 4 位。</div><div class="grid-1-2"><div><div class="card"><div class="card-title">可选模型</div><div class="mod-card on" style="margin-bottom:12px"><div class="mod-t">DeepSeek<span class='tag tag-primary'>当前使用</span></div><div class="mod-d"><span class="code">deepseek-chat</span><br>中文健康科普场景表现稳定，价格低，作为默认候选</div><div style="margin-top:12px"><button class="btn btn-sm">已选中</button> <button class="btn btn-sm">测试连接</button></div></div><div class="mod-card " style="margin-bottom:12px"><div class="mod-t">通义千问</div><div class="mod-d"><span class="code">qwen-plus</span><br>长文本与结构化输出稳定，适合摘要生成</div><div style="margin-top:12px"><button class="btn btn-primary btn-sm">设为当前模型</button> <button class="btn btn-sm">测试连接</button></div></div><div class="mod-card " style="margin-bottom:12px"><div class="mod-t">GLM-4</div><div class="mod-d"><span class="code">glm-4-flash</span><br>响应快、成本低，适合高频问答</div><div style="margin-top:12px"><button class="btn btn-primary btn-sm">设为当前模型</button> <button class="btn btn-sm">测试连接</button></div></div><div class='hint'>切换模型只需修改 <span class='code'>LLM_PROVIDER</span>，业务代码不变。</div></div></div><div><div class="card"><div class="card-title">当前配置</div><div class="form-row"><div class="form-label">模型提供方</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133;min-width:190px">DeepSeek</div></div></div><div class="form-row"><div class="form-label">模型名称</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:220px">deepseek-chat</div></div></div><div class="form-row"><div class="form-label">API Key</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:240px">••••••••••••••••3f7a</div><span class="unit">仅后端可见</span></div></div><div class="form-row"><div class="form-label">API 地址</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:260px">https://api.deepseek.com/v1</div></div></div><div class="form-row"><div class="form-label">温度 / 最大长度</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:80px">0.3</div><div class="inp" style="color:#303133;min-width:110px">1024</div></div></div><div class="form-row"><div class="form-label">摘要超时</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:90px">8</div><span class="unit">秒（超时回退规则摘要，不阻断预警）</span></div></div><div class="form-row"><div class="form-label">每日咨询上限</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:80px">20</div><span class="unit">次 / 人 · 存 sys_config</span></div></div><div style='height:14px'></div><button class="btn btn-primary">测试连接</button>　<button class="btn">保存配置</button>　<button class="btn">恢复默认</button></div><div style="height:18px"></div><div class="card"><div class="card-title">连接测试与失败状态</div><div class="alert-info" style="margin-bottom:10px">测试成功：显示“连接正常，平均响应 1.8 s”。</div><div class="alert-warn" style="margin-bottom:10px">Key 未配置：提示“未检测到 API Key，请在后端 .env 中配置”，保存按钮置灰。</div><div class="alert-warn" style="margin-bottom:10px">测试失败：显示错误原因（超时 / 401 鉴权失败），但<b>不阻断</b>其他功能，预警与指标录入照常运行。</div><div class="alert-info">【选配】AI 模型配置为可裁剪项，本期亦可通过直接修改 .env 完成切换。</div></div></div></div></main></div>
+</div>
+</body>
+</html>

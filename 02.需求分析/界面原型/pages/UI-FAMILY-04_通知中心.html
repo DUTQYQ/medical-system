@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-FAMILY-04 通知中心 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.fam-elder-tabs { display:flex; gap:12px; margin-bottom:18px; }
+.fam-elder { background:#fff; border:1px solid #ebeef5; border-radius:10px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px; font-size:15px; color:#606266; }
+.fam-elder.on { border-color:#409eff; background:#ecf5ff; color:#409eff; font-weight:500; }
+.fam-elder small { color:#909399; font-size:13px; }
+.warn-card { border:1px solid #fde2e2; background:#fef0f0; border-radius:10px; padding:14px 18px; margin-bottom:12px; }
+.warn-card.watch { border-color:#faecd8; background:#fdf6ec; }
+.warn-h { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500; color:#303133; }
+.warn-d { font-size:13px; color:#606266; margin-top:8px; line-height:1.8; }
+.choice { border:1px solid #d9ecff; background:#ecf5ff; color:#409eff; border-radius:8px;
+  padding:11px 16px; font-size:14px; }
+.choice.on { background:#409eff; border-color:#409eff; color:#fff; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-FAMILY-04　通知中心</b><span>覆盖状态：正常 / 未读红点 / 已被他人处理 / 提交失败重试 / 已读与处理状态正交</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">家属端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>李强</span><div class="avatar">李</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item">绑定老人</div><div class="nav-item">健康概况</div><div class="nav-item active">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 26px 34px"><div class="crumb">家属端 / <b>通知中心</b></div><div class="stat-grid"><div class="stat"><div class="stat-label">未读通知</div><div class="stat-val">2<small>条</small></div><div class="stat-foot">家属端红点已亮</div></div><div class="stat"><div class="stat-label">待我处理</div><div class="stat-val">2<small>条</small></div><div class="stat-foot">按风险等级排序</div></div><div class="stat"><div class="stat-label">本周已处理</div><div class="stat-val">3<small>条</small></div><div class="stat-foot">平均响应 12 分钟</div></div><div class="stat"><div class="stat-label">接收方式</div><div class="stat-val">站内通知</div><div class="stat-foot">无短信 / 电话</div></div></div><div class="filter-bar"><div class="inp ph inp-sel">全部老人</div><div class="inp ph inp-sel">全部状态</div><div class="inp ph inp-sel">全部级别</div><button class="btn btn-primary">只看未读</button><button class="btn">批量标为已读</button></div><div class="card"><div class="card-title">预警通知</div><table class="tbl "><thead><tr><th>我的状态</th><th>级别</th><th>老人</th><th>预警内容</th><th>时间</th><th>处理状态</th><th>操作</th></tr></thead><tbody><tr><td><span class="tag tag-danger">未读</span></td><td><span class="tag tag-danger">高风险</span></td><td>张桂兰</td><td>血压 185/100 mmHg 超阈值</td><td>09-14 16:30</td><td><span class="tag tag-warning">处理中</span></td><td><button class="btn btn-primary btn-sm">处理</button></td></tr><tr><td><span class="tag tag-info">已读</span></td><td><span class="tag tag-danger">高风险</span></td><td>张桂兰</td><td>血压 178/102 mmHg 超阈值</td><td>09-13 20:10</td><td><span class="tag tag-success">已处理</span></td><td><button class="btn btn-sm">查看</button></td></tr><tr><td><span class="tag tag-info">已读</span></td><td><span class="tag tag-warning">关注</span></td><td>张桂兰</td><td>收缩压连续 3 天偏高</td><td>09-12 08:05</td><td><span class="tag tag-success">已处理</span></td><td><button class="btn btn-sm">查看</button></td></tr><tr><td><span class="tag tag-danger">未读</span></td><td><span class="tag tag-warning">关注</span></td><td>王秀英</td><td>睡眠 4.0 小时，连续 2 天偏少</td><td>09-14 07:30</td><td><span class="tag tag-danger">待处理</span></td><td><button class="btn btn-primary btn-sm">处理</button></td></tr></tbody></table><div class="pager"><span style="margin-right:auto;color:#909399">共 14 条</span><span class="pg">上一页</span><span class="pg on">1</span><span class="pg">2</span><span class="pg">下一页</span></div></div><div style="height:18px"></div><div class="grid-2-1"><div><div class="card"><div class="card-title">登记处理结果</div><div style='font-size:14px;color:#606266;margin-bottom:12px'>预警 #40001 · 张桂兰 · 血压 185/100 mmHg</div><span class="choice on">已电话联系老人</span><span class="choice">已上门查看</span><span class="choice">已协助就医</span><span class="choice">稍后处理</span><div style='height:14px'></div><div class="form-row"><div class="form-label">处理说明</div><div class="form-ctrl"><div class="inp ph" style="min-width:330px">如：已电话联系，安排傍晚复测</div></div></div><div class="form-row"><div class="form-label">是否已联系老人</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133">已联系</div></div></div><div style='height:12px'></div><button class="btn btn-primary">提交处理结果</button>　<button class="btn">稍后处理</button></div></div><div><div class="card"><div class="card-title">状态正交说明</div><div class="alert-info" style="margin-bottom:12px">“我的状态”只表示我是否已读；“处理状态”是全局共享的。我先读了但没处理，另一位家属处理后，我这条仍显示未读，列表里会提示“已由李强于 16:41 处理”。</div><div class="alert-warn">30 秒轮询未读数；网络中断时保留上一次结果并提示“数据可能不是最新”。</div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

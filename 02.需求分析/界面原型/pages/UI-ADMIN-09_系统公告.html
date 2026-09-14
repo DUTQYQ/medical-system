@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ADMIN-09 系统公告 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.tree { font-size:14px; }
+.tree-i { padding:9px 12px; border-radius:6px; color:#606266; display:flex; align-items:center; gap:8px; }
+.tree-i.on { background:#ecf5ff; color:#409eff; font-weight:500; }
+.tree-i.sub { padding-left:28px; }
+.kv { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.kv-l { font-size:13px; color:#909399; margin-bottom:6px; }
+.kv-v { font-size:15px; color:#303133; }
+.mod-card { border:1px solid #ebeef5; border-radius:10px; padding:16px 18px; background:#fff; }
+.mod-card.on { border-color:#409eff; background:#f5faff; }
+.mod-t { font-size:16px; font-weight:600; color:#303133; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.mod-d { font-size:13px; color:#909399; line-height:1.8; }
+.code { font-family:Consolas,Monaco,monospace; font-size:13px; color:#303133; background:#fafafa;
+  border:1px solid #ebeef5; border-radius:6px; padding:2px 8px; }
+.screen-stat { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding:20px 22px; }
+.screen-v { font-size:40px; font-weight:600; color:#303133; line-height:1.15; }
+.screen-l { font-size:15px; color:#909399; margin-bottom:10px; }
+.screen-s { font-size:13px; color:#67c23a; margin-top:8px; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-ADMIN-09　系统公告</b><span>覆盖状态：正常 / 空数据 / 草稿与发布 / 下架 / 脚本注入拦截</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">管理后台</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>系统管理员</span><div class="avatar">管</div></div></div><div class="shell-body"><aside class="aside"><div class="aside-group">用户与权限</div><div class="aside-item "><span class="aside-ico">用</span>用户管理</div><div class="aside-item "><span class="aside-ico">角</span>角色管理</div><div class="aside-group">健康与预警</div><div class="aside-item "><span class="aside-ico">警</span>预警规则配置</div><div class="aside-item "><span class="aside-ico">指</span>健康指标配置</div><div class="aside-item "><span class="aside-ico">库</span>知识库管理</div><div class="aside-item "><span class="aside-ico">统</span>统计报表</div><div class="aside-group">系统</div><div class="aside-item "><span class="aside-ico">览</span>概览大屏</div><div class="aside-item "><span class="aside-ico">志</span>系统日志</div><div class="aside-item active"><span class="aside-ico">告</span>系统公告</div><div class="aside-item "><span class="aside-ico">模</span>AI 模型配置</div></aside><main class="main"><div class="crumb">系统 / <b>系统公告</b></div><div class="grid-2-1"><div><div class="card"><div class="card-title">公告列表</div><table class="tbl "><thead><tr><th>标题</th><th>可见范围</th><th>发布时间</th><th>状态</th><th>失效时间</th><th>操作</th></tr></thead><tbody><tr><td>系统上线试运行通知</td><td>全站</td><td>2026-09-08 09:00</td><td><span class="tag tag-success">已发布</span></td><td>2026-12-31</td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">下架</button></td></tr><tr><td>血压阈值调整说明</td><td>全部家属与护工</td><td>2026-09-12 10:20</td><td><span class="tag tag-success">已发布</span></td><td>2026-10-31</td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">下架</button></td></tr><tr><td>国庆期间值班安排</td><td>全部护工</td><td>2026-09-20 08:00</td><td><span class="tag tag-warning">待发布</span></td><td>2026-10-08</td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-primary btn-sm">发布</button></td></tr></tbody></table><div class="pager"><span style="margin-right:auto;color:#909399">共 3 条</span><span class="pg">上一页</span><span class="pg on">1</span><span class="pg">下一页</span></div></div></div><div><div class="card"><div class="card-title">发布公告</div><div class="form-row"><div class="form-label"><i>*</i>标题</div><div class="form-ctrl"><div class="inp ph" style="min-width:250px">如：系统维护通知</div></div></div><div class="form-row"><div class="form-label">可见范围</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133">全部用户</div></div></div><div class="form-row"><div class="form-label">生效时间</div><div class="form-ctrl"><div class="inp" style="color:#303133">2026-09-15 09:00</div></div></div><div class="form-row"><div class="form-label">失效时间</div><div class="form-ctrl"><div class="inp" style="color:#303133">2026-09-30 23:59</div></div></div><div class="form-row"><div class="form-label">公告正文</div><div class="form-ctrl"><div class="inp ph" style="min-width:280px;height:100px;align-items:flex-start;padding-top:10px">支持纯文本，不解析 HTML</div></div></div><div style='height:12px'></div><button class="btn">保存草稿</button>　<button class="btn btn-primary">立即发布</button></div></div></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">空数据状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">还没有发布任何公告</div><div class="empty-d">发布后会在对应用户端的通知中心顶部展示</div></div></div></div><div><div class="card"><div class="card-title">说明</div><div class="alert-info" style="margin-bottom:12px">公告与预警通知共用站内通知通道，但优先级低于预警，不会覆盖或顶掉预警红点。</div><div class="alert-warn" style="margin-bottom:12px">正文不支持富文本与脚本，避免注入风险；下架后用户端立即不可见。</div><div class="alert-info">【选配】系统公告为可裁剪项，若工期不足可整体下线，不影响核心预警闭环。</div></div></div></div></main></div>
+</div>
+</body>
+</html>

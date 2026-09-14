@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-02 健康档案 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-02　健康档案</b><span>覆盖状态：正常 / 空档案（引导完善）/ 未确认家属无权限 / 慢病标签空</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item active">健康档案</div><div class="nav-item">指标录入</div><div class="nav-item">AI 健康咨询</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 32px 36px"><div class="crumb">健康档案 / <b>我的健康档案</b></div><div class="grid-2-1 mb"><div><div class="card"><div class="card-title">基本信息 <span style='font-size:15px;color:#909399'>（点击“编辑”修改）</span></div><div class="elder-row"><div class="elder-k">姓名</div><div class="elder-v">张桂兰</div></div><div class="elder-row"><div class="elder-k">性别 / 年龄</div><div class="elder-v">女 · 72 岁</div></div><div class="elder-row"><div class="elder-k">身高 / 体重</div><div class="elder-v">158 cm · 62 kg</div></div><div class="elder-row"><div class="elder-k">血型</div><div class="elder-v">A 型</div></div><div class="elder-row"><div class="elder-k">慢病标签</div><div class="elder-v"><span class="tag tag-danger">高血压</span> <span class="tag tag-warning">2 型糖尿病</span> <span class="tag tag-info">失眠</span></div></div><div class="elder-row"><div class="elder-k">过敏史</div><div class="elder-v">青霉素过敏（皮肤试验阳性）</div></div><div class="elder-row"><div class="elder-k">既往病史</div><div class="elder-v">2018 年脑梗，恢复良好，无肢体功能障碍</div></div></div></div><div><div class="card"><div class="card-title">紧急联系人与责任护工</div><div class="elder-row"><div class="elder-k">紧急联系人</div><div class="elder-v">李强（儿子）· 130 0000 0003</div></div><div class="elder-row"><div class="elder-k">备用联系人</div><div class="elder-v">张伟（侄子）· 130 0000 0009</div></div><div class="elder-row"><div class="elder-k">责任护工</div><div class="elder-v">王护工 · 130 0000 0004</div></div></div></div></div><div class="mb"><div class="card"><div class="card-title">已授权的家属</div><table class="tbl "><thead><tr><th>姓名</th><th>关系</th><th>手机号</th><th>状态</th><th>可查看范围</th></tr></thead><tbody><tr><td>李强</td><td>儿子</td><td>130 0000 0003</td><td><span class="tag tag-success">已生效</span></td><td>健康档案 · 指标 · 预警</td></tr><tr><td>张敏</td><td>女儿</td><td>130 0000 0007</td><td><span class="tag tag-warning">待老人确认</span></td><td>（未生效，不可见任何数据）</td></tr></tbody></table></div></div><div class="grid-2 mb"><div><div class="card"><div class="card-title">空档案状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">尚未填写健康档案</div><div class="empty-d">完善档案后，AI 咨询才能结合您的实际情况作答</div></div><div style='height:12px'></div><button class="btn btn-primary">立即完善档案</button></div></div><div><div class="card"><div class="card-title">权限边界</div><div class="alert-info" style="margin-bottom:12px">档案数据仅本人、已生效绑定的家属、责任护工与管理员可见。</div><div class="alert-warn">家属绑定处于“待老人确认”状态时，其请求一律返回 1002 无权限，界面不展示任何数据，而不是显示空白卡片。</div></div></div></div><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div>
+</div>
+</body>
+</html>

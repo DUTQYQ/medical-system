@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ADMIN-05 知识库管理 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.tree { font-size:14px; }
+.tree-i { padding:9px 12px; border-radius:6px; color:#606266; display:flex; align-items:center; gap:8px; }
+.tree-i.on { background:#ecf5ff; color:#409eff; font-weight:500; }
+.tree-i.sub { padding-left:28px; }
+.kv { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.kv-l { font-size:13px; color:#909399; margin-bottom:6px; }
+.kv-v { font-size:15px; color:#303133; }
+.mod-card { border:1px solid #ebeef5; border-radius:10px; padding:16px 18px; background:#fff; }
+.mod-card.on { border-color:#409eff; background:#f5faff; }
+.mod-t { font-size:16px; font-weight:600; color:#303133; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.mod-d { font-size:13px; color:#909399; line-height:1.8; }
+.code { font-family:Consolas,Monaco,monospace; font-size:13px; color:#303133; background:#fafafa;
+  border:1px solid #ebeef5; border-radius:6px; padding:2px 8px; }
+.screen-stat { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding:20px 22px; }
+.screen-v { font-size:40px; font-weight:600; color:#303133; line-height:1.15; }
+.screen-l { font-size:15px; color:#909399; margin-bottom:10px; }
+.screen-s { font-size:13px; color:#67c23a; margin-top:8px; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-ADMIN-05　知识库管理</b><span>覆盖状态：正常 / 空分类 / 索引重建中 / 上传解析（选配未实现）/ 删除二次确认</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">管理后台</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>系统管理员</span><div class="avatar">管</div></div></div><div class="shell-body"><aside class="aside"><div class="aside-group">用户与权限</div><div class="aside-item "><span class="aside-ico">用</span>用户管理</div><div class="aside-item "><span class="aside-ico">角</span>角色管理</div><div class="aside-group">健康与预警</div><div class="aside-item "><span class="aside-ico">警</span>预警规则配置</div><div class="aside-item "><span class="aside-ico">指</span>健康指标配置</div><div class="aside-item active"><span class="aside-ico">库</span>知识库管理</div><div class="aside-item "><span class="aside-ico">统</span>统计报表</div><div class="aside-group">系统</div><div class="aside-item "><span class="aside-ico">览</span>概览大屏</div><div class="aside-item "><span class="aside-ico">志</span>系统日志</div><div class="aside-item "><span class="aside-ico">告</span>系统公告</div><div class="aside-item "><span class="aside-ico">模</span>AI 模型配置</div></aside><main class="main"><div class="crumb">健康与预警 / <b>知识库管理</b></div><div class="stat-grid"><div class="stat"><div class="stat-label">知识条目</div><div class="stat-val">46<small>条</small></div><div class="stat-foot">本期已录入</div></div><div class="stat"><div class="stat-label">分类</div><div class="stat-val">5<small>个</small></div><div class="stat-foot">高血压条目最多</div></div><div class="stat"><div class="stat-label">向量分片</div><div class="stat-val">312<small>片</small></div><div class="stat-foot">平均每条 6.8 片</div></div><div class="stat"><div class="stat-label">待重建索引</div><div class="stat-val">1<small>条</small></div><div class="stat-foot">修改后未重建</div></div></div><div class="filter-bar"><div class="inp ph">按标题搜索</div><div class="inp ph inp-sel">全部分类</div><button class="btn btn-primary">查询</button><button class="btn">重建全部索引</button><button class="btn btn-primary">新增条目</button></div><div class="grid-1-2"><div><div class="card"><div class="card-title">分类</div><div class="tree">
+  <div class="tree-i on">全部条目</div>
+  <div class="tree-i sub">高血压</div>
+  <div class="tree-i sub">糖尿病</div>
+  <div class="tree-i sub">睡眠与情绪</div>
+  <div class="tree-i sub">用药常识</div>
+  <div class="tree-i sub">紧急处理</div>
+  <div class="tree-i"><span style="color:#409eff">+</span> 新建分类</div>
+</div></div></div><div><div class="card"><div class="card-title">知识条目</div><table class="tbl "><thead><tr><th>标题</th><th>分类</th><th>字数</th><th>更新时间</th><th>索引状态</th><th>操作</th></tr></thead><tbody><tr><td>高血压老人能吃鸡蛋吗</td><td>高血压</td><td>128 字</td><td>2026-09-06 14:20</td><td><span class="tag tag-success">已索引</span></td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">删除</button></td></tr><tr><td>家庭自测血压的正确方法</td><td>高血压</td><td>236 字</td><td>2026-09-05 10:02</td><td><span class="tag tag-success">已索引</span></td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">删除</button></td></tr><tr><td>血压多高需要立即就医</td><td>高血压</td><td>184 字</td><td>2026-09-05 09:48</td><td><span class="tag tag-success">已索引</span></td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">删除</button></td></tr><tr><td>夜间失眠的非药物调节方法</td><td>睡眠与情绪</td><td>310 字</td><td>2026-09-04 16:31</td><td><span class="tag tag-warning">待重建索引</span></td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">删除</button></td></tr><tr><td>低血糖的识别与应急处理</td><td>紧急处理</td><td>152 字</td><td>2026-09-04 11:15</td><td><span class="tag tag-success">已索引</span></td><td><button class="btn btn-sm">编辑</button> <button class="btn btn-sm">删除</button></td></tr></tbody></table><div class="pager"><span style="margin-right:auto;color:#909399">共 46 条</span><span class="pg">上一页</span><span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">下一页</span></div></div></div></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">新增 / 编辑条目</div><div class="form-row"><div class="form-label"><i>*</i>标题</div><div class="form-ctrl"><div class="inp ph" style="min-width:300px">如：高血压老人能吃鸡蛋吗</div></div></div><div class="form-row"><div class="form-label">分类</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133">高血压</div></div></div><div class="form-row"><div class="form-label">正文</div><div class="form-ctrl"><div class="inp ph" style="min-width:320px;height:90px;align-items:flex-start;padding-top:10px">录入健康科普正文，保存后自动分片并写入向量库</div></div></div><div style='height:12px'></div><button class="btn btn-primary">保存并重建索引</button>　<button class="btn">仅保存</button></div></div><div><div class="card"><div class="card-title">状态与选配说明</div><div class="alert-warn" style="margin-bottom:12px"><b>【选配】文档上传解析</b>（PDF / Word 自动切分入库）本期不实现，界面保留入口但标注“即将支持”。</div><div class="alert-info" style="margin-bottom:10px"><b>索引重建中：</b>条目状态显示“重建中”，期间 AI 咨询仍可用旧索引作答，不阻断服务。</div><div class="alert-info" style="margin-bottom:10px"><b>空分类：</b>该分类下暂无条目时展示空状态并提供“新增条目”按钮。</div><div class="alert-warn">AI 只能基于本知识库与老人档案作答，知识库不得出现诊断结论类表述。</div></div></div></div></main></div>
+</div>
+</body>
+</html>
