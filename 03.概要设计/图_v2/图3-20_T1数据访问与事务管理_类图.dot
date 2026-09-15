@@ -1,0 +1,22 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="T1 数据访问与事务管理　类图（TECH · DATA ACCESS）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    SessionFactory [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>SessionFactory</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">创建与回收会话，持有连接池配置</FONT></TD></TR></TABLE>>];
+    UnitOfWork [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>UnitOfWork</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">事务上下文：进入开事务、退出提交或回滚</FONT></TD></TR></TABLE>>];
+    BaseRepository [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>BaseRepository</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">通用 CRUD / 分页 / 软删除过滤的抽象基类</FONT></TD></TR></TABLE>>];
+    ProfileRepository [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ProfileRepository</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">档案访问（继承 BaseRepository）</FONT></TD></TR></TABLE>>];
+    HealthRecordRepository [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>HealthRecordRepository</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">指标访问（继承 BaseRepository）</FONT></TD></TR></TABLE>>];
+  }
+  UnitOfWork -> SessionFactory [label="取会话", arrowhead=vee, color="#64748b"];
+  ProfileRepository -> BaseRepository [arrowhead=onormal, color="#16a34a", penwidth=1.2];
+  HealthRecordRepository -> BaseRepository [arrowhead=onormal, color="#16a34a", penwidth=1.2];
+  BaseRepository -> SessionFactory [label="使用", arrowhead=vee, color="#64748b"];
+}

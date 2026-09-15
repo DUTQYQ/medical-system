@@ -1,0 +1,26 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,4.6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  subgraph cluster_main {
+    label="M1 认证与权限　模块结构（AUTH）\n实线箭头＝调用与读写；虚线箭头＝依赖与上游触发"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    s1 [label="AuthRouter\napp/api/v1/auth.py", fillcolor="#dbeafe", color="#3b82f6"];
+    v1 [label="AuthService\n注册白名单 · 密码校验 · 登录编排", fillcolor="#eff6ff", color="#3b82f6"];
+    d1 [label="UserRepository\nuser 表读写", fillcolor="#f8fafc", color="#64748b"];
+    x1 [label="Depends(get_current_user)\n横切：统一鉴权与出入参校验", fillcolor="#fef9c3", color="#ca8a04", style="rounded,dashed"];
+    x2 [label="bcrypt 密码哈希", fillcolor="#fef9c3", color="#ca8a04", style="rounded,dashed"];
+    x3 [label="sys_config\n登录失败限次", fillcolor="#fef9c3", color="#ca8a04", style="rounded,dashed"];
+    {rank=same; s1}
+    {rank=same; v1}
+    {rank=same; d1 x1 x2 x3}
+  }
+  s1 -> v1 [label="调用", color="#3b82f6", fontcolor="#1d4ed8"];
+  v1 -> d1 [label="读写", color="#64748b", fontcolor="#475569"];
+  v1 -> x1 [style=dashed, arrowhead=vee, color="#ca8a04", fontcolor="#854d0e", label="依赖 / 触发"];
+  v1 -> x2 [style=dashed, arrowhead=vee, color="#ca8a04", fontcolor="#854d0e", constraint=false];
+  v1 -> x3 [style=dashed, arrowhead=vee, color="#ca8a04", fontcolor="#854d0e", constraint=false];
+}

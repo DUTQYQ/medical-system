@@ -1,0 +1,24 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,4.6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  subgraph cluster_main {
+    label="M9 系统配置　模块结构（CONFIG）\n实线箭头＝调用与读写；虚线箭头＝依赖与上游触发"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    s1 [label="ConfigRouter\napp/api/v1/config.py", fillcolor="#dbeafe", color="#3b82f6"];
+    v1 [label="SysConfigService\n分组读取 · 缓存失效", fillcolor="#eff6ff", color="#3b82f6"];
+    v2 [label="ThresholdCache\n进程内缓存", fillcolor="#eff6ff", color="#3b82f6"];
+    d1 [label="SysConfigRepository\nsys_config 读写", fillcolor="#f8fafc", color="#64748b"];
+    x1 [label="M3 异常判定\nM5 阈值规则\n共用同一份阈值", fillcolor="#fef9c3", color="#ca8a04", style="rounded,dashed"];
+    {rank=same; s1}
+    {rank=same; v1 v2}
+    {rank=same; d1 x1}
+  }
+  s1 -> v1 [label="调用", color="#3b82f6", fontcolor="#1d4ed8"];
+  v1 -> v2 [style=dashed, dir=both, arrowtail=none, constraint=false];
+  v1 -> d1 [label="读写", color="#64748b", fontcolor="#475569"];
+  v2 -> x1 [style=dashed, arrowhead=vee, color="#ca8a04", fontcolor="#854d0e", label="依赖 / 触发"];
+}

@@ -1,0 +1,80 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.4, ranksep=0.7, dpi=200, pad=0.3, splines=spline, compound=true, size="10,7"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  root [label="基于 AI 智能体的智能康养系统\nB/S 架构 · 前后端分离 · 38 个界面 / 45 个接口 / 15 张表", fillcolor="#1e293b", fontcolor="white", color="#0f172a", fontsize=17, margin="0.30,0.16"];
+  subgraph cluster_client {
+    label="界面层（用户端）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=15; fontcolor="#14532d"; style="rounded"; color="#86efac"; penwidth=1.4; margin=12;
+    c1 [label="老人端\n13 个界面", fillcolor="#f0fdf4", color="#16a34a"];
+    c2 [label="家属端\n5 个界面", fillcolor="#f0fdf4", color="#16a34a"];
+    c3 [label="护工端\n6 个界面", fillcolor="#f0fdf4", color="#16a34a"];
+    c4 [label="管理员端\n10 个界面", fillcolor="#f0fdf4", color="#16a34a"];
+    c5 [label="公共 / 认证\n4 个界面", fillcolor="#f0fdf4", color="#16a34a"];
+  }
+  subgraph cluster_d1 {
+    label="用户与关系域"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=15; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=12;
+    n_M1 [label="M1 认证与权限\nAUTH", fillcolor="#eff6ff", color="#3b82f6"];
+    n_M2 [label="M2 健康档案\nPROFILE", fillcolor="#eff6ff", color="#3b82f6"];
+    n_M6 [label="M6 家属绑定\nFAMILY", fillcolor="#eff6ff", color="#3b82f6"];
+    n_M7 [label="M7 护工端\nCARE", fillcolor="#eff6ff", color="#3b82f6"];
+  }
+
+  subgraph cluster_d2 {
+    label="健康与预警域"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=15; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=12;
+    n_M3 [label="M3 健康指标\nHEALTH", fillcolor="#eff6ff", color="#3b82f6"];
+    n_M5 [label="M5 主动预警\nALERT", fillcolor="#eff6ff", color="#3b82f6"];
+  }
+
+  subgraph cluster_d3 {
+    label="智能与配置域"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=15; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=12;
+    n_M4 [label="M4 AI 健康咨询与智能体编排\nAI · Agent", fillcolor="#eff6ff", color="#3b82f6"];
+    n_M8 [label="M8 后台管理\nADMIN", fillcolor="#eff6ff", color="#3b82f6"];
+    n_M9 [label="M9 系统配置\nCONFIG", fillcolor="#eff6ff", color="#3b82f6"];
+  }
+
+  subgraph cluster_tech {
+    label="技术层（被业务模块共用的公共基础设施）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=15; fontcolor="#854d0e"; style="rounded"; color="#facc15"; penwidth=1.4; margin=12;
+    n_T1 [label="T1 数据访问", fillcolor="#fef9c3", color="#ca8a04"];
+    n_T2 [label="T2 鉴权上下文", fillcolor="#fef9c3", color="#ca8a04"];
+    n_T3 [label="T3 统一响应", fillcolor="#fef9c3", color="#ca8a04"];
+    n_T4 [label="T4 日志与审计", fillcolor="#fef9c3", color="#ca8a04"];
+    n_T5 [label="T5 配置缓存", fillcolor="#fef9c3", color="#ca8a04"];
+    n_T6 [label="T6 文件存储", fillcolor="#fef9c3", color="#ca8a04"];
+  }
+  hub [shape=point, width=0.01, style=invis];
+  root -> c1 [style=dashed];
+  c1 -> hub [style=invis];
+  root -> c2 [style=dashed];
+  c2 -> hub [style=invis];
+  root -> c3 [style=dashed];
+  c3 -> hub [style=invis];
+  root -> c4 [style=dashed];
+  c4 -> hub [style=invis];
+  root -> c5 [style=dashed];
+  c5 -> hub [style=invis];
+  hub -> n_M1 [style=invis];
+  hub -> n_M2 [style=invis];
+  hub -> n_M3 [style=invis];
+  hub -> n_M4 [style=invis];
+  hub -> n_M5 [style=invis];
+  hub -> n_M6 [style=invis];
+  hub -> n_M7 [style=invis];
+  hub -> n_M8 [style=invis];
+  hub -> n_M9 [style=invis];
+  root -> n_M1 [style=dashed];
+  root -> n_M3 [style=dashed];
+  root -> n_M4 [style=dashed];
+  n_M1 -> n_T1 [style=dashed, color="#ca8a04", fontcolor="#854d0e", label="依赖技术模块"];
+  n_M3 -> n_T1 [style=dashed, color="#ca8a04", fontcolor="#854d0e"];
+  n_M4 -> n_T1 [style=dashed, color="#ca8a04", fontcolor="#854d0e"];
+  n_M5 -> n_T4 [style=dashed, color="#ca8a04"];
+  n_M8 -> n_T4 [style=dashed, color="#ca8a04"];
+}

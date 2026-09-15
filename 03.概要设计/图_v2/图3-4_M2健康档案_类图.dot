@@ -1,0 +1,22 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="M2 健康档案　类图（PROFILE）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    ProfileRouter [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ProfileRouter</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">接口层：档案列表 / 新增 / 详情 / 更新 / 删除</FONT></TD></TR></TABLE>>];
+    ProfileService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ProfileService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">应用层：按角色计算可见档案范围</FONT></TD></TR></TABLE>>];
+    ScopeResolver [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef3c7" COLOR="#d97706"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ScopeResolver</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">解析当前用户的档案可见集合（本人 / 绑定 / 负责 / 全部）</FONT></TD></TR></TABLE>>];
+    ProfileRepository [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ProfileRepository</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">数据层：档案读写与软删除过滤</FONT></TD></TR></TABLE>>];
+    ElderProfileModel [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ElderProfileModel</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">实体：elder_profile 表映射</FONT></TD></TR></TABLE>>];
+  }
+  ProfileRouter -> ProfileService [label="调用", arrowhead=vee, color="#64748b"];
+  ProfileService -> ScopeResolver [label="取范围", arrowhead=vee, color="#64748b"];
+  ProfileService -> ProfileRepository [label="读写", arrowhead=vee, color="#64748b"];
+  ProfileRepository -> ElderProfileModel [label="映射", arrowhead=vee, color="#64748b"];
+}

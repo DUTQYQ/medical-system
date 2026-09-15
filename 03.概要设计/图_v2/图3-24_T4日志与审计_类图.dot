@@ -1,0 +1,22 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="T4 日志与审计　类图（TECH · LOGGING）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    RequestLogMiddleware [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>RequestLogMiddleware</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">请求进出拦截，记录耗时与状态码</FONT></TD></TR></TABLE>>];
+    ExceptionHandler [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef2f2" COLOR="#ef4444"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ExceptionHandler</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">全局异常处理，统一转 5001 并记堆栈</FONT></TD></TR></TABLE>>];
+    AuditLogger [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef3c7" COLOR="#d97706"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AuditLogger</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">关键操作审计留痕（登录 / 阈值 / 启停用）</FONT></TD></TR></TABLE>>];
+    AiCallLogger [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef3c7" COLOR="#d97706"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AiCallLogger</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">AI 调用明细写入 ai_log 表</FONT></TD></TR></TABLE>>];
+    LoggingConfig [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>LoggingConfig</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">日志级别、格式与输出目标配置</FONT></TD></TR></TABLE>>];
+  }
+  RequestLogMiddleware -> AuditLogger [label="写审计", arrowhead=vee, color="#64748b"];
+  ExceptionHandler -> AuditLogger [label="记异常", arrowhead=vee, color="#64748b"];
+  AiCallLogger -> AuditLogger [label="同族", arrowhead=vee, color="#64748b"];
+  LoggingConfig -> RequestLogMiddleware [label="配置", arrowhead=vee, color="#64748b"];
+}
