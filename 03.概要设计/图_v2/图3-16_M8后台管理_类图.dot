@@ -1,0 +1,24 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="M8 后台管理　类图（ADMIN）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    AdminRouter [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AdminRouter</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">接口层：用户 / 阈值 / 指标 / 知识库 / 统计</FONT></TD></TR></TABLE>>];
+    UserAdminService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>UserAdminService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">建号、启停用、角色约束</FONT></TD></TR></TABLE>>];
+    ThresholdConfigService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef3c7" COLOR="#d97706"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ThresholdConfigService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">阈值读写并刷新缓存，保证即时生效</FONT></TD></TR></TABLE>>];
+    KnowledgeService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>KnowledgeService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">知识条目维护与索引重建</FONT></TD></TR></TABLE>>];
+    StatisticsService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>StatisticsService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">按周期聚合用户 / 咨询 / 预警指标</FONT></TD></TR></TABLE>>];
+    AdminGuard [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AdminGuard</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">管理员权限依赖，非 ADMIN 一律 1002</FONT></TD></TR></TABLE>>];
+  }
+  AdminRouter -> AdminGuard [label="鉴权", arrowhead=vee, color="#64748b"];
+  AdminRouter -> UserAdminService [label="调用", arrowhead=vee, color="#64748b"];
+  AdminRouter -> ThresholdConfigService [label="调用", arrowhead=vee, color="#64748b"];
+  AdminRouter -> KnowledgeService [label="调用", arrowhead=vee, color="#64748b"];
+  AdminRouter -> StatisticsService [label="调用", arrowhead=vee, color="#64748b"];
+}

@@ -1,35 +1,42 @@
 const { chromium } = require('playwright-core');
 const path = require('path');
+const fs = require('fs');
 const { pathToFileURL } = require('url');
 
 const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const DIR = 'D:\\Desktop\\康养系统实训项目\\02.需求分析\\界面原型';
-
-const targets = [
-  ['P1_老人端首页.html',        '效果图_P1_老人端首页.png'],
-  ['P2_AI健康咨询.html',        '效果图_P2_AI健康咨询.png'],
-  ['P3_预警通知中心.html',      '效果图_P3_预警通知中心.png'],
-  ['P4_护工端老人列表.html',    '效果图_P4_护工端老人列表.png'],
-  ['P5_管理员预警规则配置.html','效果图_P5_管理员预警规则配置.png'],
-];
+const PAGES = path.join(DIR, 'pages');
+const OUT = path.join(DIR, '效果图');
 
 (async () => {
+  const files = fs.readdirSync(PAGES).filter(f => f.endsWith('.html')).sort();
+  fs.mkdirSync(OUT, { recursive: true });
+  console.log(`found ${files.length} pages`);
+
   const browser = await chromium.launch({ executablePath: CHROME });
   const page = await browser.newPage({
     viewport: { width: 1280, height: 900 },
     deviceScaleFactor: 2,
   });
 
-  for (const [html, png] of targets) {
-    const url = pathToFileURL(path.join(DIR, html)).href;
-    await page.goto(url, { waitUntil: 'networkidle' });
-    await page.waitForTimeout(400);
-    const el = await page.$('.page');
-    const box = await el.boundingBox();
-    await el.screenshot({ path: path.join(DIR, png) });
-    console.log(`OK  ${png}  (${Math.round(box.width)}x${Math.round(box.height)} @2x)`);
+  let ok = 0, fail = 0;
+  for (const html of files) {
+    const png = html.replace(/\.html$/, '.png');
+    try {
+      await page.goto(pathToFileURL(path.join(PAGES, html)).href, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(350);
+      const el = await page.$('.page');
+      if (!el) throw new Error('missing .page');
+      const box = await el.boundingBox();
+      await el.screenshot({ path: path.join(OUT, png) });
+      console.log(`OK   ${png}  (${Math.round(box.width)}x${Math.round(box.height)} @2x)`);
+      ok++;
+    } catch (e) {
+      console.error(`FAIL ${html}: ${e.message}`);
+      fail++;
+    }
   }
 
   await browser.close();
-  console.log('ALL DONE');
-})().catch(e => { console.error('FAIL:', e.message); process.exit(1); });
+  console.log(`ALL DONE  ok=${ok} fail=${fail}`);
+})().catch(e => { console.error('FATAL:', e.message); process.exit(1); });

@@ -1,0 +1,22 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="M6 家属绑定　类图（FAMILY）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    FamilyRouter [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>FamilyRouter</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">接口层：申请 / 待确认列表 / 确认 / 解绑 / 代管列表</FONT></TD></TR></TABLE>>];
+    FamilyBindService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>FamilyBindService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">应用层：状态机流转、上限与重复校验</FONT></TD></TR></TABLE>>];
+    BindStateMachine [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef3c7" COLOR="#d97706"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>BindStateMachine</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">PENDING → APPROVED / REJECTED；APPROVED → REVOKED</FONT></TD></TR></TABLE>>];
+    FamilyRepository [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>FamilyRepository</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">数据层：family_bind 读写与状态查询</FONT></TD></TR></TABLE>>];
+    FamilyBindModel [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>FamilyBindModel</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">实体：family_bind 表映射（含确认留痕字段）</FONT></TD></TR></TABLE>>];
+  }
+  FamilyRouter -> FamilyBindService [label="调用", arrowhead=vee, color="#64748b"];
+  FamilyBindService -> BindStateMachine [label="流转", arrowhead=vee, color="#64748b"];
+  FamilyBindService -> FamilyRepository [label="读写", arrowhead=vee, color="#64748b"];
+  FamilyRepository -> FamilyBindModel [label="映射", arrowhead=vee, color="#64748b"];
+}

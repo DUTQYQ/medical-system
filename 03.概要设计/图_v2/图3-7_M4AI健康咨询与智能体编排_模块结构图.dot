@@ -1,0 +1,32 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,4.6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  subgraph cluster_main {
+    label="M4 AI 健康咨询与智能体编排　模块结构（AI · Agent）\n实线箭头＝调用与读写；虚线箭头＝依赖与上游触发"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    s1 [label="ChatRouter\napp/api/v1/ai.py", fillcolor="#dbeafe", color="#3b82f6"];
+    s2 [label="ChatIn / MessageOut\n会话与消息模型", fillcolor="#dbeafe", color="#3b82f6"];
+    v1 [label="ChatService\n会话落库 · 档案摘要组装", fillcolor="#eff6ff", color="#3b82f6"];
+    v2 [label="AgentOrchestrator\nIntentRouter → Agent", fillcolor="#eff6ff", color="#3b82f6"];
+    d1 [label="ChatRepository\nchat_session / chat_message", fillcolor="#f8fafc", color="#64748b"];
+    d2 [label="VectorStore\nknowledge_chunk / Chroma·FAISS", fillcolor="#f8fafc", color="#64748b"];
+    x1 [label="LlmClient\n.env 的 LLM_PROVIDER\n换模型不改代码", fillcolor="#fef9c3", color="#ca8a04", style="rounded,dashed"];
+    x2 [label="ai_log\n调用耗时与失败留痕", fillcolor="#fef9c3", color="#ca8a04", style="rounded,dashed"];
+    x3 [label="失败降级：返回 3001\n主流程不阻塞（D-04）", fillcolor="#fef9c3", color="#ca8a04", style="rounded,dashed"];
+    {rank=same; s1 s2}
+    {rank=same; v1 v2}
+    {rank=same; d1 d2 x1 x2 x3}
+  }
+  s1 -> v1 [label="调用", color="#3b82f6", fontcolor="#1d4ed8"];
+  s2 -> v1 [label="调用", color="#3b82f6", fontcolor="#1d4ed8"];
+  v1 -> v2 [style=dashed, dir=both, arrowtail=none, constraint=false];
+  v1 -> d1 [label="读写", color="#64748b", fontcolor="#475569"];
+  v1 -> d2 [label="读写", color="#64748b", fontcolor="#475569"];
+  v2 -> x1 [style=dashed, arrowhead=vee, color="#ca8a04", fontcolor="#854d0e", label="依赖 / 触发"];
+  v1 -> x2 [style=dashed, arrowhead=vee, color="#ca8a04", fontcolor="#854d0e", constraint=false];
+  v2 -> x3 [style=dashed, arrowhead=vee, color="#ca8a04", fontcolor="#854d0e", constraint=false];
+}

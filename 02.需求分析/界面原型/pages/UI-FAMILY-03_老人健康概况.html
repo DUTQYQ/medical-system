@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-FAMILY-03 老人健康概况 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.fam-elder-tabs { display:flex; gap:12px; margin-bottom:18px; }
+.fam-elder { background:#fff; border:1px solid #ebeef5; border-radius:10px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px; font-size:15px; color:#606266; }
+.fam-elder.on { border-color:#409eff; background:#ecf5ff; color:#409eff; font-weight:500; }
+.fam-elder small { color:#909399; font-size:13px; }
+.warn-card { border:1px solid #fde2e2; background:#fef0f0; border-radius:10px; padding:14px 18px; margin-bottom:12px; }
+.warn-card.watch { border-color:#faecd8; background:#fdf6ec; }
+.warn-h { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500; color:#303133; }
+.warn-d { font-size:13px; color:#606266; margin-top:8px; line-height:1.8; }
+.choice { border:1px solid #d9ecff; background:#ecf5ff; color:#409eff; border-radius:8px;
+  padding:11px 16px; font-size:14px; }
+.choice.on { background:#409eff; border-color:#409eff; color:#fff; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-FAMILY-03　老人健康概况</b><span>覆盖状态：正常 / 无权限（未绑定）/ 空数据（无指标）/ 代录数据</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">家属端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>李强</span><div class="avatar">李</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item">绑定老人</div><div class="nav-item active">健康概况</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 26px 34px"><div class="crumb">家属端 / <b>张桂兰 · 老人健康概况</b></div><div class="stat-grid"><div class="stat"><div class="stat-label">最近血压</div><div class="stat-val">185/100<small>mmHg</small></div><div class="stat-foot">高风险 · 09-14 16:30</div></div><div class="stat"><div class="stat-label">最近心率</div><div class="stat-val">78<small>次/分</small></div><div class="stat-foot">正常</div></div><div class="stat"><div class="stat-label">最近血糖</div><div class="stat-val">6.8<small>mmol/L</small></div><div class="stat-foot">偏高</div></div><div class="stat"><div class="stat-label">近 7 天预警</div><div class="stat-val">3<small>条</small></div><div class="stat-foot">高风险 2 条</div></div></div><div class="grid-2-1"><div><div class="card"><div class="card-title">近 7 天血压趋势</div><svg viewBox="0 0 600 210" width="100%" height="210" role="img"><line x1="50" y1="180.0" x2="586" y2="180.0" stroke="#ebeef5" stroke-width="1"/><text x="42" y="184.0" font-size="11" fill="#a8abb2" text-anchor="end">80</text><line x1="50" y1="138.5" x2="586" y2="138.5" stroke="#ebeef5" stroke-width="1"/><text x="42" y="142.5" font-size="11" fill="#a8abb2" text-anchor="end">110</text><line x1="50" y1="97.0" x2="586" y2="97.0" stroke="#ebeef5" stroke-width="1"/><text x="42" y="101.0" font-size="11" fill="#a8abb2" text-anchor="end">140</text><line x1="50" y1="55.5" x2="586" y2="55.5" stroke="#ebeef5" stroke-width="1"/><text x="42" y="59.5" font-size="11" fill="#a8abb2" text-anchor="end">170</text><line x1="50" y1="14.0" x2="586" y2="14.0" stroke="#ebeef5" stroke-width="1"/><text x="42" y="18.0" font-size="11" fill="#a8abb2" text-anchor="end">200</text><text x="50.0" y="201" font-size="11" fill="#a8abb2" text-anchor="middle">9/11</text><text x="228.7" y="201" font-size="11" fill="#a8abb2" text-anchor="middle">9/12</text><text x="407.3" y="201" font-size="11" fill="#a8abb2" text-anchor="middle">9/13</text><text x="586.0" y="201" font-size="11" fill="#a8abb2" text-anchor="middle">9/14</text><rect x="54" y="2" width="10" height="10" rx="2" fill="#409eff"/><text x="69" y="11" font-size="12" fill="#606266">收缩压</text><rect x="134" y="2" width="10" height="10" rx="2" fill="#67c23a"/><text x="149" y="11" font-size="12" fill="#606266">舒张压</text><g><polyline points="50.0,62.4 228.7,55.5 407.3,44.4 586.0,34.8" fill="none" stroke="#409eff" stroke-width="2" stroke-linejoin="round"/><circle cx="50.0" cy="62.4" r="3.2" fill="#fff" stroke="#409eff" stroke-width="2"/><circle cx="228.7" cy="55.5" r="3.2" fill="#fff" stroke="#409eff" stroke-width="2"/><circle cx="407.3" cy="44.4" r="3.2" fill="#fff" stroke="#409eff" stroke-width="2"/><circle cx="586.0" cy="34.8" r="3.2" fill="#fff" stroke="#409eff" stroke-width="2"/><polyline points="50.0,159.2 228.7,155.1 407.3,149.6 586.0,152.3" fill="none" stroke="#67c23a" stroke-width="2" stroke-linejoin="round"/><circle cx="50.0" cy="159.2" r="3.2" fill="#fff" stroke="#67c23a" stroke-width="2"/><circle cx="228.7" cy="155.1" r="3.2" fill="#fff" stroke="#67c23a" stroke-width="2"/><circle cx="407.3" cy="149.6" r="3.2" fill="#fff" stroke="#67c23a" stroke-width="2"/><circle cx="586.0" cy="152.3" r="3.2" fill="#fff" stroke="#67c23a" stroke-width="2"/><circle cx="586.0" cy="34.8" r="6" fill="#f56c6c" opacity="0.22"/><circle cx="586.0" cy="34.8" r="4" fill="#f56c6c"/><text x="586.0" y="22.8" font-size="12" fill="#f56c6c" text-anchor="middle" font-weight="500">185</text></g></svg></div><div style="height:18px"></div><div class="card"><div class="card-title">健康档案摘要</div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">姓名</div><div class="form-ctrl" style="font-size:15px;color:#303133">张桂兰</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">年龄</div><div class="form-ctrl" style="font-size:15px;color:#303133">72 岁</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">慢病</div><div class="form-ctrl" style="font-size:15px;color:#303133">高血压、2 型糖尿病</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">过敏史</div><div class="form-ctrl" style="font-size:15px;color:#303133">青霉素过敏</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">紧急联系人</div><div class="form-ctrl" style="font-size:15px;color:#303133">李强（本人）· 130 0000 0003</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">责任护工</div><div class="form-ctrl" style="font-size:15px;color:#303133">王护工 · 130 0000 0004</div></div></div></div><div><div class="card"><div class="card-title">代管操作</div><div style="display:flex;flex-direction:column;gap:12px">
+<button class="btn btn-primary" style="height:44px">代录健康指标</button>
+<button class="btn" style="height:44px">代发起 AI 咨询</button>
+<button class="btn" style="height:44px">查看完整档案</button>
+<button class="btn" style="height:44px">导出近 30 天记录</button></div>
+<div class="hint" style="margin-top:14px">代录的数据会标注录入人，与老人自录的数据区分记录，便于追溯。</div></div><div style="height:18px"></div><div class="card"><div class="card-title">权限与空数据</div><div class="alert-warn" style="margin-bottom:10px"><b>无权限：</b>未生效绑定的老人，任何请求返回 1002，界面直接提示“你无权查看该老人数据”，而不是显示空卡片。</div><div class="alert-info" style="margin-bottom:10px"><b>空数据：</b>老人尚无指标时，趋势区显示“数据积累中”，其余信息正常展示。</div><div class="alert-info">AI 咨询上下文按老人切换，切回后不会串到另一位老人的档案。</div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

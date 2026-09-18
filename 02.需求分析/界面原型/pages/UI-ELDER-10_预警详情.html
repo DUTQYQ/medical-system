@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-10 预警详情 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-10　预警详情</b><span>覆盖状态：正常（含 AI 摘要）/ AI 摘要失败降级不阻断 / 已被他人处理 / 已读未读独立</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item">健康档案</div><div class="nav-item">指标录入</div><div class="nav-item">AI 健康咨询</div><div class="nav-item active">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 32px 36px"><div class="crumb">通知中心 / <b>预警详情</b></div><div class="grid-2-1"><div><div class="card"><div class="card-title">预警 #40001 · 高风险</div><div class="metric-detail"><div><div class="md-k">本次收缩压</div><div class="md-v danger">185 mmHg</div></div><div><div class="md-k">本次舒张压</div><div class="md-v danger">100 mmHg</div></div><div><div class="md-k">高风险阈值</div><div class="md-v ">≥180 mmHg</div></div><div><div class="md-k">判定风险等级</div><div class="md-v danger">level 3 高风险</div></div><div><div class="md-k">测量时间</div><div class="md-v ">2026-09-14 16:30</div></div><div><div class="md-k">测量方式</div><div class="md-v ">坐姿 · 静息后</div></div></div><div style='height:16px'></div><svg viewBox="0 0 580 200" width="100%" height="200" role="img"><line x1="50" y1="170.0" x2="566" y2="170.0" stroke="#ebeef5" stroke-width="1"/><text x="42" y="174.0" font-size="11" fill="#a8abb2" text-anchor="end">140</text><line x1="50" y1="131.0" x2="566" y2="131.0" stroke="#ebeef5" stroke-width="1"/><text x="42" y="135.0" font-size="11" fill="#a8abb2" text-anchor="end">155</text><line x1="50" y1="92.0" x2="566" y2="92.0" stroke="#ebeef5" stroke-width="1"/><text x="42" y="96.0" font-size="11" fill="#a8abb2" text-anchor="end">170</text><line x1="50" y1="53.0" x2="566" y2="53.0" stroke="#ebeef5" stroke-width="1"/><text x="42" y="57.0" font-size="11" fill="#a8abb2" text-anchor="end">185</text><line x1="50" y1="14.0" x2="566" y2="14.0" stroke="#ebeef5" stroke-width="1"/><text x="42" y="18.0" font-size="11" fill="#a8abb2" text-anchor="end">200</text><text x="50.0" y="191" font-size="11" fill="#a8abb2" text-anchor="middle">9/11</text><text x="222.0" y="191" font-size="11" fill="#a8abb2" text-anchor="middle">9/12</text><text x="394.0" y="191" font-size="11" fill="#a8abb2" text-anchor="middle">9/13</text><text x="566.0" y="191" font-size="11" fill="#a8abb2" text-anchor="middle">9/14</text><g><polyline points="50.0,105.0 222.0,92.0 394.0,71.2 566.0,53.0" fill="none" stroke="#409eff" stroke-width="2" stroke-linejoin="round"/><circle cx="50.0" cy="105.0" r="3.2" fill="#fff" stroke="#409eff" stroke-width="2"/><circle cx="222.0" cy="92.0" r="3.2" fill="#fff" stroke="#409eff" stroke-width="2"/><circle cx="394.0" cy="71.2" r="3.2" fill="#fff" stroke="#409eff" stroke-width="2"/><circle cx="566.0" cy="53.0" r="3.2" fill="#fff" stroke="#409eff" stroke-width="2"/><circle cx="566.0" cy="53.0" r="6" fill="#f56c6c" opacity="0.22"/><circle cx="566.0" cy="53.0" r="4" fill="#f56c6c"/><text x="566.0" y="41.0" font-size="12" fill="#f56c6c" text-anchor="middle" font-weight="500">185</text></g></svg><div style='font-size:15px;color:#909399'>近 7 天血压趋势（同类型指标对比）</div></div><div style="height:18px"></div><div class="card"><div class="card-title">AI 预警摘要</div><div class="alert-warn">AI 摘要生成中或生成失败时，本区域显示：“AI 摘要暂不可用，可先查看下方原始数据与阈值对比”，<b>预警本身照常展示，不被隐藏</b>。</div><div style="height:12px"></div><div class="alert-info">摘要正常时展示：连续 4 天收缩压上升，今日 185 mmHg 为最高值，建议复测并尽快联系家属或就医。</div></div></div><div><div class="card"><div class="card-title">处理情况</div><div class="tl"><div class="tl-item"><div class="tl-t">2026-09-14 16:41　李强（家属）登记处理</div><div class="tl-d">方式：已电话联系老人　说明：已答应傍晚复测，若仍高于 180 立即送医</div></div><div class="tl-item"><div class="tl-t">2026-09-14 16:30　系统生成预警</div><div class="tl-d">规则判定 level 3，接收人：家属李强、家属张敏（待确认，未接收）、护工王护工</div></div></div><div style='height:10px'></div><span class="tag tag-warning">当前全局状态：处理中</span></div><div style="height:18px"></div><div class="card"><div class="card-title">我的操作</div><div style="font-size:14px;color:#606266;line-height:1.9;margin-bottom:14px">作为接收人，你可以登记处理结果。处理状态为全局共享，但“已读”状态仅代表你个人。</div><button class="btn">我已看到，稍后处理</button>　<button class="btn btn-primary">填写处理结果</button><div style='height:12px'></div><div class='hint'>多人接收时，他人处理的记录会展示在此页，避免重复联系。</div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

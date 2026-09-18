@@ -1,0 +1,22 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="M1 认证与权限　类图（AUTH）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    AuthRouter [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AuthRouter</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">接口层：注册 / 登录 / 登出 / 当前用户 4 个端点</FONT></TD></TR></TABLE>>];
+    AuthService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AuthService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">应用层：注册白名单校验、密码比对、登录编排</FONT></TD></TR></TABLE>>];
+    JwtProvider [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>JwtProvider</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">签发与解析 JWT，维护 token 失效列表</FONT></TD></TR></TABLE>>];
+    UserRepository [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>UserRepository</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">数据层：按手机号查用户、写登录时间</FONT></TD></TR></TABLE>>];
+    UserModel [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>UserModel</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">实体：user 表映射（四类角色 + 状态）</FONT></TD></TR></TABLE>>];
+  }
+  AuthRouter -> AuthService [label="调用", arrowhead=vee, color="#64748b"];
+  AuthService -> JwtProvider [label="签发", arrowhead=vee, color="#64748b"];
+  AuthService -> UserRepository [label="查询", arrowhead=vee, color="#64748b"];
+  UserRepository -> UserModel [label="映射", arrowhead=vee, color="#64748b"];
+}

@@ -1,0 +1,52 @@
+digraph ER {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.40, ranksep=0.55, splines=spline, dpi=200, pad=0.25,
+         compound=true, newrank=true];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=16,
+         penwidth=1.6, margin="0.20,0.12", height=0.62];
+  edge  [fontname="Microsoft YaHei", fontsize=13, color="#64748b", fontcolor="#334155", penwidth=1.2,
+         arrowsize=0.8];
+
+  /* ---------- 核心表（11） ---------- */
+  subgraph cluster_core {
+    label="核心表 11 张"; fontname="Microsoft YaHei"; fontsize=18; fontcolor="#0f172a";
+    style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+
+    user          [label="user\n用户", fillcolor="#eff6ff", color="#3b82f6"];
+    elder_profile [label="elder_profile\n老人档案", fillcolor="#eff6ff", color="#3b82f6"];
+    family_bind   [label="family_bind\n家属绑定", fillcolor="#eff6ff", color="#3b82f6"];
+    care_relation [label="care_relation\n护工分配", fillcolor="#eff6ff", color="#3b82f6"];
+    health_record [label="health_record\n健康指标", fillcolor="#eff6ff", color="#3b82f6"];
+
+    health_warning        [label="health_warning\n预警", fillcolor="#fef2f2", color="#ef4444"];
+    alert_receiver        [label="alert_receiver\n预警接收人·已读", fillcolor="#fef2f2", color="#ef4444"];
+    warning_handle_record [label="warning_handle_record\n处理留痕", fillcolor="#fef2f2", color="#ef4444"];
+
+    chat_session [label="chat_session\n咨询会话", fillcolor="#f5f3ff", color="#8b5cf6"];
+    chat_message [label="chat_message\n咨询消息", fillcolor="#f5f3ff", color="#8b5cf6"];
+
+    sys_config   [label="sys_config\n系统配置·阈值", fillcolor="#f0fdfa", color="#0f766e"];
+  }
+
+  /* ---------- 关系（基数） ---------- */
+  user -> elder_profile          [label="1 : N 拥有"];
+  user -> family_bind            [label="1 : N 申请"];
+  elder_profile -> family_bind   [label="1 : N 被绑定"];
+  user -> care_relation          [label="1 : N 负责"];
+  elder_profile -> care_relation [label="1 : N"];
+  elder_profile -> health_record [label="1 : N 记录"];
+
+  health_record -> health_warning        [label="1 : 0..1 触发", color="#ef4444", fontcolor="#b91c1c"];
+  health_warning -> alert_receiver       [label="1 : N 推送",   color="#ef4444", fontcolor="#b91c1c"];
+  health_warning -> warning_handle_record [label="1 : N 处理",  color="#ef4444", fontcolor="#b91c1c"];
+  user -> alert_receiver                 [label="1 : N 接收",   color="#ef4444", fontcolor="#b91c1c"];
+  user -> warning_handle_record          [label="1 : N 处理人", color="#ef4444", fontcolor="#b91c1c"];
+
+  user -> chat_session         [label="1 : N 发起", color="#8b5cf6", fontcolor="#6d28d9"];
+  elder_profile -> chat_session [label="1 : N",     color="#8b5cf6", fontcolor="#6d28d9"];
+  chat_session -> chat_message [label="1 : N 包含", color="#8b5cf6", fontcolor="#6d28d9"];
+
+
+
+
+}

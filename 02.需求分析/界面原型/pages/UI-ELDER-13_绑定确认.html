@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-13 绑定确认 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-13　绑定确认</b><span>覆盖状态：正常 / 无待确认申请（空态）/ 拒绝后不可见数据 / 解绑二次确认</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item">首页</div><div class="nav-item">健康档案</div><div class="nav-item">指标录入</div><div class="nav-item">AI 健康咨询</div><div class="nav-item">通知中心</div><div class="nav-item active">我的</div></div><div style="padding:22px 32px 36px"><div class="crumb">我的 / <b>家属绑定确认</b></div><div class="card"><div class="card-title">待我确认的绑定申请（同意后才生效）</div><table class="tbl "><thead><tr><th>申请人</th><th>与我的关系</th><th>申请时间</th><th>操作</th></tr></thead><tbody><tr><td>李强</td><td>儿子</td><td>2026-09-13 19:02</td><td><button class="btn btn-primary btn-sm">同意</button> <button class="btn btn-sm">拒绝</button></td></tr><tr><td>张敏</td><td>女儿</td><td>2026-09-14 10:31</td><td><button class="btn btn-primary btn-sm">同意</button> <button class="btn btn-sm">拒绝</button></td></tr></tbody></table></div><div style="height:18px"></div><div class="card"><div class="card-title">已生效的绑定关系</div><table class="tbl "><thead><tr><th>姓名</th><th>关系</th><th>手机号</th><th>生效时间</th><th>操作</th></tr></thead><tbody><tr><td>李强</td><td>儿子</td><td>130 0000 0003</td><td>2026-09-13 19:20</td><td><button class="btn btn-sm">解除绑定</button></td></tr><tr><td>王护工</td><td>责任护工（由管理员分配）</td><td>130 0000 0004</td><td>2026-09-10 09:00</td><td><span style="color:#c0c4cc">不可解绑</span></td></tr></tbody></table></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">无待确认申请（空态）</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">暂无绑定申请</div><div class="empty-d">家属提交申请后，会出现在上方列表并给出提醒</div></div></div></div><div><div class="card"><div class="card-title">当前申请详情 / 解绑确认</div><div class="elder-row"><div class="elder-k">申请人</div><div class="elder-v">张敏</div></div>
+<div class="elder-row"><div class="elder-k">关系</div><div class="elder-v">女儿</div></div>
+<div class="elder-row"><div class="elder-k">申请手机号</div><div class="elder-v">130 0000 0007</div></div>
+<div class="elder-row"><div class="elder-k">申请时间</div><div class="elder-v">2026-09-14 10:31</div></div>
+<div class="elder-row"><div class="elder-k">可见范围（同意后）</div><div class="elder-v">健康档案 · 指标与趋势 · 预警通知 · 代录数据</div></div>
+<div style="margin-top:16px;display:flex;gap:12px"><button class="btn btn-primary">同意绑定</button><button class="btn">拒绝</button></div><div style='height:16px'></div><div class='alert-warn'>解除绑定后，该家属立即无法查看任何数据；历史处理记录仍保留可追溯。</div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-AUTH-04 忘记密码 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.auth-wrap { min-height:830px; background:#f5f7fa; display:flex; align-items:center; justify-content:center; }
+.auth-box { width:480px; }
+.auth-logo { display:flex; align-items:center; gap:12px; font-size:25px; font-weight:600; color:#409eff;
+  justify-content:center; margin-bottom:10px; }
+.auth-slogan { text-align:center; font-size:14px; color:#909399; margin-bottom:24px; }
+.auth-h { font-size:20px; font-weight:600; color:#303133; text-align:center; margin-bottom:20px; }
+.fld { margin-bottom:18px; }
+.fld-l { font-size:14px; color:#606266; margin-bottom:8px; display:block; }
+.fld-inp { height:48px; border:1px solid #dcdfe6; border-radius:8px; padding:0 14px; display:flex;
+  align-items:center; font-size:15px; color:#303133; background:#fff; }
+.fld-inp.err { border-color:#f56c6c; }
+.fld-inp.ph { color:#c0c4cc; }
+.fld-inp .tail { margin-left:auto; font-size:14px; color:#409eff; }
+.alert-warn { background:#fdf6ec; border:1px solid #faecd8; color:#b88230; font-size:13px;
+  padding:10px 14px; border-radius:8px; margin-bottom:18px; }
+.alert-info { background:#ecf5ff; border:1px solid #d9ecff; color:#3a6f9e; font-size:13px;
+  padding:10px 14px; border-radius:8px; }
+.btn-block { width:100%; height:48px; font-size:17px; border-radius:8px; margin-top:8px; }
+.auth-foot { display:flex; justify-content:space-between; font-size:14px; margin-top:14px; }
+.auth-foot span { color:#409eff; }
+.auth-tip { margin-top:20px; background:#fff; border:1px solid #ebeef5; border-radius:8px;
+  padding:14px 16px; font-size:13px; color:#909399; line-height:1.85; }
+.auth-tip b { color:#606266; font-weight:500; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-AUTH-04　忘记密码</b><span>覆盖状态：正常 / 验证码错误 / 手机号未注册（不区分提示）/ 次数超限</span></div>
+
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div class="card" style="padding:32px 38px">
+      <div class="auth-h">找回密码</div>
+      <div class="wizard">
+  <div class="wizard-step on"><span class="wizard-num">1</span>验证手机号</div><div class="wizard-line"></div>
+  <div class="wizard-step on"><span class="wizard-num">2</span>输入验证码</div><div class="wizard-line"></div>
+  <div class="wizard-step on"><span class="wizard-num">3</span>设置新密码</div><div class="wizard-line"></div>
+  <div class="wizard-step"><span class="wizard-num">4</span>完成</div>
+</div>
+      <div class="alert-warn">验证码已发送至 130****0002，5 分钟内有效；今日剩余获取次数 2 次</div>
+      <div class="fld"><span class="fld-l">手机号</span><div class="fld-inp">130 0000 0002</div></div>
+      <div class="fld"><span class="fld-l">验证码</span><div class="fld-inp err">9 3 2 1</div>
+        <div class="hint-err" style="margin-top:8px">验证码不正确或已过期，请重新获取</div></div>
+      <div class="fld"><span class="fld-l">新密码</span><div class="fld-inp ph">8~20 位，需含字母与数字</div></div>
+      <div class="fld"><span class="fld-l">确认新密码</span><div class="fld-inp ph">请再次输入新密码</div></div>
+      <button class="btn btn-primary btn-block" style="margin-top:18px">提交并返回登录</button>
+      <div class="auth-foot"><span>返回登录</span><span></span></div>
+    </div>
+    <div class="auth-tip">
+      <b>【选配】</b>本功能为可裁剪项，本期仅在原型层面确认交互；若工期不足，登录页保留“请联系管理员重置”的兜底文案。<br>
+      <b>安全约束</b>：校验失败不区分“手机号未注册”与“验证码错误”，避免手机号枚举。
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

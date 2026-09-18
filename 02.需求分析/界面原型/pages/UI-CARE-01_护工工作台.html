@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-CARE-01 护工工作台 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.fam-elder-tabs { display:flex; gap:12px; margin-bottom:18px; }
+.fam-elder { background:#fff; border:1px solid #ebeef5; border-radius:10px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px; font-size:15px; color:#606266; }
+.fam-elder.on { border-color:#409eff; background:#ecf5ff; color:#409eff; font-weight:500; }
+.fam-elder small { color:#909399; font-size:13px; }
+.warn-card { border:1px solid #fde2e2; background:#fef0f0; border-radius:10px; padding:14px 18px; margin-bottom:12px; }
+.warn-card.watch { border-color:#faecd8; background:#fdf6ec; }
+.warn-h { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500; color:#303133; }
+.warn-d { font-size:13px; color:#606266; margin-top:8px; line-height:1.8; }
+.choice { border:1px solid #d9ecff; background:#ecf5ff; color:#409eff; border-radius:8px;
+  padding:11px 16px; font-size:14px; }
+.choice.on { background:#409eff; border-color:#409eff; color:#fff; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-CARE-01　护工工作台</b><span>覆盖状态：正常 / 待办清零（空态）/ 高风险置顶 / 无负责老人</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">护工端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>王护工</span><div class="avatar">王</div></div></div><div class="nav"><div class="nav-item active">工作台</div><div class="nav-item">老人列表</div><div class="nav-item">预警处理</div><div class="nav-item">处理记录</div><div class="nav-item">我的</div></div><div style="padding:22px 26px 34px"><div class="crumb">护工端 / <b>今日工作台</b></div><div class="stat-grid"><div class="stat"><div class="stat-label">负责老人</div><div class="stat-val">6<small>位</small></div><div class="stat-foot">其中高风险 2 位</div></div><div class="stat"><div class="stat-label">待处理预警</div><div class="stat-val">3<small>条</small></div><div class="stat-foot">高风险 2 条</div></div><div class="stat"><div class="stat-label">今日打卡异常</div><div class="stat-val">1<small>位</small></div><div class="stat-foot">王秀英 睡眠偏少</div></div><div class="stat"><div class="stat-label">我今日已处理</div><div class="stat-val">4<small>条</small></div><div class="stat-foot">平均响应 9 分钟</div></div></div><div class="grid-2-1"><div><div class="card"><div class="card-title">待办事项（高风险置顶）</div><div class="warn-card"><div class="warn-h"><span class="tag tag-danger">高风险</span>张桂兰　血压 185/100 mmHg，家属已登记处理，待护工确认</div>
+<div class="warn-d">16:30 · 待我处理　<button class="btn btn-primary btn-sm">立即处理</button> <button class="btn btn-sm">标记已查看</button></div></div><div class="warn-card"><div class="warn-h"><span class="tag tag-danger">高风险</span>王秀英　睡眠 4.0 小时连续 2 天，指标异常</div>
+<div class="warn-d">07:30 · 待我处理　<button class="btn btn-primary btn-sm">立即处理</button> <button class="btn btn-sm">标记已查看</button></div></div><div class="warn-card watch"><div class="warn-h"><span class="tag tag-warning">关注</span>刘建国　收缩压 152 mmHg 连续 3 天偏高</div>
+<div class="warn-d">09:10 · 待我处理　<button class="btn btn-primary btn-sm">立即处理</button> <button class="btn btn-sm">标记已查看</button></div></div></div></div><div><div class="card"><div class="card-title">快捷入口</div><div style="display:flex;flex-direction:column;gap:12px">
+<button class="btn btn-primary" style="height:44px">查看负责老人列表</button>
+<button class="btn" style="height:44px">进入预警处理</button>
+<button class="btn" style="height:44px">查看我的处理记录</button></div></div><div style="height:18px"></div><div class="card"><div class="card-title">待办清零（空态）</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">今日待办已全部处理</div><div class="empty-d">如有新预警，会在 30 秒内出现在这里</div></div></div></div></div><div style="height:18px"></div><div class="card"><div class="card-title">职责与权限边界</div><div class="alert-info" style="margin-bottom:10px">护工只能看到管理员分配给自己的老人；未分配的老人不出现在列表中，直接访问其档案返回 1002 无权限。</div><div class="alert-warn">护工不参与家属绑定审批，也不能修改老人档案，只做指标查看、预警处理与记录留痕。</div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

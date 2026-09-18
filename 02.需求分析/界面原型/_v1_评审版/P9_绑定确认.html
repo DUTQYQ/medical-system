@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>绑定确认 - 康养系统</title>
+<link rel="stylesheet" href="prototype.css">
+<style>
+  .elder-bind { font-size:20px; } .elder-bind .topbar { height:76px; padding:0 32px; } .elder-bind .logo { font-size:24px; } .elder-bind .logo-mark { width:42px; height:42px; font-size:20px; }
+  .top-actions { margin-left:auto; display:flex; align-items:center; gap:20px; color:#606266; font-size:18px; }
+  .wrap { padding:20px 70px 28px; } .crumb { font-size:17px; color:#909399; margin-bottom:12px; }
+  .hero { background:linear-gradient(180deg,#ecf5ff 0%,#fff 100%); border:1px solid #d9ecff; border-radius:12px; padding:18px 28px; margin-bottom:16px; } .hero h1 { font-size:28px; color:#303133; margin-bottom:5px; } .hero p { color:#606266; font-size:17px; }
+  .grid { display:grid; grid-template-columns:1.2fr .8fr; gap:18px; align-items:start; } .panel { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding:18px 24px; } .panel-title { font-size:22px; font-weight:600; color:#303133; margin-bottom:14px; }
+  .request { border:2px solid #409eff; border-radius:10px; padding:16px; background:#fafdff; } .req-head { display:flex; align-items:center; gap:14px; } .req-avatar { width:56px; height:56px; border-radius:50%; background:#409eff; color:#fff; display:flex; align-items:center; justify-content:center; font-size:25px; } .req-name { font-size:22px; font-weight:600; color:#303133; } .req-meta { color:#606266; font-size:16px; margin-top:2px; } .req-info { margin:14px 0; display:grid; grid-template-columns:1fr 1fr; gap:9px; } .info-box { background:#f5f7fa; border-radius:7px; padding:9px 12px; font-size:15px; color:#909399; } .info-box b { display:block; color:#303133; font-size:17px; margin-top:2px; }
+  .consent { background:#fdf6ec; border:1px solid #faecd8; color:#b88230; border-radius:8px; padding:11px 13px; font-size:15px; line-height:1.6; } .req-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; } .req-actions button { height:50px; border-radius:8px; font:inherit; font-size:18px; } .agree { background:#409eff; border:1px solid #409eff; color:#fff; } .reject { background:#fff; border:1px solid #dcdfe6; color:#606266; }
+  .steps { margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; } .step { text-align:center; color:#909399; font-size:15px; } .step-mark { margin:0 auto 5px; width:32px; height:32px; border-radius:50%; background:#ecf5ff; color:#409eff; display:flex; align-items:center; justify-content:center; font-weight:600; } .step.current .step-mark { background:#409eff; color:#fff; } .step.current { color:#409eff; }
+  .active-rel { display:flex; align-items:center; gap:14px; padding:16px 0; border-bottom:1px dashed #ebeef5; } .active-rel:last-child { border-bottom:0; } .rel-avatar { width:46px; height:46px; border-radius:50%; background:#67c23a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:19px; } .rel-main { flex:1; } .rel-name { color:#303133; font-size:19px; } .rel-sub { color:#909399; font-size:15px; margin-top:3px; } .unbind { border:1px solid #fbc4c4; background:#fff; color:#f56c6c; border-radius:6px; padding:8px 12px; font-size:14px; }
+  .disclaimer { margin-top:24px; font-size:16px; padding:14px 20px; }
+</style>
+</head>
+<body>
+<div class="page elder-bind">
+  <div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">绑定确认</div><div class="top-actions"><span>返回首页</span><div class="avatar">张</div></div></div>
+  <div class="wrap">
+    <div class="crumb">首页 / 我的关系 / 绑定确认</div>
+    <div class="hero"><h1>家属绑定需要您确认</h1><p>只有您同意后，家属才能查看您的健康数据并接收预警通知；您可以随时解除已生效的关系。</p><div class="steps"><div class="step current"><div class="step-mark">1</div>收到申请</div><div class="step"><div class="step-mark">2</div>您确认</div><div class="step"><div class="step-mark">3</div>关系生效</div></div></div>
+    <div class="grid">
+      <div class="panel"><div class="panel-title">待确认申请 <span class="tag tag-warning" style="font-size:15px; vertical-align:3px">1 条</span></div><div class="request"><div class="req-head"><div class="req-avatar">李</div><div><div class="req-name">李伟</div><div class="req-meta">申请成为您的家属联系人</div></div></div><div class="req-info"><div class="info-box">申请人手机号<b>138****8001</b></div><div class="info-box">申请关系<b>儿子</b></div><div class="info-box">申请时间<b>2026-09-08 08:10</b></div><div class="info-box">可接收范围<b>预警与健康摘要</b></div></div><div class="consent">请确认您认识申请人李伟，并同意他查看您授权范围内的健康信息。不同意不会影响您使用系统。</div><div class="req-actions"><button class="agree">同意并建立绑定</button><button class="reject">拒绝申请</button></div></div></div>
+      <div class="panel"><div class="panel-title">已生效关系</div><div class="active-rel"><div class="rel-avatar">周</div><div class="rel-main"><div class="rel-name">周敏 · 责任护工</div><div class="rel-sub">接收预警通知 · 已生效</div></div><button class="unbind">解除绑定</button></div><div class="active-rel"><div class="rel-avatar" style="background:#409eff">王</div><div class="rel-main"><div class="rel-name">王芳 · 女儿</div><div class="rel-sub">仅接收健康日报 · 已生效</div></div><button class="unbind">解除绑定</button></div><div style="color:#909399;font-size:15px;line-height:1.7;margin-top:18px">解除关系需要二次确认；解除后对方将无法查看新的健康数据与预警。</div></div>
+    </div>
+    <div class="disclaimer">健康数据仅供参考，不构成医疗诊断；如遇紧急情况请直接联系家属或拨打 120</div>
+  </div>
+</div>
+</body>
+</html>

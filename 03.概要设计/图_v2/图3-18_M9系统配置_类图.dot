@@ -1,0 +1,22 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="M9 系统配置　类图（CONFIG）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    ConfigRouter [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ConfigRouter</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">接口层：指标类型 / 生效阈值</FONT></TD></TR></TABLE>>];
+    SysConfigService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#eff6ff" COLOR="#3b82f6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>SysConfigService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">应用层：配置读取、分组过滤、缓存失效</FONT></TD></TR></TABLE>>];
+    ThresholdCache [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ThresholdCache</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">进程内阈值缓存，写入后即时失效</FONT></TD></TR></TABLE>>];
+    SysConfigRepository [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>SysConfigRepository</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">数据层：sys_config 读写</FONT></TD></TR></TABLE>>];
+    SysConfigModel [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>SysConfigModel</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">实体：sys_config 表映射（key / value / type / group）</FONT></TD></TR></TABLE>>];
+  }
+  ConfigRouter -> SysConfigService [label="调用", arrowhead=vee, color="#64748b"];
+  SysConfigService -> ThresholdCache [label="读缓存", arrowhead=vee, color="#64748b"];
+  SysConfigService -> SysConfigRepository [label="读库", arrowhead=vee, color="#64748b"];
+  SysConfigRepository -> SysConfigModel [label="映射", arrowhead=vee, color="#64748b"];
+}

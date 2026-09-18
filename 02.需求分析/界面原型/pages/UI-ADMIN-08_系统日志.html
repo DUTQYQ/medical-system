@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ADMIN-08 系统日志 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.tree { font-size:14px; }
+.tree-i { padding:9px 12px; border-radius:6px; color:#606266; display:flex; align-items:center; gap:8px; }
+.tree-i.on { background:#ecf5ff; color:#409eff; font-weight:500; }
+.tree-i.sub { padding-left:28px; }
+.kv { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.kv-l { font-size:13px; color:#909399; margin-bottom:6px; }
+.kv-v { font-size:15px; color:#303133; }
+.mod-card { border:1px solid #ebeef5; border-radius:10px; padding:16px 18px; background:#fff; }
+.mod-card.on { border-color:#409eff; background:#f5faff; }
+.mod-t { font-size:16px; font-weight:600; color:#303133; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.mod-d { font-size:13px; color:#909399; line-height:1.8; }
+.code { font-family:Consolas,Monaco,monospace; font-size:13px; color:#303133; background:#fafafa;
+  border:1px solid #ebeef5; border-radius:6px; padding:2px 8px; }
+.screen-stat { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding:20px 22px; }
+.screen-v { font-size:40px; font-weight:600; color:#303133; line-height:1.15; }
+.screen-l { font-size:15px; color:#909399; margin-bottom:10px; }
+.screen-s { font-size:13px; color:#67c23a; margin-top:8px; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-ADMIN-08　系统日志</b><span>覆盖状态：正常 / 空结果 / 脱敏展示 / 导出 / 只追加不可删</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">管理后台</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>系统管理员</span><div class="avatar">管</div></div></div><div class="shell-body"><aside class="aside"><div class="aside-group">用户与权限</div><div class="aside-item "><span class="aside-ico">用</span>用户管理</div><div class="aside-item "><span class="aside-ico">角</span>角色管理</div><div class="aside-group">健康与预警</div><div class="aside-item "><span class="aside-ico">警</span>预警规则配置</div><div class="aside-item "><span class="aside-ico">指</span>健康指标配置</div><div class="aside-item "><span class="aside-ico">库</span>知识库管理</div><div class="aside-item "><span class="aside-ico">统</span>统计报表</div><div class="aside-group">系统</div><div class="aside-item "><span class="aside-ico">览</span>概览大屏</div><div class="aside-item active"><span class="aside-ico">志</span>系统日志</div><div class="aside-item "><span class="aside-ico">告</span>系统公告</div><div class="aside-item "><span class="aside-ico">模</span>AI 模型配置</div></aside><main class="main"><div class="crumb">系统 / <b>系统日志</b></div><div class="stat-grid"><div class="stat"><div class="stat-label">今日日志</div><div class="stat-val">412<small>条</small></div><div class="stat-foot">INFO 占 91%</div></div><div class="stat"><div class="stat-label">警告</div><div class="stat-val">9<small>条</small></div><div class="stat-foot">含 3 条 AI 降级</div></div><div class="stat"><div class="stat-label">错误</div><div class="stat-val">2<small>条</small></div><div class="stat-foot">均为登录失败</div></div><div class="stat"><div class="stat-label">权限拦截</div><div class="stat-val">4<small>条</small></div><div class="stat-foot">越权访问尝试</div></div></div><div class="filter-bar"><div class="inp ph inp-sel">全部类型</div><div class="inp ph inp-sel">全部级别</div><div class="inp ph">开始日期</div><div class="inp ph">结束日期</div><button class="btn btn-primary">查询</button><button class="btn">导出日志</button></div><div class="card"><div class="card-title">日志明细（按时间倒序）</div><div class="log-line"><b>16:30:12</b>　<span style="color:#e6a23c;width:52px;display:inline-block">WARN</span>　<b>预警生成</b>　老人张桂兰 血压 185/100 mmHg，判定 level 3，已通知 2 位接收人</div><div class="log-line"><b>16:30:12</b>　<span style="color:#909399;width:52px;display:inline-block">INFO</span>　<b>指标录入</b>　profile_id=1 录入 BLOOD_PRESSURE，规则引擎耗时 12 ms</div><div class="log-line"><b>16:25:07</b>　<span style="color:#909399;width:52px;display:inline-block">INFO</span>　<b>AI 咨询</b>　意图 EMERGENCY → 强制写预警 #40002，Agent 耗时 1.7 s</div><div class="log-line"><b>16:21:33</b>　<span style="color:#909399;width:52px;display:inline-block">INFO</span>　<b>AI 咨询</b>　意图 DATA → 查询 health_record 20 条 + health_warning 2 条</div><div class="log-line"><b>16:20:05</b>　<span style="color:#909399;width:52px;display:inline-block">INFO</span>　<b>登录</b>　手机号 1300000002 登录成功，角色 ELDER，IP 192.168.1.23</div><div class="log-line"><b>16:11:48</b>　<span style="color:#f56c6c;width:52px;display:inline-block">ERROR</span>　<b>登录失败</b>　手机号 1300000002 密码错误，第 2 次失败</div><div class="log-line"><b>15:58:20</b>　<span style="color:#909399;width:52px;display:inline-block">INFO</span>　<b>配置变更</b>　管理员修改 bp_systolic 高风险阈值 180 → 180（无变化）</div><div class="log-line"><b>15:40:02</b>　<span style="color:#e6a23c;width:52px;display:inline-block">WARN</span>　<b>AI 降级</b>　模型调用超时 8.2 s，已回退为规则摘要，预警不受影响</div><div class="log-line"><b>15:12:44</b>　<span style="color:#909399;width:52px;display:inline-block">INFO</span>　<b>权限拦截</b>　家属 user_id=5 请求未绑定老人档案，返回 1002</div><div class="pager"><span style="margin-right:auto;color:#909399">共 412 条</span><span class="pg">上一页</span><span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">4</span><span class="pg">5</span><span class="pg">下一页</span></div></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">空数据状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">所选条件内暂无日志</div><div class="empty-d">调整时间范围或清空筛选条件</div></div></div></div><div><div class="card"><div class="card-title">记录范围与说明</div><div class="alert-info" style="margin-bottom:12px">记录登录、操作、配置变更、预警生成与权限拦截五类事件；日志只追加，不提供界面删除。</div><div class="alert-warn" style="margin-bottom:12px">日志中的手机号做脱敏展示，完整值仅管理员在授权场景可查，避免隐私外泄。</div><div class="alert-info">【选配】系统日志为可裁剪项，若工期不足可先只保留预警与登录两类。</div></div></div></div></main></div>
+</div>
+</body>
+</html>

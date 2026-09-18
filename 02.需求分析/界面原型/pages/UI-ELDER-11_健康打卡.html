@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-11 健康打卡 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-11　健康打卡</b><span>覆盖状态：正常 / 部分未打卡 / 全部完成 / 重复打卡覆盖提示</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item active">首页</div><div class="nav-item">健康档案</div><div class="nav-item">指标录入</div><div class="nav-item">AI 健康咨询</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div><div style="padding:22px 32px 36px"><div class="crumb">健康打卡 / <b>今日打卡</b></div><div class="stat-grid stat-grid-3"><div class="stat"><div class="stat-label">今日完成</div><div class="stat-val">2 / 4<small>项</small></div><div class="stat-foot">血压、睡眠已完成</div></div><div class="stat"><div class="stat-label">连续打卡</div><div class="stat-val">6<small>天</small></div><div class="stat-foot">最长记录 12 天</div></div><div class="stat"><div class="stat-label">本月打卡率</div><div class="stat-val">78<small>%</small></div><div class="stat-foot">较上月 +9%</div></div></div><div class="card"><div class="card-title">今日打卡项目</div><div class="elder-row"><div class="elder-k">血压</div><div class="elder-v" style="flex:1">已打卡　08:20 · 128/82 mmHg</div><div><span class="tag tag-success">已完成</span></div><span style="margin-left:14px"><button class="btn">重新打卡</button></span></div><div class="elder-row"><div class="elder-k">睡眠</div><div class="elder-v" style="flex:1">已打卡　昨晚 5.5 小时</div><div><span class="tag tag-success">已完成</span></div><span style="margin-left:14px"><button class="btn">重新打卡</button></span></div><div class="elder-row"><div class="elder-k">运动</div><div class="elder-v" style="flex:1">未打卡　今日 3200 步</div><div><span class="tag tag-warning">待完成</span></div><span style="margin-left:14px"><button class="btn">一键打卡</button></span></div><div class="elder-row"><div class="elder-k">服药</div><div class="elder-v" style="flex:1">未打卡　待 15:00 提醒</div><div><span class="tag tag-info">未开始</span></div><span style="margin-left:14px"><button class="btn">一键打卡</button></span></div></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">全部完成状态</div><div class="alert-info" style="margin-bottom:12px">4 项全部完成时，页面顶部出现“今日打卡已完成”的绿条，并同步给已绑定家属。</div><div style="height:10px"></div><div class="empty-ico" style="width:52px;height:52px;font-size:18px;background:#f0f9eb;color:#67c23a;margin-bottom:10px">✓</div><div style="text-align:center;font-size:16px;color:#67c23a">今日打卡已完成，做得很好</div></div></div><div><div class="card"><div class="card-title">说明</div><div class="alert-warn">【选配】健康打卡为可裁剪项，本期用于增强“主动式健康管理”的完整度，若工期不足可整体下线，不影响核心闭环。</div><div style="height:12px"></div><div class="alert-info">打卡数据写入 health_record（type=STEP / SLEEP），与人工录入共用同一张指标表，不额外建表。</div></div></div></div><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div>
+</div>
+</body>
+</html>

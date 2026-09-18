@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-CARE-02 负责老人列表 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.fam-elder-tabs { display:flex; gap:12px; margin-bottom:18px; }
+.fam-elder { background:#fff; border:1px solid #ebeef5; border-radius:10px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px; font-size:15px; color:#606266; }
+.fam-elder.on { border-color:#409eff; background:#ecf5ff; color:#409eff; font-weight:500; }
+.fam-elder small { color:#909399; font-size:13px; }
+.warn-card { border:1px solid #fde2e2; background:#fef0f0; border-radius:10px; padding:14px 18px; margin-bottom:12px; }
+.warn-card.watch { border-color:#faecd8; background:#fdf6ec; }
+.warn-h { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500; color:#303133; }
+.warn-d { font-size:13px; color:#606266; margin-top:8px; line-height:1.8; }
+.choice { border:1px solid #d9ecff; background:#ecf5ff; color:#409eff; border-radius:8px;
+  padding:11px 16px; font-size:14px; }
+.choice.on { background:#409eff; border-color:#409eff; color:#fff; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-CARE-02　负责老人列表</b><span>覆盖状态：正常 / 状态分色 / 高风险置顶 / 筛选无结果 / 未分配老人（空态）</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">护工端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>王护工</span><div class="avatar">王</div></div></div><div class="nav"><div class="nav-item">工作台</div><div class="nav-item active">老人列表</div><div class="nav-item">预警处理</div><div class="nav-item">处理记录</div><div class="nav-item">我的</div></div><div style="padding:22px 26px 34px"><div class="crumb">护工端 / <b>负责老人列表</b></div><div class="filter-bar"><div class="inp ph">姓名 / 手机号</div><div class="inp ph inp-sel">全部状态</div><div class="inp ph inp-sel">全部慢病</div><button class="btn btn-primary">查询</button><button class="btn">重置</button></div><div class="card"><div class="card-title">我负责的老人（按状态分色，高风险置顶）</div><table class="tbl "><thead><tr><th>姓名</th><th>年龄</th><th>主要慢病</th><th>最近血压</th><th>状态</th><th>最近异常</th></tr></thead><tbody><tr><td><span class="dot dot-danger"></span><span class="strong">张桂兰</span></td><td>72 岁</td><td>高血压 2 级（很高危）</td><td>185/100</td><td><span class="tag tag-danger">高风险</span></td><td>16:30 血压预警待处理</td></tr><tr><td><span class="dot dot-danger"></span><span class="strong">王秀英</span></td><td>78 岁</td><td>冠心病、失眠</td><td>138/86</td><td><span class="tag tag-danger">高风险</span></td><td>今日睡眠 4.0 小时</td></tr><tr><td><span class="dot dot-watch"></span><span class="strong">刘建国</span></td><td>69 岁</td><td>高血压 1 级</td><td>152/94</td><td><span class="tag tag-warning">关注</span></td><td>连续 3 天收缩压偏高</td></tr><tr><td><span class="dot dot-normal"></span><span class="strong">陈淑芬</span></td><td>81 岁</td><td>骨质疏松</td><td>128/80</td><td><span class="tag tag-success">正常</span></td><td>指标平稳</td></tr><tr><td><span class="dot dot-normal"></span><span class="strong">赵德海</span></td><td>75 岁</td><td>2 型糖尿病</td><td>132/84</td><td><span class="tag tag-success">正常</span></td><td>指标平稳</td></tr><tr><td><span class="dot dot-normal"></span><span class="strong">孙玉兰</span></td><td>77 岁</td><td>高血压 1 级</td><td>130/82</td><td><span class="tag tag-success">正常</span></td><td>指标平稳</td></tr></tbody></table><div class="pager"><span style="margin-right:auto;color:#909399">共 6 条</span><span class="pg">上一页</span><span class="pg on">1</span><span class="pg">2</span><span class="pg">下一页</span></div></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">状态分色规则</div><div class="form-row" style="padding:12px 0"><div class="form-label" style="width:110px">正常</div><div class="form-ctrl"><span class="dot dot-normal"></span>近 3 天无异常指标</div></div>
+<div class="form-row" style="padding:12px 0"><div class="form-label" style="width:110px">关注</div><div class="form-ctrl"><span class="dot dot-watch"></span>存在偏高记录或连续异常趋势</div></div>
+<div class="form-row" style="padding:12px 0"><div class="form-label" style="width:110px">异常</div><div class="form-ctrl"><span class="dot dot-danger"></span>存在未处理的 level 3 高风险预警</div></div></div></div><div><div class="card"><div class="card-title">空数据状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">当前没有分配给你的老人</div><div class="empty-d">请联系管理员在“管理交接”中分配负责老人</div></div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

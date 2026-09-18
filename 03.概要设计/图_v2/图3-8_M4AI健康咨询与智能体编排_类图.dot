@@ -1,0 +1,33 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="M4 AI 健康咨询与智能体编排　类图（AI · Agent）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    ChatRouter [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f3ff" COLOR="#8b5cf6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ChatRouter</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">接口层：发起咨询 / 会话列表 / 消息 / 删除会话</FONT></TD></TR></TABLE>>];
+    ChatService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f3ff" COLOR="#8b5cf6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ChatService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">应用层：会话落库、档案摘要组装、调用编排器</FONT></TD></TR></TABLE>>];
+    IntentRouter [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef3c7" COLOR="#d97706"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>IntentRouter</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">意图识别：NORMAL / DATA / ABNORMAL / EMERGENCY</FONT></TD></TR></TABLE>>];
+    AgentOrchestrator [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f3ff" COLOR="#8b5cf6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AgentOrchestrator</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">按意图选择并执行 Agent，汇总回答与来源</FONT></TD></TR></TABLE>>];
+    BaseAgent [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>BaseAgent</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">Agent 抽象：统一 prompt 组装、模型调用、安全分级、降级</FONT></TD></TR></TABLE>>];
+    KnowledgeRetriever [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>KnowledgeRetriever</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">RAG：问题向量化 + Top-K 召回 + 来源标注</FONT></TD></TR></TABLE>>];
+    LlmClient [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>LlmClient</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">模型网关：换模型只改 .env 的 LLM_PROVIDER</FONT></TD></TR></TABLE>>];
+    HealthAgent [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f3ff" COLOR="#8b5cf6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>HealthAgent</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">普通咨询：RAG 检索 + 个性化健康建议</FONT></TD></TR></TABLE>>];
+    HealthDataAgent [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f3ff" COLOR="#8b5cf6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>HealthDataAgent</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">数据类：查库 + 趋势分析 + 回答</FONT></TD></TR></TABLE>>];
+    RiskAgent [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f3ff" COLOR="#8b5cf6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>RiskAgent</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">异常：风险分级 + 生成预警 + 通知</FONT></TD></TR></TABLE>>];
+    EmergencyAgent [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f3ff" COLOR="#8b5cf6"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>EmergencyAgent</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">紧急：立即建议求助 + 通知紧急联系人</FONT></TD></TR></TABLE>>];
+  }
+  ChatRouter -> ChatService [label="调用", arrowhead=vee, color="#64748b"];
+  ChatService -> IntentRouter [label="识别意图", arrowhead=vee, color="#64748b"];
+  ChatService -> AgentOrchestrator [label="执行", arrowhead=vee, color="#64748b"];
+  BaseAgent -> HealthAgent [arrowhead=onormal, color="#16a34a", penwidth=1.2];
+  BaseAgent -> HealthDataAgent [arrowhead=onormal, color="#16a34a", penwidth=1.2];
+  BaseAgent -> RiskAgent [arrowhead=onormal, color="#16a34a", penwidth=1.2];
+  BaseAgent -> EmergencyAgent [arrowhead=onormal, color="#16a34a", penwidth=1.2];
+  BaseAgent -> KnowledgeRetriever [label="检索", arrowhead=vee, color="#64748b"];
+  BaseAgent -> LlmClient [label="调用模型", arrowhead=vee, color="#64748b"];
+}

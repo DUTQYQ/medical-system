@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ELDER-01 老人首页 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.elder { font-size:19px; }
+.elder .card-title { font-size:20px; }
+.elder .tbl, .elder .tbl th { font-size:16px; }
+.elder .form-label { font-size:18px; }
+.elder .inp { height:50px; font-size:18px; min-width:200px; }
+.elder .btn { font-size:17px; padding:13px 22px; min-height:48px; }
+.elder .stat-label { font-size:17px; }
+.elder .stat-val { font-size:34px; }
+.elder .nav-item { font-size:20px; padding:19px 24px; }
+.elder .crumb { font-size:16px; }
+.elder .tl-t { font-size:17px; }
+.elder .tl-d { font-size:15px; }
+.elder .disclaimer { font-size:16px; padding:14px 20px; }
+.elder .hint, .elder .hint-err { font-size:15px; }
+.elder .note-bar { font-size:14px; }
+
+</style>
+</head>
+<body>
+<div class="page elder">
+<div class="note-bar"><b>UI-ELDER-01　老人首页</b><span>覆盖状态：正常 / 空数据（今日未测量）/ 未读预警红点 / 数据不足时趋势占位</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">老人端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>张桂兰</span><div class="avatar">张</div></div></div><div class="nav"><div class="nav-item active">首页</div><div class="nav-item">健康档案</div><div class="nav-item">指标录入</div><div class="nav-item">AI 健康咨询</div><div class="nav-item">通知中心</div><div class="nav-item">我的</div></div>
+<div style="padding:24px 32px 36px">
+  <div class="card" style="background:#ecf5ff;border-color:#d9ecff;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+    <div><div style="font-size:29px;font-weight:600;color:#303133">张桂兰 您好</div>
+    <div style="font-size:18px;color:#606266;margin-top:6px">72 岁 · 高血压 · 今日已测量 2 项指标</div></div>
+    <div style="font-size:17px;color:#909399;text-align:right;line-height:1.8">2026年9月14日 星期一<br>晴 24℃</div>
+  </div>
+  <div class="card-title" style="font-size:22px">今日健康</div>
+  <div class="stat-grid"><div class="stat"><div class="stat-label">血压</div><div class="stat-val">128/82<small>mmHg</small></div><div class="stat-foot">08:20　<span class="tag tag-success">正常</span></div></div><div class="stat"><div class="stat-label">心率</div><div class="stat-val">76<small>次/分</small></div><div class="stat-foot">08:20　<span class="tag tag-success">正常</span></div></div><div class="stat"><div class="stat-label">血糖</div><div class="stat-val">6.8<small>mmol/L</small></div><div class="stat-foot">07:10　<span class="tag tag-warning">偏高</span></div></div><div class="stat"><div class="stat-label">睡眠</div><div class="stat-val">5.5<small>小时</small></div><div class="stat-foot">昨日　<span class="tag tag-warning">偏少</span></div></div></div>
+  <div class="card-title" style="font-size:22px;margin-top:24px">快捷服务（最多三步完成）</div>
+  <div class="grid-3 mb">
+    <button class="big-btn" style="background:#409eff;color:#fff;text-align:left">
+      <span style="display:block;font-size:24px;font-weight:600">问 AI 健康助手</span>
+      <span style="display:block;font-size:16px;opacity:.88;margin-top:6px">不舒服？点这里说出来</span></button>
+    <button class="big-btn" style="background:#67c23a;color:#fff;text-align:left">
+      <span style="display:block;font-size:24px;font-weight:600">录入健康指标</span>
+      <span style="display:block;font-size:16px;opacity:.88;margin-top:6px">血压 血糖 心率</span></button>
+    <button class="big-btn" style="background:#e6a23c;color:#fff;text-align:left;position:relative">
+      <span style="position:absolute;top:-10px;right:14px;background:#f56c6c;color:#fff;border-radius:18px;
+        padding:2px 12px;font-size:17px">2 条待处理</span>
+      <span style="display:block;font-size:24px;font-weight:600">查看我的预警</span>
+      <span style="display:block;font-size:16px;opacity:.88;margin-top:6px">由系统自动发现，无须自己判断</span></button>
+  </div>
+  <div class="grid-2-1">
+    <div><div class="card"><div class="card-title">今日提醒</div><div class="tl"><div class="tl"><div class="tl-item"><div class="tl-t">下午 15:00 服用苯磺酸氨氯地平片 5mg</div><div class="tl-d">来自用药信息 · 已提醒 1 次</div></div><div class="tl-item"><div class="tl-t">今晚睡前测量一次血压</div><div class="tl-d">来自健康打卡计划</div></div><div class="tl-item"><div class="tl-t">今日已走 3200 步，建议再走动 20 分钟</div><div class="tl-d">来自健康打卡计划</div></div></div></div></div></div>
+    <div><div class="card"><div class="card-title">空数据与异常状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">今天还没有健康数据</div><div class="empty-d">点击“录入健康指标”，3 秒即可完成</div></div><div style="height:12px"></div><div class="alert-info">数据不足 2 条时，趋势图显示“数据积累中”，不绘制曲线</div></div></div>
+  </div>
+  <div style="margin-top:20px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div>
+</div>
+</div>
+</body>
+</html>

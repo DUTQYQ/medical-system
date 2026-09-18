@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>预警详情与处理 - 康养系统</title>
+<link rel="stylesheet" href="prototype.css">
+<style>
+  .wrap { padding:18px 34px 24px; } .crumb { font-size:14px; color:#909399; margin-bottom:10px; }
+  .detail-head { display:flex; align-items:center; margin-bottom:18px; } .detail-title { font-size:25px; font-weight:600; color:#303133; }
+  .head-tags { margin-left:16px; display:flex; gap:8px; } .back { margin-left:auto; }
+  .grid { display:grid; grid-template-columns:1.55fr .9fr; gap:22px; align-items:start; }
+  .card { padding:16px 20px; } .card + .card { margin-top:12px; }
+  .alert-banner { border:1px solid #fbc4c4; border-left:6px solid #c03639; background:#fef0f0; border-radius:8px; padding:12px 16px; display:flex; align-items:center; gap:15px; }
+  .alert-mark { width:44px; height:44px; border-radius:50%; background:#c03639; color:#fff; display:flex; align-items:center; justify-content:center; font-size:23px; }
+  .banner-name { font-size:21px; font-weight:600; color:#303133; } .banner-sub { font-size:14px; color:#606266; margin-top:4px; }
+  .banner-value { margin-left:auto; text-align:right; } .banner-value b { color:#c03639; font-size:31px; } .banner-value span { display:block; color:#909399; font-size:13px; }
+  .section-title { font-size:18px; font-weight:600; color:#303133; margin-bottom:10px; } .section-title::before { content:""; display:inline-block; width:4px; height:18px; background:#409eff; border-radius:2px; vertical-align:-2px; margin-right:8px; }
+  .compare { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; } .compare-box { background:#f5f7fa; border-radius:7px; padding:14px; } .compare-k { color:#909399; font-size:13px; } .compare-v { color:#303133; font-size:22px; font-weight:600; margin-top:5px; } .compare-v.danger { color:#c03639; }
+  .chart { height:104px; padding:6px 10px 0; border-bottom:1px solid #ebeef5; position:relative; overflow:hidden; } .chart-grid { position:absolute; inset:6px 0 20px; background:repeating-linear-gradient(to bottom, transparent 0, transparent 25px, #ebeef5 26px); } .chart svg { position:relative; width:100%; height:88px; } .chart-label { display:flex; justify-content:space-between; color:#909399; font-size:12px; padding:2px 8px; }
+  .ai-empty { background:#f8fafc; border:1px dashed #b3d8ff; border-radius:7px; padding:14px 16px; color:#606266; font-size:14px; line-height:1.7; } .ai-empty b { color:#409eff; }
+  .raw-data { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; } .raw-item { border:1px solid #ebeef5; border-radius:6px; padding:8px 10px; font-size:13px; color:#606266; } .raw-item b { color:#303133; display:block; font-size:15px; margin-top:2px; }
+  .form-label { font-size:14px; color:#606266; margin:14px 0 8px; display:block; } textarea { width:100%; min-height:96px; resize:none; border:1px solid #dcdfe6; border-radius:6px; padding:12px; font:14px/1.6 inherit; color:#303133; } .select-like { height:42px; border:1px solid #dcdfe6; border-radius:6px; display:flex; align-items:center; padding:0 12px; color:#606266; font-size:14px; }
+  .process-btn { width:100%; height:44px; margin-top:12px; border:0; border-radius:6px; background:#409eff; color:#fff; font-size:16px; font-family:inherit; } .small-note { font-size:12px; color:#909399; line-height:1.5; margin-top:8px; }
+  .timeline { border-left:2px solid #d9ecff; margin-left:7px; padding-left:18px; } .timeline-item { position:relative; padding-bottom:18px; font-size:13px; color:#606266; } .timeline-item::before { content:""; position:absolute; left:-25px; top:3px; width:10px; height:10px; border-radius:50%; background:#409eff; border:3px solid #ecf5ff; } .timeline-time { color:#909399; margin-top:4px; }
+  .disclaimer { margin-top:18px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">预警详情与处理</div><div class="topbar-right"><span>护工 周敏</span><div class="avatar">周</div></div></div>
+  <div class="wrap">
+    <div class="crumb">首页 / 预警中心 / 预警详情</div>
+    <div class="detail-head"><span class="detail-title">李凤英的血压预警</span><div class="head-tags"><span class="tag tag-danger">高风险</span><span class="tag tag-warning">待处理</span></div><button class="btn back">返回列表</button></div>
+    <div class="alert-banner"><div class="alert-mark">!</div><div><div class="banner-name">收缩压与舒张压均超过较高风险阈值</div><div class="banner-sub">2026-09-08 07:42 触发 · 数据入库自动检测 · 已通知家属李伟</div></div><div class="banner-value"><b>178 / 102</b><span>mmHg</span></div></div>
+    <div class="grid" style="margin-top:18px">
+      <div>
+        <div class="card"><div class="section-title">指标与阈值对比</div><div class="compare"><div class="compare-box"><div class="compare-k">本次血压</div><div class="compare-v danger">178 / 102</div></div><div class="compare-box"><div class="compare-k">较高风险阈值</div><div class="compare-v">160 / 100</div></div><div class="compare-box"><div class="compare-k">近 7 天均值</div><div class="compare-v">165 / 98</div></div></div></div>
+        <div class="card"><div class="section-title">近 7 天趋势</div><div class="chart"><div class="chart-grid"></div><svg viewBox="0 0 700 120" preserveAspectRatio="none" aria-label="血压趋势图"><polyline fill="none" stroke="#f56c6c" stroke-width="4" points="0,85 100,70 200,76 300,58 400,52 500,34 600,24 700,12"></polyline><circle cx="700" cy="12" r="7" fill="#c03639"></circle></svg></div><div class="chart-label"><span>9/2</span><span>9/3</span><span>9/4</span><span>9/5</span><span>9/6</span><span>9/7</span><span>9/8</span></div></div>
+        <div class="card"><div class="section-title">AI 预警摘要</div><div class="ai-empty"><b>当前状态：AI 摘要生成中</b><br>预警主流程已完成，您可以先查看原始指标并登记处理结果。若模型超时或不可用，系统会显示“摘要生成失败，可查看原始数据”，不会隐藏预警或阻断处理。</div><div class="raw-data"><div class="raw-item">触发值<b>178 / 102 mmHg</b></div><div class="raw-item">测量时间<b>07:42　坐位</b></div><div class="raw-item">病史标签<b>高血压 III 级</b></div><div class="raw-item">接收人<b>家属李伟、护工周敏</b></div></div></div>
+      </div>
+      <div>
+        <div class="card"><div class="section-title">登记处理结果</div><span class="form-label">处理方式</span><div class="select-like">已电话联系老人　⌄</div><span class="form-label">处理结论</span><textarea>已电话联系老人，确认今早已按时服药；提醒静坐休息并于 30 分钟后复测，建议本周内安排复诊。</textarea><button class="process-btn">提交处理结果</button><div class="small-note">提交后预警状态将变为“已处理”，并写入处理记录；仅更新当前处理人的接收状态。</div></div>
+        <div class="card"><div class="section-title">处理时间线</div><div class="timeline"><div class="timeline-item">健康数据入库，规则引擎判定为较高风险<div class="timeline-time">07:42 · 系统自动</div></div><div class="timeline-item">已向家属李伟、护工周敏发送通知<div class="timeline-time">07:42 · 通知服务</div></div><div class="timeline-item">护工打开详情，当前接收状态变为已读<div class="timeline-time">09:05 · 周敏</div></div></div></div>
+      </div>
+    </div>
+    <div class="disclaimer">健康建议内容仅供参考，不构成医疗诊断；如有紧急症状请立即就医或拨打 120</div>
+  </div>
+</div>
+</body>
+</html>

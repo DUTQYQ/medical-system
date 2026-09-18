@@ -1,0 +1,26 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.4, ranksep=0.62, dpi=200, pad=0.3, splines=spline, compound=true, size="9.5,7"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  L1 [label="L1　表示层（前端）\nVue3 + Element Plus · 38 个界面\n老人端 13 / 家属端 5 / 护工端 6 / 管理员端 10 / 公共 4", fillcolor="#f0fdf4", color="#16a34a", fontsize=14];
+  L2 [label="L2　接口层\nFastAPI APIRouter · 45 个接口\n参数校验（Pydantic v2）· 统一响应 ApiResponse[T]", fillcolor="#dbeafe", color="#3b82f6", fontsize=14];
+  L3 [label="L3　应用服务层\n9 个业务模块 Service\nAI Agent 编排（意图识别 / RAG / 四类 Agent）· 事务边界（T1 UnitOfWork）", fillcolor="#eff6ff", color="#3b82f6", fontsize=14];
+  L4 [label="L4　数据访问层\nRepository / BaseRepository（T1）\nSQLAlchemy 2.0 · 只读会话 · 软删除过滤", fillcolor="#f8fafc", color="#64748b", fontsize=14];
+  L5 [label="L5　数据与外部服务层\nMySQL 8.0（15 张表）· LLM 服务（DeepSeek / 千问 / GLM-4）· 向量库（Chroma / FAISS）· 文件存储", fillcolor="#f1efE8", color="#888780", fontsize=14];
+  subgraph cluster_cross {
+    label="横切机制（技术模块，被各层共用）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=14; fontcolor="#854d0e"; style="rounded,dashed"; color="#facc15"; margin=10;
+    X1 [label="T2 鉴权与请求上下文\nJWT · require_role · 请求 ID", fillcolor="#fef9c3", color="#ca8a04", fontsize=13];
+    X2 [label="T3 统一响应与异常处理\n错误码 · 全局异常处理器", fillcolor="#fef9c3", color="#ca8a04", fontsize=13];
+    X3 [label="T4 日志与审计\n请求日志 · AI 调用留痕 · 审计", fillcolor="#fef9c3", color="#ca8a04", fontsize=13];
+    {rank=same; X1; X2; X3;}
+  }
+  L1 -> L2 [label="HTTP / JSON", color="#3b82f6", fontcolor="#1d4ed8"];
+  L2 -> L3 [label="调用 Service", color="#3b82f6", fontcolor="#1d4ed8"];
+  L3 -> L4 [label="读写", color="#3b82f6", fontcolor="#1d4ed8"];
+  L4 -> L5 [label="持久化 / 检索", color="#3b82f6", fontcolor="#1d4ed8"];
+  L3 -> X1 [style=dashed, color="#ca8a04", fontcolor="#854d0e", label="依赖"];
+}

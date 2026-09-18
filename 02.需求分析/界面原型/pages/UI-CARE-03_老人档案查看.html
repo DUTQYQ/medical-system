@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-CARE-03 老人档案查看 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.fam-elder-tabs { display:flex; gap:12px; margin-bottom:18px; }
+.fam-elder { background:#fff; border:1px solid #ebeef5; border-radius:10px; padding:14px 20px;
+  display:flex; align-items:center; gap:12px; font-size:15px; color:#606266; }
+.fam-elder.on { border-color:#409eff; background:#ecf5ff; color:#409eff; font-weight:500; }
+.fam-elder small { color:#909399; font-size:13px; }
+.warn-card { border:1px solid #fde2e2; background:#fef0f0; border-radius:10px; padding:14px 18px; margin-bottom:12px; }
+.warn-card.watch { border-color:#faecd8; background:#fdf6ec; }
+.warn-h { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500; color:#303133; }
+.warn-d { font-size:13px; color:#606266; margin-top:8px; line-height:1.8; }
+.choice { border:1px solid #d9ecff; background:#ecf5ff; color:#409eff; border-radius:8px;
+  padding:11px 16px; font-size:14px; }
+.choice.on { background:#409eff; border-color:#409eff; color:#fff; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-CARE-03　老人档案查看</b><span>覆盖状态：正常（只读）/ 无权限（非负责老人）/ 空数据 / 字段脱敏</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">护工端</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>王护工</span><div class="avatar">王</div></div></div><div class="nav"><div class="nav-item">工作台</div><div class="nav-item active">老人列表</div><div class="nav-item">预警处理</div><div class="nav-item">处理记录</div><div class="nav-item">我的</div></div><div style="padding:22px 26px 34px"><div class="crumb">护工端 / <b>老人档案查看（只读）</b></div><div class="grid-2-1"><div><div class="card"><div class="card-title">健康档案</div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">姓名</div><div class="form-ctrl" style="font-size:15px;color:#303133">张桂兰</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">性别 / 年龄</div><div class="form-ctrl" style="font-size:15px;color:#303133">女 · 72 岁</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">身高 / 体重</div><div class="form-ctrl" style="font-size:15px;color:#303133">158 cm · 62 kg</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">慢病标签</div><div class="form-ctrl" style="font-size:15px;color:#303133">高血压、2 型糖尿病</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">过敏史</div><div class="form-ctrl" style="font-size:15px;color:#303133">青霉素过敏</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">既往病史</div><div class="form-ctrl" style="font-size:15px;color:#303133">2018 年脑梗，恢复良好</div></div><div class="form-row" style="padding:13px 0"><div class="form-label" style="width:120px">紧急联系人</div><div class="form-ctrl" style="font-size:15px;color:#303133">李强（儿子）· 130 0000 0003</div></div></div><div style="height:18px"></div><div class="card"><div class="card-title">最近指标</div><table class="tbl "><thead><tr><th>时间</th><th>指标</th><th>数值</th><th>判定</th></tr></thead><tbody><tr><td>2026-09-14 16:30</td><td>血压</td><td>185/100</td><td><span class="tag tag-danger">高风险</span></td></tr><tr><td>2026-09-13 20:10</td><td>血压</td><td>178/102</td><td><span class="tag tag-danger">高风险</span></td></tr><tr><td>2026-09-12 08:05</td><td>血压</td><td>170/98</td><td><span class="tag tag-warning">偏高</span></td></tr><tr><td>2026-09-12 08:20</td><td>心率</td><td>76</td><td><span class="tag tag-success">正常</span></td></tr></tbody></table><div style='height:10px'></div><button class="btn btn-sm">查看全部记录</button></div></div><div><div class="card"><div class="card-title">只读说明</div><div class="alert-info" style="margin-bottom:12px">护工对档案为只读权限：可查看档案与指标、可处理预警、可查看处理记录，<b>不可修改</b>任何健康数据。</div><div class="alert-warn" style="margin-bottom:12px">需要修正数据时，应由老人本人或已绑定家属操作，避免责任不清。</div><div class="alert-info">档案变更时间线可追溯到具体操作人与时间。</div></div><div style="height:18px"></div><div class="card"><div class="card-title">无权限状态</div><div class="alert-warn">查看未分配给自己的老人档案时返回 1002 无权限，界面提示“该老人不在你的负责范围内”，不展示任何字段。</div></div></div></div></div><div style="margin-top:18px"><div class="disclaimer">本页健康数据与建议仅供参考，不构成医疗诊断，身体不适请及时就医</div></div></div>
+</div>
+</body>
+</html>

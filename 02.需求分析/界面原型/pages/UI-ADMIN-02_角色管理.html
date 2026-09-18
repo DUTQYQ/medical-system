@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ADMIN-02 角色管理 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.tree { font-size:14px; }
+.tree-i { padding:9px 12px; border-radius:6px; color:#606266; display:flex; align-items:center; gap:8px; }
+.tree-i.on { background:#ecf5ff; color:#409eff; font-weight:500; }
+.tree-i.sub { padding-left:28px; }
+.kv { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.kv-l { font-size:13px; color:#909399; margin-bottom:6px; }
+.kv-v { font-size:15px; color:#303133; }
+.mod-card { border:1px solid #ebeef5; border-radius:10px; padding:16px 18px; background:#fff; }
+.mod-card.on { border-color:#409eff; background:#f5faff; }
+.mod-t { font-size:16px; font-weight:600; color:#303133; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.mod-d { font-size:13px; color:#909399; line-height:1.8; }
+.code { font-family:Consolas,Monaco,monospace; font-size:13px; color:#303133; background:#fafafa;
+  border:1px solid #ebeef5; border-radius:6px; padding:2px 8px; }
+.screen-stat { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding:20px 22px; }
+.screen-v { font-size:40px; font-weight:600; color:#303133; line-height:1.15; }
+.screen-l { font-size:15px; color:#909399; margin-bottom:10px; }
+.screen-s { font-size:13px; color:#67c23a; margin-top:8px; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-ADMIN-02　角色管理</b><span>覆盖状态：正常 / 权限只读（业务规则锁定项）/ 保存失败 / 恢复默认</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">管理后台</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>系统管理员</span><div class="avatar">管</div></div></div><div class="shell-body"><aside class="aside"><div class="aside-group">用户与权限</div><div class="aside-item "><span class="aside-ico">用</span>用户管理</div><div class="aside-item active"><span class="aside-ico">角</span>角色管理</div><div class="aside-group">健康与预警</div><div class="aside-item "><span class="aside-ico">警</span>预警规则配置</div><div class="aside-item "><span class="aside-ico">指</span>健康指标配置</div><div class="aside-item "><span class="aside-ico">库</span>知识库管理</div><div class="aside-item "><span class="aside-ico">统</span>统计报表</div><div class="aside-group">系统</div><div class="aside-item "><span class="aside-ico">览</span>概览大屏</div><div class="aside-item "><span class="aside-ico">志</span>系统日志</div><div class="aside-item "><span class="aside-ico">告</span>系统公告</div><div class="aside-item "><span class="aside-ico">模</span>AI 模型配置</div></aside><main class="main"><div class="crumb">用户与权限 / <b>角色管理</b></div><div class="grid-1-2"><div><div class="card"><div class="card-title">系统内置角色</div><div class="mod-card" style="margin-bottom:12px"><div class="mod-t">系统管理员
+<span class="tag tag-info">ADMIN</span><span style="margin-left:auto;font-size:13px;color:#909399">2 人</span></div>
+<div class="mod-d">全部权限，含用户与配置管理</div></div><div class="mod-card" style="margin-bottom:12px"><div class="mod-t">老年用户
+<span class="tag tag-info">ELDER</span><span style="margin-left:auto;font-size:13px;color:#909399">14 人</span></div>
+<div class="mod-d">本人健康数据、AI 咨询、预警通知</div></div><div class="mod-card" style="margin-bottom:12px"><div class="mod-t">家属
+<span class="tag tag-info">FAMILY</span><span style="margin-left:auto;font-size:13px;color:#909399">16 人</span></div>
+<div class="mod-d">仅限已生效绑定老人的数据与预警</div></div><div class="mod-card" style="margin-bottom:12px"><div class="mod-t">护工
+<span class="tag tag-info">CARE</span><span style="margin-left:auto;font-size:13px;color:#909399">6 人</span></div>
+<div class="mod-d">仅限被分配老人的档案查看与预警处理</div></div><div class='hint'>内置角色不可删除，仅可调整权限项</div></div></div><div><div class="card"><div class="card-title">权限分配 · 当前角色：系统管理员</div><div class='perm'><div class="perm-k">健康档案</div><div><span class="ck on">查看</span><span class="ck on">编辑</span><span class="ck on">删除</span></div><div class="perm-k">健康指标</div><div><span class="ck on">查看</span><span class="ck on">录入</span><span class="ck on">代录</span><span class="ck on">导出</span></div><div class="perm-k">预警通知</div><div><span class="ck on">接收</span><span class="ck on">处理</span><span class="ck on">配置规则</span></div><div class="perm-k">AI 健康咨询</div><div><span class="ck on">发起</span><span class="ck on">查看历史</span><span class="ck">查看他人</span></div><div class="perm-k">用户与角色</div><div><span class="ck">查看</span><span class="ck">新增</span><span class="ck">禁用</span><span class="ck">分配角色</span></div><div class="perm-k">系统配置</div><div><span class="ck">查看</span><span class="ck">修改阈值</span><span class="ck">修改模型</span></div></div><div style='height:16px'></div><button class="btn btn-primary">保存权限</button>　<button class="btn">恢复默认</button></div><div style="height:18px"></div><div class="card"><div class="card-title">权限模型说明</div><div class="alert-info" style="margin-bottom:10px">系统为固定四角色模型（ADMIN / ELDER / FAMILY / CARE），不开放自由建角色，避免权限组合失控。</div><div class="alert-warn">权限校验在接口层强制执行，界面隐藏仅作为体验优化，不作为安全边界。</div></div></div></div><div style="height:18px"></div><div class="card"><div class="card-title">只读状态</div><div class="alert-info">老年用户与家属角色的核心权限由业务规则决定（如家属只能看已绑定老人），在界面上以置灰只读方式展示，不允许取消勾选。</div></div></div></main></div>
+</div>
+</body>
+</html>

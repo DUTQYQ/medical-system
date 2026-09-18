@@ -1,0 +1,22 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="T2 鉴权与请求上下文　类图（TECH · AUTH CONTEXT）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    PasswordHasher [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>PasswordHasher</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">bcrypt 哈希与校验</FONT></TD></TR></TABLE>>];
+    JwtProvider [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>JwtProvider</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">JWT 签发、解析与失效列表维护</FONT></TD></TR></TABLE>>];
+    CurrentUser [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>CurrentUser</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">当前用户数据结构（用户 ID / 角色 / 状态）</FONT></TD></TR></TABLE>>];
+    RequireRole [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef3c7" COLOR="#d97706"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>RequireRole</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">角色校验依赖工厂，按角色放行或返回 1002</FONT></TD></TR></TABLE>>];
+    RequestContext [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>RequestContext</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">请求级上下文：请求 ID / IP / 用户，供日志与审计使用</FONT></TD></TR></TABLE>>];
+  }
+  RequireRole -> JwtProvider [label="取用户", arrowhead=vee, color="#64748b"];
+  RequireRole -> CurrentUser [label="产出", arrowhead=vee, color="#64748b"];
+  JwtProvider -> PasswordHasher [label="同层工具", arrowhead=vee, color="#64748b"];
+  RequestContext -> CurrentUser [label="引用", arrowhead=vee, color="#64748b"];
+}

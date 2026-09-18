@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI-ADMIN-04 健康指标配置 - 康养系统</title>
+<link rel="stylesheet" href="../prototype.css">
+<style>
+
+
+.tree { font-size:14px; }
+.tree-i { padding:9px 12px; border-radius:6px; color:#606266; display:flex; align-items:center; gap:8px; }
+.tree-i.on { background:#ecf5ff; color:#409eff; font-weight:500; }
+.tree-i.sub { padding-left:28px; }
+.kv { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.kv-l { font-size:13px; color:#909399; margin-bottom:6px; }
+.kv-v { font-size:15px; color:#303133; }
+.mod-card { border:1px solid #ebeef5; border-radius:10px; padding:16px 18px; background:#fff; }
+.mod-card.on { border-color:#409eff; background:#f5faff; }
+.mod-t { font-size:16px; font-weight:600; color:#303133; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.mod-d { font-size:13px; color:#909399; line-height:1.8; }
+.code { font-family:Consolas,Monaco,monospace; font-size:13px; color:#303133; background:#fafafa;
+  border:1px solid #ebeef5; border-radius:6px; padding:2px 8px; }
+.screen-stat { background:#fff; border:1px solid #ebeef5; border-radius:12px; padding:20px 22px; }
+.screen-v { font-size:40px; font-weight:600; color:#303133; line-height:1.15; }
+.screen-l { font-size:15px; color:#909399; margin-bottom:10px; }
+.screen-s { font-size:13px; color:#67c23a; margin-top:8px; }
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="note-bar"><b>UI-ADMIN-04　健康指标配置</b><span>覆盖状态：正常 / 空数据 / 代码重复校验 / 停用二次确认 / 有数据时禁止改代码</span></div>
+<div class="topbar"><div class="logo"><span class="logo-mark">康</span>智能康养系统</div><div class="topbar-title">管理后台</div><div class="topbar-right"><span>字体放大 A+</span><span>帮助</span><span>系统管理员</span><div class="avatar">管</div></div></div><div class="shell-body"><aside class="aside"><div class="aside-group">用户与权限</div><div class="aside-item "><span class="aside-ico">用</span>用户管理</div><div class="aside-item "><span class="aside-ico">角</span>角色管理</div><div class="aside-group">健康与预警</div><div class="aside-item "><span class="aside-ico">警</span>预警规则配置</div><div class="aside-item active"><span class="aside-ico">指</span>健康指标配置</div><div class="aside-item "><span class="aside-ico">库</span>知识库管理</div><div class="aside-item "><span class="aside-ico">统</span>统计报表</div><div class="aside-group">系统</div><div class="aside-item "><span class="aside-ico">览</span>概览大屏</div><div class="aside-item "><span class="aside-ico">志</span>系统日志</div><div class="aside-item "><span class="aside-ico">告</span>系统公告</div><div class="aside-item "><span class="aside-ico">模</span>AI 模型配置</div></aside><main class="main"><div class="crumb">健康与预警 / <b>健康指标配置</b></div><div class="filter-bar"><div class="inp ph inp-sel">全部指标类型</div><button class="btn btn-primary">查询</button><button class="btn btn-primary">新增指标类型</button></div><div class="card"><div class="card-title">指标类型与单位</div><table class="tbl "><thead><tr><th>指标名称</th><th>类型代码</th><th>单位</th><th>取值范围说明</th><th>建议频次</th><th>状态</th></tr></thead><tbody><tr><td>血压</td><td>BLOOD_PRESSURE</td><td>mmHg</td><td>收缩压 / 舒张压</td><td>1 次 / 天建议</td><td><span class="tag tag-success">启用</span></td></tr><tr><td>血糖</td><td>BLOOD_GLUCOSE</td><td>mmol/L</td><td>空腹 / 餐后</td><td>按医嘱</td><td><span class="tag tag-success">启用</span></td></tr><tr><td>心率</td><td>HEART_RATE</td><td>次/分</td><td>静息心率</td><td>按需</td><td><span class="tag tag-success">启用</span></td></tr><tr><td>睡眠</td><td>SLEEP</td><td>小时</td><td>每日总时长</td><td>1 次 / 天</td><td><span class="tag tag-success">启用</span></td></tr><tr><td>步数</td><td>STEPS</td><td>步</td><td>每日累计</td><td>1 次 / 天</td><td><span class="tag tag-success">启用</span></td></tr><tr><td>体重</td><td>WEIGHT</td><td>kg</td><td>晨起空腹</td><td>每周 2~3 次</td><td><span class="tag tag-info">停用</span></td></tr></tbody></table></div><div style="height:18px"></div><div class="grid-2"><div><div class="card"><div class="card-title">新增 / 编辑指标类型</div><div class="form-row"><div class="form-label"><i>*</i>指标名称</div><div class="form-ctrl"><div class="inp ph" style="min-width:200px">如：血氧饱和度</div></div></div><div class="form-row"><div class="form-label">类型代码</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:200px">OXYGEN_SAT</div><span class="unit">大写英文，唯一不可重复</span></div></div><div class="form-row"><div class="form-label">单位</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:130px">%</div></div></div><div class="form-row"><div class="form-label">合理范围</div><div class="form-ctrl"><div class="inp" style="color:#303133;min-width:110px">95</div><span class="unit">~</span><div class="inp" style="color:#303133;min-width:110px">100</div></div></div><div class="form-row"><div class="form-label">状态</div><div class="form-ctrl"><div class="inp inp-sel" style="color:#303133">启用</div></div></div><div style='height:12px'></div><button class="btn btn-primary">保存</button>　<button class="btn">取消</button></div></div><div><div class="card"><div class="card-title">约束与说明</div><div class="alert-info" style="margin-bottom:12px">指标类型与 <span class="code">health_record.type</span> 一一对应；停用后新建记录不再出现该类型，历史数据仍可查询。</div><div class="alert-warn" style="margin-bottom:12px">类型代码一旦产生数据不可修改，只能停用后新建，避免历史数据语义漂移。</div><div class="alert-info">单位为展示与录入用，换算规则不做自动处理，避免误判。</div></div><div style="height:18px"></div><div class="card"><div class="card-title">空数据状态</div><div class="empty"><div class="empty-ico">空</div><div class="empty-t">还没有配置指标类型</div><div class="empty-d">至少需要配置血压与心率两类，才能启用预警规则</div></div></div></div></div><div style="height:18px"></div><div class="card"><div class="card-title">停用二次确认（弹窗形态示意）</div><div style="border:1px solid #ebeef5;border-radius:10px;overflow:hidden"><div style="background:#fafafa;padding:11px 15px;font-size:13px;color:#909399">停用“体重”指标类型？</div><div style="padding:18px"><div style="font-size:14px;color:#606266;line-height:1.8;margin-bottom:16px">停用后老人端不再显示体重的录入入口，已有的体重历史记录仍保留可查。</div><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-sm">取消</button><button class="btn btn-sm btn-primary">确认停用</button></div></div></div></div></div></main></div>
+</div>
+</body>
+</html>

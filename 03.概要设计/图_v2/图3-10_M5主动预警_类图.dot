@@ -1,0 +1,24 @@
+digraph G {
+  graph [fontname="Microsoft YaHei", bgcolor="white", rankdir=TB,
+         nodesep=0.35, ranksep=0.5, dpi=200, pad=0.3, splines=spline, compound=true, size="9,6"];
+  node  [shape=box, style="rounded,filled", fontname="Microsoft YaHei", fontsize=15,
+         penwidth=1.5, margin="0.20,0.12", fillcolor="#eff6ff", color="#3b82f6"];
+  edge  [fontname="Microsoft YaHei", fontsize=12, color="#94a3b8", fontcolor="#475569",
+         penwidth=1.1, arrowsize=0.7];
+  node [shape=plaintext, fillcolor="white", color="white", style=""];
+  subgraph cluster_cls {
+    label="M5 主动预警　类图（ALERT）"; labeljust="l"; fontname="Microsoft YaHei";
+    fontsize=16; fontcolor="#0f172a"; style="rounded"; color="#cbd5e1"; penwidth=1.4; margin=14;
+    AlertRouter [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef2f2" COLOR="#ef4444"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AlertRouter</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">接口层：列表 / 详情 / 处理 / 状态 / 已读 / 重试 / 统计 / 未读数</FONT></TD></TR></TABLE>>];
+    AlertService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef2f2" COLOR="#ef4444"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AlertService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">应用层：预警查询、处理闭环、统计口径</FONT></TD></TR></TABLE>>];
+    ThresholdRuleEngine [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fef3c7" COLOR="#d97706"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>ThresholdRuleEngine</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">读 sys_config 阈值判定等级，产出预警实体</FONT></TD></TR></TABLE>>];
+    AlertNotifyService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AlertNotifyService</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">按接收人范围写入 alert_receiver 并分发站内通知</FONT></TD></TR></TABLE>>];
+    SummaryWorker [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f0fdf4" COLOR="#16a34a"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>SummaryWorker</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">异步生成 AI 摘要，失败可重试（不阻塞主流程）</FONT></TD></TR></TABLE>>];
+    AlertRepository [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f8fafc" COLOR="#64748b"><TR><TD SIDES="B"><FONT POINT-SIZE="15"><U>AlertRepository</U></FONT></TD></TR><TR><TD><FONT POINT-SIZE="11">数据层：预警 / 接收人 / 留痕三表读写</FONT></TD></TR></TABLE>>];
+  }
+  AlertRouter -> AlertService [label="调用", arrowhead=vee, color="#64748b"];
+  AlertService -> ThresholdRuleEngine [label="判级", arrowhead=vee, color="#64748b"];
+  ThresholdRuleEngine -> AlertNotifyService [label="生成后分发", arrowhead=vee, color="#64748b"];
+  AlertService -> SummaryWorker [label="异步摘要", arrowhead=vee, color="#64748b"];
+  AlertService -> AlertRepository [label="读写", arrowhead=vee, color="#64748b"];
+}
