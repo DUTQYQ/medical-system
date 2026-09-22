@@ -1,0 +1,432 @@
+/* 全局样式与设计变量
+   归属：梁霁鸣（styles/）
+   参照 02.需求分析/界面原型/prototype.css 的设计系统，端口到 Vue + Element Plus。
+
+   适老化基线（FR-A11/E-01）：
+   - 正文 ≥18px，卡片标题 ≥20px，关键数值 34px
+   - 主按钮高度 ≥48px，触控热区足够大
+   - 主流程 ≤3 步
+*/
+
+:root {
+  /* 主色与功能色 */
+  --color-primary: #409eff;
+  --color-primary-light: #ecf5ff;
+  --color-success: #67c23a;
+  --color-warning: #e6a23c;
+  --color-danger: #f56c6c;
+  --color-info: #909399;
+
+  /* 文字色阶 */
+  --color-text-primary: #303133;
+  --color-text-regular: #606266;
+  --color-text-secondary: #909399;
+  --color-text-placeholder: #c0c4cc;
+
+  /* 边框 / 背景 */
+  --color-border: #dcdfe6;
+  --color-border-light: #e4e7ed;
+  --color-bg: #f5f7fa;
+  --color-bg-white: #ffffff;
+
+  /* 圆角与阴影 */
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+  /* 适老化字号 */
+  --fs-body: 18px;
+  --fs-title: 20px;
+  --fs-value: 34px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  font-size: var(--fs-body);
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+/* ---------- 通用卡片 ---------- */
+.ky-card {
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.ky-card + .ky-card {
+  margin-top: 16px;
+}
+
+.ky-card__title {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+/* ---------- 页面结构 ---------- */
+.ky-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ky-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ky-page-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.ky-sub {
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+/* ---------- 统计卡片 ---------- */
+.ky-stat {
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-card);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.ky-stat__label {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.ky-stat__value {
+  font-size: var(--fs-value);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.ky-stat__value .unit {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin-left: 4px;
+}
+
+.ky-stat__extra {
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+}
+
+/* ---------- 免责声明 ---------- */
+.ky-disclaimer {
+  margin-top: 24px;
+  padding: 14px 18px;
+  background: #fef8ec;
+  border: 1px solid #f5dab1;
+  border-radius: 8px;
+  color: var(--color-warning);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.ky-disclaimer .ky-disclaimer__title {
+  font-weight: 600;
+}
+
+/* ---------- 空状态 ---------- */
+.ky-empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 48px 0;
+  font-size: 16px;
+}
+
+/* ---------- 状态点 / 红点 ---------- */
+.ky-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-danger);
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* ---------- 表单行（适老化大间距） ---------- */
+.ky-form-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.ky-form-row .ky-label {
+  flex: 0 0 120px;
+  padding-top: 10px;
+  font-size: var(--fs-body);
+  color: var(--color-text-regular);
+  text-align: right;
+}
+
+/* ---------- 气泡（聊天） ---------- */
+.ky-bubble {
+  max-width: 72%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.ky-bubble--user {
+  background: var(--color-primary);
+  color: #fff;
+  margin-left: auto;
+  border-top-right-radius: 4px;
+}
+
+.ky-bubble--ai {
+  background: #f0f2f5;
+  color: var(--color-text-primary);
+  border-top-left-radius: 4px;
+}
+
+/* ---------- 时间轴 ---------- */
+.ky-timeline {
+  position: relative;
+  padding-left: 24px;
+}
+
+.ky-timeline__item {
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.ky-timeline__item::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.ky-timeline__item::after {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 16px;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border-light);
+}
+
+.ky-timeline__item:last-child::after {
+  display: none;
+}
+
+/* ---------- Element Plus 适老化覆盖 ---------- */
+.el-button {
+  font-size: var(--fs-body);
+  min-height: 44px;
+  padding: 12px 22px;
+  border-radius: var(--radius-btn);
+}
+
+.el-button--large {
+  min-height: 48px;
+  font-size: var(--fs-body);
+}
+
+.el-input__inner,
+.el-textarea__inner,
+.el-select__wrapper {
+  font-size: var(--fs-body) !important;
+  min-height: 44px;
+}
+
+.el-form-item__label {
+  font-size: var(--fs-body) !important;
+}
+
+.el-tag {
+  font-size: 14px;
+  padding: 0 12px;
+  height: 30px;
+  line-height: 28px;
+}
+
+.el-table {
+  font-size: 16px;
+}
+
+.el-message {
+  font-size: 16px;
+}
+
+/* 老人端进一步放大（在 ElderLayout 根节点挂 .ky-elder） */
+.ky-elder {
+  --fs-body: 19px;
+}
+
+.ky-elder .el-button {
+  font-size: var(--fs-body);
+  min-height: 48px;
+}
+
+.ky-elder .el-input__inner,
+.ky-elder .el-textarea__inner,
+.ky-elder .el-select__wrapper {
+  font-size: var(--fs-body) !important;
+  min-height: 48px;
+}
+
+/* 布局壳：顶部栏 + 侧栏/导航 */
+.ky-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ky-topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 72px;
+  flex-shrink: 0;
+}
+
+.ky-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ky-logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.ky-role-tag {
+  font-size: 15px;
+  color: #fff;
+  background: var(--color-primary);
+  border-radius: 6px;
+  padding: 3px 10px;
+}
+
+.ky-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ky-nav {
+  background: #fff;
+  border-bottom: 1px solid var(--color-border-light);
+  padding: 0 24px;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.ky-nav__list {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.ky-nav__item {
+  padding: 18px 20px;
+  cursor: pointer;
+  font-size: var(--fs-body);
+  color: var(--color-text-regular);
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  user-select: none;
+}
+
+.ky-nav__item:hover {
+  color: var(--color-primary);
+}
+
+.ky-nav__item.ky-nav__item--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.ky-main {
+  flex: 1;
+}
+
+/* 认证页居中容器 */
+.ky-auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #ecf5ff 0%, #f5f7fa 60%);
+}
+
+.ky-auth-box {
+  width: 100%;
+  max-width: 460px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.ky-auth-box__title {
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.ky-auth-box__sub {
+  text-align: center;
+  color: var(--color-text-secondary);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
