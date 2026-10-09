@@ -1,12 +1,10 @@
-// 系统配置模块 api（mock）
-// 【临时 mock】待丘宇乾替换为真实实现
-// 关键：阈值不硬编码到页面，统一从此处读取（R-04）
-import { indicators, thresholds, respond } from './mock'
-
+import request from '@/utils/request'
+import { asList, FIELD_SCHEMA } from '@/utils/format'
 export async function getIndicators() {
-  return respond(indicators)
+  return asList(await request.get('/config/indicators')).filter(i => i.enabled !== false).map(i => {
+    const type = i.type || i.indicator_type
+    const schema = FIELD_SCHEMA[type] || []
+    return { ...i, type, name: i.name || i.indicator_name, fields: Array.isArray(i.fields) && i.fields.every(f => typeof f === 'object') ? i.fields : schema }
+  })
 }
-
-export async function getThresholds() {
-  return respond(thresholds)
-}
+export const getThresholds = () => request.get('/config/thresholds')

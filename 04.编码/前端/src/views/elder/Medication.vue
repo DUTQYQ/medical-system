@@ -1,89 +1,12 @@
-<template>
-  <div class="ky-page" style="max-width: 860px">
-    <div class="ky-page-header">
-      <h2 class="ky-page-title">用药信息</h2>
-      <el-button type="primary" @click="openAdd">＋ 添加药品</el-button>
-    </div>
-
-    <div class="ky-card">
-      <el-table :data="meds" style="width: 100%">
-        <el-table-column prop="name" label="药品名称" min-width="140" />
-        <el-table-column prop="dose" label="剂量" width="120" />
-        <el-table-column prop="frequency" label="频次" width="140" />
-        <el-table-column prop="time" label="服药时间" width="160" />
-        <el-table-column prop="note" label="备注" min-width="120" />
-        <el-table-column label="操作" width="120">
-          <template #default="{ row }">
-            <el-button link type="danger" @click="removeMed(row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div v-if="!meds.length" class="ky-empty">暂无用药记录，点击右上角添加</div>
-    </div>
-
-    <div class="ky-card">
-      <div class="ky-card__title">用药提醒</div>
-      <ul class="med-tips">
-        <li>请严格遵医嘱服药，勿自行增减剂量或停药；</li>
-        <li>注意药物过敏史（参见健康档案「过敏史」）；</li>
-        <li>如出现不适，请及时咨询医生或药师。</li>
-      </ul>
-    </div>
-
-    <el-dialog v-model="dialogVisible" title="添加药品" width="520px">
-      <el-form :model="form" label-position="top">
-        <el-form-item label="药品名称"><el-input v-model="form.name" placeholder="如：苯磺酸氨氯地平片" /></el-form-item>
-        <el-form-item label="剂量"><el-input v-model="form.dose" placeholder="如：5mg" /></el-form-item>
-        <el-form-item label="频次">
-          <el-select v-model="form.frequency" style="width: 100%">
-            <el-option v-for="f in ['每日一次', '每日两次', '每日三次', '睡前一次', '按需服用']" :key="f" :label="f" :value="f" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="服药时间"><el-input v-model="form.time" placeholder="如：早 8:00" /></el-form-item>
-        <el-form-item label="备注"><el-input v-model="form.note" placeholder="可选" /></el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="saveMed">保存</el-button>
-      </template>
-    </el-dialog>
-  </div>
-</template>
-
+<template><div class="ky-page" style="max-width:860px"><div class="ky-page-header"><h2 class="ky-page-title">【选配】本机用药备忘</h2><el-button type="primary" @click="dialog=true">添加备忘</el-button></div><div class="ky-card"><el-alert type="info" :closable="false" title="记录仅保存在当前浏览器，未同步服务器。请按实际医嘱记录，不提供自动开药或改剂量建议。" /><el-table :data="meds" style="margin-top:16px"><el-table-column prop="name" label="药品" /><el-table-column prop="dose" label="医嘱剂量" /><el-table-column prop="frequency" label="频次" /><el-table-column prop="time" label="时间" /><el-table-column prop="note" label="备注" /><el-table-column label="操作"><template #default="{row}"><el-button link type="danger" @click="remove(row)">删除</el-button></template></el-table-column></el-table></div><el-dialog v-model="dialog" title="添加本机备忘" width="min(520px,95vw)"><el-form label-position="top"><el-form-item v-for="(label,key) in fields" :key="key" :label="label"><el-input v-model="form[key]" /></el-form-item></el-form><template #footer><el-button @click="dialog=false">取消</el-button><el-button type="primary" @click="save">保存到本机</el-button></template></el-dialog></div></template>
 <script setup>
-import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
-
-// 选配页面（用药信息），演示数据保存在当前会话内存中
-const meds = ref([
-  { id: 1, name: '苯磺酸氨氯地平片', dose: '5mg', frequency: '每日一次', time: '早 8:00', note: '降压' },
-  { id: 2, name: '盐酸二甲双胍片', dose: '0.5g', frequency: '每日两次', time: '早晚餐后', note: '降糖' },
-])
-const dialogVisible = ref(false)
-const form = reactive({ name: '', dose: '', frequency: '每日一次', time: '', note: '' })
-
-function openAdd() {
-  Object.keys(form).forEach((k) => (form[k] = k === 'frequency' ? '每日一次' : ''))
-  dialogVisible.value = true
-}
-
-function saveMed() {
-  if (!form.name.trim()) return ElMessage.warning('请填写药品名称')
-  meds.value.push({ id: Date.now(), ...form })
-  dialogVisible.value = false
-  ElMessage.success('已添加')
-}
-
-function removeMed(row) {
-  meds.value = meds.value.filter((m) => m.id !== row.id)
-}
+import {ref,reactive} from 'vue'
+import {ElMessage,ElMessageBox} from 'element-plus'
+import {getUser} from '@/utils/auth'
+const key='ky-medications-'+getUser()?.user_id,fields={name:'药品名称',dose:'医嘱剂量',frequency:'频次',time:'时间',note:'备注'},form=reactive({name:'',dose:'',frequency:'',time:'',note:''}),dialog=ref(false)
+let stored=[];try{stored=JSON.parse(localStorage.getItem(key)||'[]')}catch{}
+const meds=ref(stored)
+function persist(next){try{localStorage.setItem(key,JSON.stringify(next));meds.value=next;return true}catch{ElMessage.error('本机存储不可用，修改未保存');return false}}
+function save(){if(!form.name.trim())return ElMessage.warning('请填写药品名称');if(persist([...meds.value,{id:Date.now(),...form}])){dialog.value=false;Object.keys(form).forEach(k=>form[k]='');ElMessage.success('备忘已保存到本机')}}
+async function remove(row){try{await ElMessageBox.confirm('删除此本机备忘？','确认删除',{type:'warning'});persist(meds.value.filter(m=>m.id!==row.id))}catch{}}
 </script>
-
-<style scoped>
-.med-tips {
-  margin: 0;
-  padding-left: 20px;
-  line-height: 2;
-  color: var(--color-text-regular);
-}
-</style>

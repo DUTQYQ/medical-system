@@ -1,0 +1,12 @@
+<template><div class="ky-page" v-loading="loading"><div class="ky-page-header"><h2 class="ky-page-title">健康指标配置</h2></div><div class="ky-card"><p class="ky-sub">合法录入范围用于数据校验，与预警风险阈值分别管理。范围和启用状态存入后台配置。</p><el-table :data="rows"><el-table-column prop="type" label="类型" /><el-table-column prop="name" label="名称" /><el-table-column prop="unit" label="单位" /><el-table-column label="状态"><template #default="{row}">{{ row.enabled?'启用':'停用' }}</template></el-table-column><el-table-column label="操作"><template #default="{row}"><el-button link type="primary" @click="edit(row)">修改配置</el-button></template></el-table-column></el-table><el-alert v-if="error" type="error" :closable="false" :title="error" /></div><el-dialog v-model="dialog" title="编辑指标配置" width="min(580px,95vw)"><el-form label-position="top"><el-form-item label="名称"><el-input v-model="form.name" /></el-form-item><el-form-item label="单位"><el-input v-model="form.unit" /></el-form-item><el-form-item label="启用"><el-switch v-model="form.enabled" /></el-form-item><el-form-item label="各数值字段的合法范围（JSON）"><el-input v-model="ranges" type="textarea" :rows="6" placeholder='{"systolic":[0,300],"diastolic":[0,200]}' /><span class="ky-sub">每个字段为 [最小值,最大值]；后端将校验并保存。</span></el-form-item></el-form><template #footer><el-button @click="dialog=false">取消</el-button><el-button type="primary" :loading="saving" @click="save">保存配置</el-button></template></el-dialog></div></template>
+<script setup>
+import {ref,onMounted} from 'vue'
+import {ElMessage} from 'element-plus'
+import {listAdminIndicators,saveIndicator} from '@/api'
+import {asList} from '@/utils/format'
+const rows=ref([]),form=ref({}),ranges=ref('{}'),dialog=ref(false),loading=ref(false),saving=ref(false),error=ref('')
+async function load(){loading.value=true;try{rows.value=asList(await listAdminIndicators());error.value=''}catch(e){error.value=e.message}finally{loading.value=false}}
+function edit(row){form.value={...row};ranges.value=JSON.stringify(row.ranges||{},null,2);dialog.value=true}
+async function save(){let r;try{r=JSON.parse(ranges.value)}catch{return ElMessage.warning('合法范围必须是有效 JSON')};saving.value=true;try{await saveIndicator(form.value.type,{name:form.value.name,unit:form.value.unit,enabled:form.value.enabled,ranges:r});dialog.value=false;await load();ElMessage.success('指标配置已保存')}catch(e){ElMessage.error(e.message)}finally{saving.value=false}}
+onMounted(load)
+</script>

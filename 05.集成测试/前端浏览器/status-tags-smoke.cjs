@@ -1,0 +1,27 @@
+process.chdir(__dirname);
+const { chromium } = require('playwright');
+const fs = require('fs');
+(async () => {
+  const browser = await chromium.launch({headless:true, executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+  const page = await browser.newPage({viewport:{width:1440,height:1050}});
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('http://127.0.0.1:5174/login');
+  await page.getByPlaceholder('请输入 11 位手机号').fill('13000000004');
+  await page.getByPlaceholder('请输入密码').fill('Abc123456');
+  await page.getByRole('button', {name:'登 录',exact:true}).click();
+  await page.waitForURL('**/care/**');
+  await page.goto('http://127.0.0.1:5174/care/elders');
+  await page.getByRole('button', {name:'查看与照护',exact:true}).first().click();
+  await page.getByText('最近指标',{exact:true}).waitFor();
+  await page.locator('.el-table__body .el-tag').filter({hasText:/^异常$/}).first().waitFor();
+  await page.locator('.el-table__body .el-tag').filter({hasText:/^已处理$/}).first().waitFor();
+  await page.waitForLoadState('networkidle');
+  await page.screenshot({path:'care-detail.png',fullPage:true});
+  await page.goto('http://127.0.0.1:5174/care/alerts');
+  await page.locator('.el-table__body .el-tag').filter({hasText:/^(未读|已读)$/}).first().waitFor();
+  if(errors.length) throw new Error(errors.join('\n'));
+  fs.writeFileSync('status-tags-results.json',JSON.stringify({database:'isolated SQLite',production_mysql:false,real_model:false,results:[{care_abnormal_tag:true},{care_resolved_tag:true},{read_state_chinese_tag:true}],page_errors:errors},null,2));
+  console.log(JSON.stringify({passed:3,page_errors:errors.length}));
+  await browser.close();
+})().catch(error=>{console.error(error);process.exit(1)});

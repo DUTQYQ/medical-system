@@ -1,0 +1,24 @@
+{
+  "database": "isolated SQLite",
+  "results": [
+    {
+      "elder_multi_profile_create": true,
+      "id": 5
+    },
+    {
+      "family_create_from_authorized_source": true,
+      "id": 6
+    },
+    {
+      "care_create_from_authorized_source": true,
+      "id": 7
+    },
+    {
+      "new_profile_does_not_leak_to_other_relation": true
+    },
+    {
+      "admin_create_profile_for_elder": true
+    }
+  ],
+  "page_errors": []
+}

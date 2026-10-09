@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div ref="chartRef" class="trend-chart" :style="{ height: height + 'px' }" />
+    <el-empty v-if="!dates.length" description="此周期暂无指标记录" /><div v-show="dates.length" ref="chartRef" class="trend-chart" :style="{ height: height + 'px' }" />
   </div>
 </template>
 
 <script setup>
 // ECharts 趋势图（老人端/家属端共用）
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
 
 const props = defineProps({
@@ -21,9 +21,10 @@ const emit = defineEmits(['point-click'])
 
 const chartRef = ref(null)
 let chart = null
+let observer = null
 
 function render() {
-  if (!chartRef.value) return
+  if (!chartRef.value || !props.dates.length || !chartRef.value.clientWidth || !chartRef.value.clientHeight) return
   if (!chart) chart = echarts.init(chartRef.value)
 
   const markPointData = props.abnormalIndexes.map((i) => ({
@@ -34,7 +35,7 @@ function render() {
   const option = {
     tooltip: { trigger: 'axis' },
     legend: { data: props.series.map((s) => s.name), top: 0 },
-    grid: { left: 55, right: 24, top: 44, bottom: 40 },
+    grid: { left: 20, right: 60, top: 44, bottom: 20, containLabel: true },
     xAxis: { type: 'category', data: props.dates, boundaryGap: false },
     yAxis: { type: 'value', name: props.unit },
     series: props.series.map((s, idx) => ({
@@ -55,6 +56,7 @@ function render() {
     })),
   }
   chart.setOption(option, true)
+  chart.resize()
   chart.off('click')
   chart.on('click', (p) => {
     if (p.componentType === 'markPoint' && p.data && p.data.coord) {
@@ -69,14 +71,17 @@ function resize() {
 
 onMounted(() => {
   render()
+  observer = new ResizeObserver(() => render())
+  observer.observe(chartRef.value)
   window.addEventListener('resize', resize)
 })
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize)
+  observer?.disconnect()
   chart && chart.dispose()
 })
 
-watch(() => [props.dates, props.series, props.abnormalIndexes], render, { deep: true })
+watch(() => [props.dates, props.series, props.abnormalIndexes], async () => { await nextTick(); render() }, { deep: true, flush: 'post' })
 </script>
 
 <style scoped>

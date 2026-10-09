@@ -16,9 +16,9 @@
         <li
           v-for="item in navs"
           :key="item.path"
-          class="ky-nav__item"
+          class="ky-nav__item" tabindex="0" role="button"
           :class="{ 'ky-nav__item--active': isActive(item) }"
-          @click="$router.push(navTarget(item))"
+          @click="$router.push(navTarget(item))" @keydown.enter="$router.push(navTarget(item))" @keydown.space.prevent="$router.push(navTarget(item))"
         >
           {{ item.label }}
           <span v-if="item.badge && unread > 0" class="ky-dot" />
@@ -27,7 +27,7 @@
     </nav>
 
     <main class="ky-main">
-      <router-view />
+      <router-view :key="route.fullPath" />
     </main>
   </div>
 </template>
@@ -36,7 +36,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getUser, clearAuth } from '@/utils/auth'
-import { getUnreadCount, listElders } from '@/api'
+import { getUnreadCount, listElders, logout } from '@/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -64,7 +64,7 @@ function isActive(item) {
 }
 
 async function refreshUnread() {
-  if (!user) return
+  if (!user || !getUser()?.privacy_consent?.accepted) return
   try {
     const d = await getUnreadCount(user.user_id)
     unread.value = d.count
@@ -83,9 +83,8 @@ async function loadFirstElder() {
   }
 }
 
-function onLogout() {
-  clearAuth()
-  router.replace('/login')
+async function onLogout() {
+  try { await logout() } catch {} finally { clearAuth(); router.replace('/login') }
 }
 
 let timer

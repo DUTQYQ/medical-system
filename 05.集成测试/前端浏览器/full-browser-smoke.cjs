@@ -1,0 +1,77 @@
+process.chdir(__dirname);
+const { chromium } = require('playwright');
+const fs = require('fs');
+const base = 'http://127.0.0.1:5174';
+(async () => {
+ const browser = await chromium.launch({headless:true, executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+ const results = [], errors=[];
+ async function login(suffix,role){
+  const ctx=await browser.newContext({viewport:{width:1440,height:1050}}),page=await ctx.newPage();
+  page.on('pageerror',e=>errors.push(role+': '+e.message));
+  await page.goto(base+'/login');
+  await page.getByPlaceholder('请输入 11 位手机号').fill('1300000000'+suffix);
+  await page.getByPlaceholder('请输入密码').fill('Abc123456');
+  await page.getByRole('button',{name:'登 录',exact:true}).click();
+  await page.waitForURL('**/'+role+'/**');
+  if(page.url().endsWith('/mine')){
+   await page.getByText('我已阅读并同意以上健康数据使用说明',{exact:true}).click();
+   const response=page.waitForResponse(r=>r.url().endsWith('/auth/privacy-consent')&&r.request().method()==='POST');
+   await page.getByRole('button',{name:'记录授权',exact:true}).click();
+   const data=await(await response).json();if(data.code!==0)throw Error(JSON.stringify(data));
+   await page.getByText('已记录隐私授权',{exact:true}).waitFor();
+  }
+  return page;
+ }
+ async function view(page,path,ready,screenshot){await page.goto(base+path);await page.getByText(ready,{exact:true}).first().waitFor();await page.waitForLoadState('networkidle');await page.screenshot({path:''+screenshot+'.png',fullPage:true});results.push({path,rendered:true})}
+ const elder=await login(2,'elder');
+ await view(elder,'/elder/home','健康提醒','elder-home');
+ await view(elder,'/elder/profile','已授权家属','elder-profile');
+ await elder.goto(base+'/elder/input');
+ await elder.getByRole('button',{name:'保存记录',exact:true}).waitFor();
+ await elder.waitForLoadState('networkidle');
+ const numbers=elder.locator('.el-input-number input');
+ await numbers.nth(0).fill('181');await numbers.nth(1).fill('111');
+ const inputResponse=elder.waitForResponse(r=>r.url().endsWith('/health/records')&&r.request().method()==='POST');
+ await elder.getByRole('button',{name:'保存记录',exact:true}).click();
+ const inputData=await(await inputResponse).json();if(inputData.code!==0||!inputData.data.warning_id)throw Error('Abnormal input failed: '+JSON.stringify(inputData));
+ const warningId=inputData.data.warning_id;
+ await elder.getByRole('button',{name:'确定',exact:true}).click();
+ results.push({abnormal_input:true,warning_id:warningId});
+ await view(elder,'/elder/history','指标历史','elder-history');
+ await view(elder,'/elder/trend','健康趋势图','elder-trend');
+ const family=await login(3,'family');
+ await view(family,'/family/home','我的家人','family-home');
+ await view(family,'/family/notifications','通知中心','family-notifications');
+ await family.getByText('张桂兰健康预警',{exact:true}).click();
+ await family.waitForURL('**/family/alert/'+warningId);
+ await family.getByRole('button',{name:'提交处理结论',exact:true}).waitFor();
+ await family.locator('textarea').fill('浏览器联调：家属已联系老人复核指标，并保留处理结论');
+ const handleResponse=family.waitForResponse(r=>r.url().endsWith('/alerts/'+warningId+'/handle')&&r.request().method()==='POST');
+ await family.getByRole('button',{name:'提交处理结论',exact:true}).click();
+ const handled=await(await handleResponse).json();if(handled.code!==0||handled.data.status!=='RESOLVED')throw Error('Handle failed');
+ await family.getByText('浏览器联调：家属已联系老人复核指标，并保留处理结论',{exact:true}).waitFor();
+ await family.screenshot({path:'family-handled.png',fullPage:true});results.push({family_handle:true});
+ await view(family,'/family/elder/1','近期趋势','family-elder');
+ await family.goto(base+'/family/ai');await family.getByPlaceholder('请输入您想咨询的健康问题…').fill('我血压高要注意什么');
+ const chatResponse=family.waitForResponse(r=>r.url().endsWith('/ai/chat'));
+ await family.getByRole('button',{name:'发送',exact:true}).click();
+ const degraded=await(await chatResponse).json();if(degraded.code!==3001)throw Error('Expected no-key degradation');
+ await family.getByText(/AI/).first().waitFor();
+ if(await family.getByPlaceholder('请输入您想咨询的健康问题…').inputValue()!=='我血压高要注意什么')throw Error('AI failed input was not retained');
+ await family.screenshot({path:'ai-degraded.png',fullPage:true});results.push({ai_unavailable_input_retained:true});
+ const care=await login(4,'care');
+ await view(care,'/care/elders','负责老人工作台','care-elders');
+ await care.getByRole('button',{name:'查看与照护',exact:true}).click();
+ await care.getByText('最近指标',{exact:true}).waitFor();await care.screenshot({path:'care-detail.png',fullPage:true});
+ await view(care,'/care/alerts','预警中心','care-alerts');
+ await view(care,'/care/handles','我的预警处理记录','care-handles');
+ const admin=await login(1,'admin');
+ for(const [path,label] of [['statistics','系统统计'],['users','用户管理'],['thresholds','预警阈值配置'],['indicators','健康指标配置'],['knowledge','健康知识库'],['bindings','绑定确认']])await view(admin,'/admin/'+path,label,'admin-'+path);
+ await elder.goto(base+'/admin/users');await elder.waitForURL('**/forbidden');await elder.getByText('无权限访问',{exact:true}).waitFor();results.push({cross_role_route_guard:true});
+ await elder.evaluate(()=>localStorage.setItem('kangyang_token','invalid-ui-test-token'));
+ await elder.goto(base+'/elder/home');await elder.waitForURL('**/login?expired=1001');await elder.getByText('会话已过期，请重新登录',{exact:true}).waitFor();results.push({expired_token:true});
+ if(errors.length)throw Error('Browser page errors: '+errors.join('\n'));
+ fs.writeFileSync('browser-results.json',JSON.stringify({database:'isolated SQLite',production_mysql:false,real_model:false,results,page_errors:errors},null,2));
+ console.log(JSON.stringify({passed:results.length,page_errors:errors.length,boundary:'真实FastAPI + 隔离SQLite；无模型Key'}));
+ await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

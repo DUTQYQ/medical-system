@@ -13,7 +13,7 @@
       <div v-if="pending.length" class="bind-list">
         <div v-for="b in pending" :key="b.bind_id" class="bind-item">
           <div class="bind-item__main">
-            <div class="bind-item__relation">{{ b.relation }}</div>
+            <div class="bind-item__relation">{{ b.family_name }} · {{ b.relation }}<span v-if="user.role !== 'ELDER'"> · {{ b.elder_name }}</span></div>
             <div class="bind-item__note">申请时间：{{ fmtDate(b.created_at) }}<template v-if="b.note"> · 备注：{{ b.note }}</template></div>
           </div>
           <div class="bind-item__actions">
@@ -30,7 +30,7 @@
       <div class="ky-card__title">已授权家属</div>
       <div v-if="approved.length">
         <el-table :data="approved" style="width: 100%">
-          <el-table-column prop="relation" label="关系" width="140" />
+          <el-table-column prop="family_name" label="家属" /><el-table-column prop="relation" label="关系" width="140" />
           <el-table-column prop="note" label="备注" />
           <el-table-column label="生效时间" min-width="180">
             <template #default="{ row }">{{ row.confirmed_at ? fmtDate(row.confirmed_at) : '—' }}</template>
@@ -50,7 +50,7 @@
       <div class="ky-card__title">已拒绝</div>
       <div v-if="rejected.length">
         <el-table :data="rejected" style="width: 100%">
-          <el-table-column prop="relation" label="关系" width="140" />
+          <el-table-column prop="family_name" label="家属" /><el-table-column prop="relation" label="关系" width="140" />
           <el-table-column prop="reject_reason" label="拒绝原因">
             <template #default="{ row }">{{ row.reject_reason || '—' }}</template>
           </el-table-column>
@@ -65,7 +65,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUser } from '@/utils/auth'
-import { fmtDate } from '@/api/mock'
+import { fmtDate } from '@/utils/format'
 import { listBindRequests, confirmBind, unbind } from '@/api'
 
 const user = getUser()
@@ -80,31 +80,31 @@ async function load() {
     approved.value = res.approved
     rejected.value = res.rejected
   } catch (e) {
-    ElMessage.error(e.message)
+    if (!['cancel','close'].includes(e)) ElMessage.error(e.message)
   }
 }
 
 async function approve(b) {
-  await ElMessageBox.confirm(`确认同意该家属绑定为您的「${b.relation}」吗？授权后对方可查看您的健康数据。`, '确认授权', {
+  try { await ElMessageBox.confirm(`确认同意该家属绑定为您的「${b.relation}」吗？授权后对方可查看您的健康数据。`, '确认授权', {
     type: 'info',
     confirmButtonText: '同意授权',
   })
-  try {
-    await confirmBind({ bind_id: b.bind_id, decision: 'APPROVE' })
+    let reason = ''; if (user.role !== 'ELDER') { const answer = await ElMessageBox.prompt('请填写代确认原因', '代确认授权', { inputValidator: v => !!v?.trim() || '原因不能为空' }); reason = answer.value; }
+    await confirmBind({ bind_id: b.bind_id, decision: 'APPROVE', reason })
     ElMessage.success('已授权')
     load()
   } catch (e) {
-    ElMessage.error(e.message)
+    if (!['cancel','close'].includes(e)) ElMessage.error(e.message)
   }
 }
 
 async function reject(b) {
-  const { value } = await ElMessageBox.prompt('请输入拒绝原因（可选）', '拒绝申请', {
+  try { const { value } = await ElMessageBox.prompt('请输入拒绝原因（可选）', '拒绝申请', {
     confirmButtonText: '确认拒绝',
     cancelButtonText: '取消',
     inputValue: '',
+    inputValidator: user.role === 'ELDER' ? undefined : value => !!value?.trim() || '代拒绝需要填写原因',
   })
-  try {
     await confirmBind({ bind_id: b.bind_id, decision: 'REJECT', reason: value || '' })
     ElMessage.success('已拒绝')
     load()
@@ -114,13 +114,12 @@ async function reject(b) {
 }
 
 async function onUnbind(b) {
-  await ElMessageBox.confirm(`确定解除与「${b.relation}」的授权吗？解除后对方将无法查看您的健康数据。`, '解除授权', { type: 'warning' })
-  try {
+  try { await ElMessageBox.confirm(`确定解除与「${b.relation}」的授权吗？解除后对方将无法查看您的健康数据。`, '解除授权', { type: 'warning' })
     await unbind(b.bind_id)
     ElMessage.success('已解除授权')
     load()
   } catch (e) {
-    ElMessage.error(e.message)
+    if (!['cancel','close'].includes(e)) ElMessage.error(e.message)
   }
 }
 

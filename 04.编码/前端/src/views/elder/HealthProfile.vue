@@ -7,7 +7,7 @@
           <el-option v-for="p in profiles" :key="p.profile_id" :label="p.name" :value="p.profile_id" />
         </el-select>
         <el-button @click="$router.push('/elder/profile/edit')">＋ 新增档案</el-button>
-        <el-button type="primary" @click="$router.push(`/elder/profile/edit?id=${profileId}`)">编辑档案</el-button>
+        <el-button type="primary" :disabled="!profileId" @click="$router.push(`/elder/profile/edit?id=${profileId}`)">编辑档案</el-button><el-button type="danger" :disabled="!profileId" @click="remove">删除档案</el-button>
       </div>
     </div>
 
@@ -16,8 +16,9 @@
         <div class="ky-card__title">基本信息</div>
         <el-descriptions :column="3" border>
           <el-descriptions-item label="姓名">{{ profile.name }}</el-descriptions-item>
+          <el-descriptions-item label="档案编号">{{ profile.profile_id }}（家属申请指定绑定时使用）</el-descriptions-item>
           <el-descriptions-item label="性别">{{ profile.gender === 'M' ? '男' : '女' }}</el-descriptions-item>
-          <el-descriptions-item label="年龄">{{ profile.age }} 岁</el-descriptions-item>
+          <el-descriptions-item label="年龄">{{ profile.age ?? '—' }} 岁</el-descriptions-item>
           <el-descriptions-item label="出生日期">{{ profile.birthday }}</el-descriptions-item>
           <el-descriptions-item label="身高 / 体重">{{ profile.height }} cm / {{ profile.weight }} kg</el-descriptions-item>
           <el-descriptions-item label="血型">{{ profile.blood_type }} 型</el-descriptions-item>
@@ -34,8 +35,8 @@
 
       <div class="ky-card">
         <div class="ky-card__title">既往病史与过敏史</div>
-        <div class="info-row"><span class="info-label">既往病史：</span>{{ profile.medical_history || '无' }}</div>
-        <div class="info-row"><span class="info-label">过敏史：</span>{{ profile.allergy || '无' }}</div>
+        <div class="info-row"><span class="info-label">既往病史：</span>{{ profile.medical_history || '未记录' }}</div>
+        <div class="info-row"><span class="info-label">过敏史：</span>{{ profile.allergy || '未记录' }}</div>
       </div>
 
       <div class="ky-card">
@@ -69,31 +70,35 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { useRoute } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUser } from '@/utils/auth'
-import { listProfiles, listBindRequests } from '@/api'
+import { listProfiles, listBindRequests, deleteProfile } from '@/api'
 import StatusTag from '@/components/common/StatusTag.vue'
 
 const user = getUser()
 const profiles = ref([])
-const profileId = ref(null)
+const profileId = ref(Number(useRoute().query.profile_id) || null)
 const profile = ref(null)
 const families = ref([])
 
 async function load() {
   try {
     profiles.value = await listProfiles(user.user_id, 'ELDER')
-    if (profiles.value.length && !profileId.value) profileId.value = profiles.value[0].profile_id
+    if (profiles.value.length && !profiles.value.some(p=>p.profile_id===profileId.value)) profileId.value = profiles.value[0].profile_id
     profile.value = profiles.value.find((p) => p.profile_id === profileId.value) || null
     if (profile.value) {
       const req = await listBindRequests(user.user_id)
-      families.value = req.approved
+      families.value = req.approved.filter(b=>b.profile_id===profileId.value)
     }
   } catch (e) {
     ElMessage.error(e.message)
   }
 }
 
+async function remove() {
+  try { await ElMessageBox.confirm('确认删除健康档案？档案将停用，绑定关系无法继续访问；历史处理记录保留。', '删除档案', { type: 'warning' }); await deleteProfile(profileId.value); profileId.value=null; profile.value=null; await load(); ElMessage.success('档案已删除') } catch(e) { if (!['cancel','close'].includes(e)) ElMessage.error(e.message) }
+}
 onMounted(load)
 </script>
 

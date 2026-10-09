@@ -1,0 +1,53 @@
+{
+  "database": "isolated SQLite",
+  "real_model": false,
+  "results": [
+    {
+      "admin_create_user": true
+    },
+    {
+      "admin_disable": true
+    },
+    {
+      "admin_enable": true
+    },
+    {
+      "admin_role_change": true
+    },
+    {
+      "knowledge_create": true
+    },
+    {
+      "knowledge_edit": true
+    },
+    {
+      "knowledge_reindex": true
+    },
+    {
+      "knowledge_delete": true
+    },
+    {
+      "threshold_invalid_rejected": true
+    },
+    {
+      "threshold_save": true
+    },
+    {
+      "indicator_config_save": true
+    },
+    {
+      "network_failure_visible": true
+    }
+  ],
+  "page_errors": [],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}

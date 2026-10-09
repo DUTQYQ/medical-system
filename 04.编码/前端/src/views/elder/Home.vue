@@ -5,7 +5,7 @@
         <div class="home-greet">{{ greeting }}，{{ user?.name }} 👋</div>
         <div class="ky-sub">{{ today }} · 今天是美好的一天，记得按时测量健康指标</div>
       </div>
-      <el-button type="primary" size="large" @click="$router.push('/elder/input')">＋ 录入健康指标</el-button>
+      <el-select v-if="profiles.length>1" v-model="profileId" style="width:160px" @change="load"><el-option v-for="p in profiles" :key="p.profile_id" :label="p.name" :value="p.profile_id" /></el-select><el-button type="primary" size="large" @click="$router.push('/elder/input?profile_id='+profileId)">＋ 录入健康指标</el-button>
     </div>
 
     <!-- 今日健康速览 -->
@@ -16,7 +16,7 @@
           {{ bpText }}<span class="unit">mmHg</span>
         </div>
         <div class="ky-stat__extra">
-          <StatusTag kind="abnormal" :value="!!latest.BLOOD_PRESSURE?.is_abnormal" />
+          <StatusTag v-if="latest.BLOOD_PRESSURE" kind="abnormal" :value="!!latest.BLOOD_PRESSURE?.is_abnormal" /><span v-else>未记录</span>
           <span v-if="latest.BLOOD_PRESSURE" style="margin-left: 6px">{{ fmtTime(latest.BLOOD_PRESSURE.measured_at) }}</span>
         </div>
       </div>
@@ -24,21 +24,21 @@
         <div class="ky-stat__label">心率</div>
         <div class="ky-stat__value">{{ latest.HEART_RATE?.values.value ?? '—' }}<span class="unit">次/分</span></div>
         <div class="ky-stat__extra">
-          <StatusTag kind="abnormal" :value="!!latest.HEART_RATE?.is_abnormal" />
+          <StatusTag v-if="latest.HEART_RATE" kind="abnormal" :value="!!latest.HEART_RATE?.is_abnormal" /><span v-else>未记录</span><span v-if="latest.HEART_RATE" style="margin-left:6px">{{ fmtTime(latest.HEART_RATE.measured_at) }}</span>
         </div>
       </div>
       <div class="ky-stat">
-        <div class="ky-stat__label">空腹血糖</div>
+        <div class="ky-stat__label">血糖</div>
         <div class="ky-stat__value">{{ latest.BLOOD_SUGAR?.values.value ?? '—' }}<span class="unit">mmol/L</span></div>
         <div class="ky-stat__extra">
-          <StatusTag kind="abnormal" :value="!!latest.BLOOD_SUGAR?.is_abnormal" />
+          <StatusTag v-if="latest.BLOOD_SUGAR" kind="abnormal" :value="!!latest.BLOOD_SUGAR?.is_abnormal" /><span v-else>未记录</span><span v-if="latest.BLOOD_SUGAR" style="margin-left:6px">{{ fmtTime(latest.BLOOD_SUGAR.measured_at) }}</span>
         </div>
       </div>
       <div class="ky-stat">
         <div class="ky-stat__label">睡眠时长</div>
         <div class="ky-stat__value">{{ latest.SLEEP?.values.hours ?? '—' }}<span class="unit">小时</span></div>
         <div class="ky-stat__extra">
-          <StatusTag kind="abnormal" :value="!!latest.SLEEP?.is_abnormal" />
+          <StatusTag v-if="latest.SLEEP" kind="abnormal" :value="!!latest.SLEEP?.is_abnormal" /><span v-else>未记录</span><span v-if="latest.SLEEP" style="margin-left:6px">{{ fmtTime(latest.SLEEP.measured_at) }}</span>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
           <StatusTag kind="status" :value="a.status" />
         </div>
       </div>
-      <div v-else class="ky-empty">暂无待处理的健康提醒，继续保持 👍</div>
+      <div v-else class="ky-empty">暂无相关健康预警</div>
     </div>
 
     <!-- 快捷服务 -->
@@ -86,6 +86,7 @@ import { listProfiles, getLatestIndicators, listAlerts, summaryStats } from '@/a
 import StatusTag from '@/components/common/StatusTag.vue'
 
 const user = getUser()
+const profiles = ref([])
 const profileId = ref(null)
 const latest = ref({})
 const alerts = ref([])
@@ -110,8 +111,8 @@ const services = [
   { name: '指标录入', icon: '✍️', desc: '录入血压、血糖等指标', path: '/elder/input' },
   { name: '指标历史', icon: '📈', desc: '查看历史与趋势图', path: '/elder/history' },
   { name: 'AI 健康咨询', icon: '🤖', desc: 'AI 助手随时答疑', path: '/elder/ai' },
-  { name: '健康打卡', icon: '✅', desc: '每日健康习惯打卡', path: '/elder/checkin' },
-  { name: '用药信息', icon: '💊', desc: '管理常用药物', path: '/elder/medication' },
+  { name: '【选配】健康打卡', icon: '✅', desc: '每日健康习惯打卡', path: '/elder/checkin' },
+  { name: '【选配】本机用药备忘', icon: '💊', desc: '管理常用药物', path: '/elder/medication' },
 ]
 
 function fmtTime(iso) {
@@ -121,13 +122,13 @@ function fmtTime(iso) {
 
 async function load() {
   try {
-    const profiles = await listProfiles(user.user_id, 'ELDER')
-    if (!profiles.length) return
-    profileId.value = profiles[0].profile_id
+    profiles.value = await listProfiles()
+    if (!profiles.value.length) return
+    if (!profiles.value.some(p=>p.profile_id===profileId.value)) profileId.value = profiles.value[0].profile_id
 
     const [lat, alertRes, statRes] = await Promise.all([
       getLatestIndicators(profileId.value),
-      listAlerts({ user_id: user.user_id, page: 1, page_size: 5 }),
+      listAlerts({ profile_id: profileId.value, page: 1, page_size: 5 }),
       summaryStats(user.user_id),
     ])
     latest.value = lat

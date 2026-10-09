@@ -14,8 +14,12 @@
         description="生效后您才能查看老人的健康档案、指标趋势与预警信息（设计决策 D-02 三段式绑定）。"
       />
       <el-form :model="form" label-position="top">
-        <el-form-item label="老人手机号（其在档案中登记的主/备联系号码）">
+        <el-form-item label="老人注册账号手机号">
           <el-input v-model="form.phone" placeholder="请输入老人手机号" maxlength="11" />
+        </el-form-item>
+        <el-form-item label="目标档案编号（可选）">
+          <el-input-number v-model="form.profile_id" :min="1" placeholder="老人告知的档案编号（可留空）" style="width:100%;margin-bottom:12px" />
+          <p class="ky-sub">老人有多份档案时可填写具体编号；留空申请其第一份有效档案。申请期间不能查看健康数据。</p>
         </el-form-item>
         <el-form-item label="您与老人的关系">
           <el-select v-model="form.relation" style="width: 100%">
@@ -61,7 +65,7 @@ import StatusTag from '@/components/common/StatusTag.vue'
 
 const user = getUser()
 const relations = ['儿子', '女儿', '女婿', '儿媳', '孙子', '孙女', '配偶', '其他亲属']
-const form = reactive({ phone: '', relation: '儿子', note: '' })
+const form = reactive({ phone: '', relation: '儿子', note: '', profile_id: null })
 const binds = ref([])
 const submitting = ref(false)
 
@@ -69,7 +73,7 @@ async function load() {
   try {
     binds.value = await listMyBinds(user.user_id)
   } catch (e) {
-    ElMessage.error(e.message)
+    if (!['cancel','close'].includes(e)) ElMessage.error(e.message)
   }
 }
 
@@ -77,10 +81,11 @@ async function onSubmit() {
   if (!/^1\d{10}$/.test(form.phone)) return ElMessage.warning('请输入正确的老人手机号')
   submitting.value = true
   try {
-    await submitBind({ family_user_id: user.user_id, elder_phone: form.phone, relation: form.relation, note: form.note })
+    await submitBind({ elder_phone: form.phone, relation: form.relation, note: form.note, profile_id: form.profile_id })
     ElMessage.success('申请已提交，等待老人确认')
     form.phone = ''
     form.note = ''
+    form.profile_id = null
     load()
   } catch (e) {
     ElMessage.error(e.message)
@@ -90,13 +95,12 @@ async function onSubmit() {
 }
 
 async function onUnbind(row) {
-  await ElMessageBox.confirm(`确定解除与「${row.elder_name}」的绑定吗？解除后将无法查看其健康数据。`, '解绑确认', { type: 'warning' })
-  try {
+  try { await ElMessageBox.confirm(`确定解除与「${row.elder_name}」的绑定吗？解除后将无法查看其健康数据。`, '解绑确认', { type: 'warning' })
     await unbind(row.bind_id)
     ElMessage.success('已解绑')
     load()
   } catch (e) {
-    ElMessage.error(e.message)
+    if (!['cancel','close'].includes(e)) ElMessage.error(e.message)
   }
 }
 

@@ -2,7 +2,7 @@
   "name": "kangyang-frontend",
   "version": "0.1.0",
   "private": true,
-  "description": "基于 AI 智能体的康养系统 · 前端（老人端 + 家属端 + 公共/认证）",
+  "description": "基于 AI 智能体的康养系统 · 前端（老人、家属、护工、管理员）",
   "type": "module",
   "scripts": {
     "dev": "vite",

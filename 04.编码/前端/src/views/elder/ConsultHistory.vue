@@ -14,7 +14,7 @@
         <el-table-column label="操作" width="200">
           <template #default="{ row }">
             <el-button link type="primary" @click="openSession(row)">查看</el-button>
-            <el-button link type="danger" @click="removeSession(row)">删除</el-button>
+            <el-button v-if="row.can_delete !== false" link type="danger" @click="removeSession(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -40,7 +40,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUser } from '@/utils/auth'
-import { fmtDate } from '@/api/mock'
+import { fmtDate } from '@/utils/format'
 import { listSessions, listMessages, deleteSession } from '@/api'
 
 const user = getUser()
@@ -67,18 +67,17 @@ async function openSession(s) {
     dialogMessages.value = await listMessages(s.session_id)
     dialogVisible.value = true
   } catch (e) {
-    ElMessage.error(e.message)
+    if (!['cancel','close'].includes(e)) ElMessage.error(e.message)
   }
 }
 
 async function removeSession(s) {
-  await ElMessageBox.confirm(`确定删除会话「${s.title}」吗？`, '提示', { type: 'warning' })
-  try {
+  try { await ElMessageBox.confirm(`确定删除会话「${s.title}」吗？`, '提示', { type: 'warning' })
     await deleteSession(s.session_id)
     ElMessage.success('已删除')
     load()
   } catch (e) {
-    ElMessage.error(e.message)
+    if (!['cancel','close'].includes(e)) ElMessage.error(e.message)
   }
 }
 

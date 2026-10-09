@@ -9,7 +9,7 @@
 
     <div class="ky-card">
       <el-form :model="form" label-position="top">
-        <el-row :gutter="16">
+        <el-alert v-if="!isEdit && sourceProfileId" type="info" :closable="false" title="新档案归属于所选老人的账号，并继承您对来源档案的现有授权关系。" style="margin-bottom:16px" /><el-form-item v-if="!isEdit && scope==='admin'" label="所属老人账号"><el-select v-model="targetUserId" filterable placeholder="选择启用的老人账号"><el-option v-for="u in targetUsers" :key="u.user_id" :label="u.name+'（'+u.phone+'）'" :value="u.user_id" /></el-select></el-form-item><el-row :gutter="16">
           <el-col :xs="24" :sm="12">
             <el-form-item label="姓名">
               <el-input v-model="form.name" placeholder="请输入姓名" />
@@ -72,16 +72,8 @@
               <el-input v-model="form.emergency_phone" placeholder="手机号" maxlength="11" />
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="12">
-            <el-form-item label="备用联系人">
-              <el-input v-model="form.backup_contact" placeholder="姓名，可留空" />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12">
-            <el-form-item label="备用联系人电话">
-              <el-input v-model="form.backup_phone" placeholder="手机号，可留空" maxlength="11" />
-            </el-form-item>
-          </el-col>
+
+
         </el-row>
 
         <div style="display: flex; gap: 12px; margin-top: 8px">
@@ -98,7 +90,7 @@ import { reactive, ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getUser } from '@/utils/auth'
-import { getProfile, createProfile, updateProfile } from '@/api'
+import { getProfile, createProfile, updateProfile, listUsers } from '@/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -106,6 +98,10 @@ const user = getUser()
 const editId = route.query.id ? Number(route.query.id) : null
 const isEdit = computed(() => !!editId)
 const saving = ref(false)
+const scope = route.meta.scope || 'elder'
+const targetUsers = ref([])
+const targetUserId = ref(null)
+const sourceProfileId = Number(route.query.source_profile_id) || null
 
 const chronicOptions = ['高血压', '2 型糖尿病', '冠心病', '骨质疏松', '慢阻肺', '失眠']
 
@@ -114,18 +110,17 @@ const form = reactive({
   gender: 'F',
   birthday: '',
   blood_type: 'A',
-  height: 160,
-  weight: 60,
+  height: null,
+  weight: null,
   chronic_tags: [],
   medical_history: '',
   allergy: '',
   emergency_contact: '',
   emergency_phone: '',
-  backup_contact: '',
-  backup_phone: '',
 })
 
 onMounted(async () => {
+  if (scope === 'admin' && !editId) { try { const result = await listUsers({ role:'ELDER', page_size:100 }); targetUsers.value = result.list.filter(u=>u.enabled) } catch(e) { ElMessage.error(e.message) } }
   if (editId) {
     try {
       const p = await getProfile(editId)
@@ -140,17 +135,26 @@ onMounted(async () => {
 
 async function onSave() {
   if (!form.name.trim()) return ElMessage.warning('请填写姓名')
+  if (form.birthday && form.birthday > new Date().toLocaleDateString('en-CA')) return ElMessage.warning('出生日期不能在未来')
   if (!form.emergency_contact.trim() || !form.emergency_phone.trim()) return ElMessage.warning('请填写主联系人与电话')
   saving.value = true
   try {
     if (isEdit.value) {
-      await updateProfile(editId, { ...form })
+      await updateProfile(editId, { ...form, birthday: form.birthday || null })
       ElMessage.success('档案已更新')
     } else {
-      await createProfile({ ...form, user_id: user.user_id, age: calcAge(form.birthday) })
+      if (scope === 'admin' && !targetUserId.value) { ElMessage.warning('请选择所属老人账号'); return }
+      const payload = { ...form, birthday: form.birthday || null }
+      if (scope === 'admin') payload.user_id = targetUserId.value
+      if (['family','care'].includes(scope)) payload.source_profile_id = sourceProfileId
+      const created = await createProfile(payload)
+      if (['family','care'].includes(scope)) { ElMessage.success('档案已创建'); router.push('/'+scope+'/elder/'+created.profile_id); return }
+      if (scope === 'elder') { ElMessage.success('档案已创建'); router.push('/elder/profile?profile_id='+created.profile_id); return }
       ElMessage.success('档案已创建')
     }
-    router.push('/elder/profile')
+    if (scope === 'elder') router.push('/elder/profile?profile_id='+editId)
+    else if (scope === 'admin') router.push('/admin/profiles')
+    else router.push('/'+scope+'/elder/'+editId)
   } catch (e) {
     ElMessage.error(e.message)
   } finally {
@@ -158,9 +162,4 @@ async function onSave() {
   }
 }
 
-function calcAge(birthday) {
-  if (!birthday) return 70
-  const b = new Date(birthday)
-  return Math.floor((Date.now() - b.getTime()) / (365.25 * 24 * 3600 * 1000))
-}
 </script>

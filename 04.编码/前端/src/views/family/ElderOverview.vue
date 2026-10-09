@@ -7,8 +7,8 @@
         <el-tag v-if="overview.relation" type="primary">{{ overview.relation }}</el-tag>
       </div>
       <div style="display: flex; gap: 12px">
-        <el-button @click="dialogVisible = true">✍️ 代录指标</el-button>
-        <el-button type="primary" @click="$router.push('/family/ai')">🤖 代发起 AI 咨询</el-button>
+<el-button :disabled="!overview.profile" @click="$router.push('/family/profile/edit?id='+profileId)">编辑档案</el-button><el-button :disabled="!overview.profile" @click="$router.push('/family/profile/edit?source_profile_id='+profileId)">新建代管档案</el-button><el-button :disabled="!overview.profile" @click="dialogVisible = true">✍️ 代录指标</el-button>
+        <el-button type="primary" @click="$router.push('/family/ai?profile_id='+profileId)">🤖 代发起 AI 咨询</el-button>
         <el-button @click="$router.push('/family/report')">📊 健康报告</el-button>
       </div>
     </div>
@@ -33,7 +33,7 @@
         <div class="ky-stat">
           <div class="ky-stat__label">血压</div>
           <div class="ky-stat__value">{{ bpText }}<span class="unit">mmHg</span></div>
-          <div class="ky-stat__extra"><StatusTag kind="abnormal" :value="!!overview.latest?.BLOOD_PRESSURE?.is_abnormal" /></div>
+          <div class="ky-stat__extra"><StatusTag v-if="overview.latest?.BLOOD_PRESSURE" kind="abnormal" :value="!!overview.latest?.BLOOD_PRESSURE?.is_abnormal" /><span v-else>未记录</span></div>
         </div>
         <div class="ky-stat">
           <div class="ky-stat__label">心率</div>
@@ -81,28 +81,7 @@
     </template>
 
     <!-- 代录指标对话框 -->
-    <el-dialog v-model="dialogVisible" title="代录指标" width="560px">
-      <el-form label-position="top">
-        <el-form-item label="指标类型">
-          <el-radio-group v-model="form.type" @change="resetValues">
-            <el-radio-button v-for="ind in indicators" :key="ind.type" :label="ind.type">{{ ind.name }}</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item v-if="form.type === 'BLOOD_SUGAR'" label="测量时机">
-          <el-radio-group v-model="form.timing">
-            <el-radio-button label="空腹">空腹</el-radio-button>
-            <el-radio-button label="餐后 2 小时">餐后 2 小时</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item v-for="f in currentFields" :key="f.key" :label="f.label">
-          <el-input-number v-model="form.values[f.key]" :step="f.key === 'hours' ? 0.5 : 1" :min="0" style="width: 100%" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="onSubmitRecord">保存</el-button>
-      </template>
-    </el-dialog>
+    <el-dialog v-model="dialogVisible" title="代录健康指标" width="min(760px,95vw)"><HealthInput :fixed-profile-id="profileId" @saved="dialogVisible=false;load()" /></el-dialog>
   </div>
 </template>
 
@@ -112,6 +91,7 @@ import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUser } from '@/utils/auth'
 import { getElderOverview, getTrend, getIndicators, addRecord } from '@/api'
+import HealthInput from '@/components/common/HealthInput.vue'
 import StatusTag from '@/components/common/StatusTag.vue'
 import TrendChart from '@/components/common/TrendChart.vue'
 
@@ -150,7 +130,7 @@ async function load() {
 
 async function loadTrend() {
   try {
-    const d = await getTrend({ profile_id: profileId, type: trendType.value, days: 14 })
+    const d = await getTrend({ profile_id: profileId, type: trendType.value, days: 30 })
     trend.value = { ...d, unit: UNIT[trendType.value] || '' }
   } catch (e) {
     /* 忽略 */

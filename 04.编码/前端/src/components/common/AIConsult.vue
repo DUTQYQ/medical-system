@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div class="ai-layout">
+    <el-alert v-if="error" type="error" :closable="false" :title="error" style="margin-bottom:16px" /><el-alert v-if="retrievalInfo?.semantic_embedding === false" type="info" :closable="false" title="当前知识检索使用离线词形向量，尚未启用语义 Embedding；来源匹配能力有此限制。" style="margin-bottom:16px" /><el-alert v-if="modelStatus==='BYPASSED_FOR_SAFETY'" type="warning" :closable="false" title="紧急求助提示由安全规则生成，已触发预警；请立即寻求人工医疗帮助。" style="margin-bottom:16px" /><div class="ai-layout">
       <!-- 左侧会话列表 -->
       <aside class="ai-sessions ky-card">
         <el-button type="primary" style="width: 100%" @click="newSession">＋ 新建咨询</el-button>
@@ -18,13 +18,13 @@
           <div
             v-for="s in sessions"
             :key="s.session_id"
-            class="ai-session-item"
+            class="ai-session-item" tabindex="0" role="button"
             :class="{ 'ai-session-item--active': s.session_id === currentSessionId }"
-            @click="openSession(s)"
+            @click="openSession(s)" @keydown.enter="openSession(s)"
           >
             <div class="ai-session-item__title">{{ s.title }}</div>
             <div class="ai-session-item__time">{{ fmtDate(s.created_at) }}</div>
-            <el-button link type="danger" size="small" @click.stop="removeSession(s)">删除</el-button>
+            <el-button v-if="s.can_delete !== false" link type="danger" size="small" @click.stop="removeSession(s)">删除</el-button>
           </div>
           <div v-if="!sessions.length" class="ky-empty">暂无历史会话</div>
         </div>
@@ -41,7 +41,7 @@
             <div v-if="!messages.length" class="ai-chat__hint">
               <p>您好，我是您的 AI 健康助手。您可以问我血压、血糖、睡眠、运动、用药等问题。</p>
               <div class="ai-presets">
-                <el-tag v-for="q in presets" :key="q" class="ai-preset" @click="sendPreset(q)">{{ q }}</el-tag>
+                <el-tag v-for="q in presets" :key="q" class="ai-preset" tabindex="0" role="button" @click="sendPreset(q)" @keydown.enter="sendPreset(q)">{{ q }}</el-tag>
               </div>
             </div>
 
@@ -49,11 +49,11 @@
               <div class="ai-msg__bubble" :class="m.role === 'user' ? 'ky-bubble--user' : 'ky-bubble--ai'">
                 <div v-if="m.role === 'assistant'" class="ai-msg__meta">
                   <el-tag size="small" :type="safetyType(m.safety_level)">{{ safetyText(m.safety_level) }}</el-tag>
-                  <el-tag size="small" type="info" v-if="m.intent">{{ intentText(m.intent) }}</el-tag>
+                  <el-tag size="small" type="info" v-if="m.intent">{{ intentText(m.intent) }}</el-tag><el-tag v-if="m.agent" size="small">Agent: {{ m.agent }}</el-tag>
                 </div>
                 <div style="white-space: pre-wrap">{{ m.content }}</div>
                 <div v-if="m.sources && m.sources.length" class="ai-msg__sources">
-                  参考来源：{{ m.sources.join('、') }}
+                  参考来源：{{ m.sources.map(x => typeof x === 'string' ? x : x.title || x.source || '知识条目').join('、') }}
                 </div>
               </div>
             </div>
@@ -86,142 +86,37 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { getUser } from '@/utils/auth'
-import { fmtDate } from '@/api/mock'
-import { listProfiles, listSessions, createSession, listMessages, sendMessage, deleteSession } from '@/api'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { fmtDate } from '@/utils/format'
+import { listProfiles, listSessions, listMessages, sendMessage, deleteSession } from '@/api'
 import DisclaimerFooter from './DisclaimerFooter.vue'
-
-const route = useRoute()
-const scope = route.meta.scope || 'elder'
-const user = getUser()
-
-const profiles = ref([])
-const selectedProfileId = ref(null)
-const sessions = ref([])
-const currentSessionId = ref(null)
-const messages = ref([])
-const input = ref('')
-const loading = ref(false)
-const chatBody = ref(null)
-
-const presets = ['我血压有点高要注意什么？', '血糖高了怎么吃？', '最近睡眠不好怎么办？']
-
-const SAFETY = { SAFE: { text: '健康建议', type: 'success' }, NEED_CONFIRM: { text: '需谨慎', type: 'warning' }, ESCALATE: { text: '紧急', type: 'danger' } }
-const INTENT = { HEALTH_CONSULT: '健康咨询', MEDICATION_CONSULT: '用药咨询', EMERGENCY: '紧急求助' }
-
-function safetyType(v) {
-  return (SAFETY[v] || { type: 'info' }).type
+const route=useRoute(),scope=route.meta.scope||'elder'
+const profiles=ref([]),selectedProfileId=ref(null),sessions=ref([]),currentSessionId=ref(null),messages=ref([]),input=ref(''),loading=ref(false),chatBody=ref(null),error=ref('')
+const retrievalInfo=ref(null), modelStatus=ref('')
+const presets=['我血压有点高要注意什么？','血糖高了怎么吃？','最近睡眠不好怎么办？']
+const SAFETY={L1:{text:'L1 日常健康建议',type:'success'},L2:{text:'L2 数据建议',type:'info'},L3:{text:'L3 异常关注',type:'warning'},L4:{text:'L4 紧急求助',type:'danger'}}
+const INTENT={NORMAL:'日常咨询',DATA:'健康数据',ABNORMAL:'异常关注',EMERGENCY:'紧急求助'}
+function safetyType(v){return SAFETY[v]?.type||'info'}
+function safetyText(v){return SAFETY[v]?.text||v||'健康建议'}
+function intentText(v){return INTENT[v]||v}
+async function loadSessions(){if(!selectedProfileId.value)return;try{sessions.value=await listSessions({profile_id:selectedProfileId.value})}catch(e){error.value=e.message}}
+async function openSession(s){currentSessionId.value=s.session_id;selectedProfileId.value=s.profile_id;try{messages.value=await listMessages(s.session_id);await scrollBottom()}catch(e){error.value=e.message}}
+function newSession(){currentSessionId.value=null;messages.value=[];input.value='';error.value=''}
+async function removeSession(s){try{await ElMessageBox.confirm('确认删除会话 '+s.title+'？','删除会话',{type:'warning'});await deleteSession(s.session_id);sessions.value=sessions.value.filter(x=>x.session_id!==s.session_id);if(currentSessionId.value===s.session_id)newSession()}catch(e){if(!['cancel','close'].includes(e))ElMessage.error(e.message)}}
+function onSwitchProfile(){newSession();loadSessions()}
+async function send(){
+ const content=input.value.trim();if(!content||!selectedProfileId.value||loading.value)return
+ loading.value=true;error.value='';input.value=''
+ const tmp={message_id:'pending-'+Date.now(),role:'user',content};messages.value.push(tmp);await scrollBottom()
+ try{const reply=await sendMessage({session_id:currentSessionId.value,profile_id:selectedProfileId.value,content});currentSessionId.value=reply.session_id;messages.value=await listMessages(reply.session_id);retrievalInfo.value=reply.retrieval||null;modelStatus.value=reply.model_status||'';await loadSessions()}
+ catch(e){error.value=e.message;input.value=content;messages.value=messages.value.filter(m=>m!==tmp);await loadSessions()}
+ finally{loading.value=false;await scrollBottom()}
 }
-function safetyText(v) {
-  return (SAFETY[v] || { text: v || '建议' }).text
-}
-function intentText(v) {
-  return INTENT[v] || v || ''
-}
-
-async function loadProfiles() {
-  try {
-    profiles.value = await listProfiles(user.user_id, scope === 'family' ? 'FAMILY' : 'ELDER')
-    if (profiles.value.length) selectedProfileId.value = profiles.value[0].profile_id
-  } catch (e) {
-    ElMessage.error(e.message)
-  }
-}
-
-async function loadSessions() {
-  try {
-    sessions.value = await listSessions({ user_id: user.user_id })
-  } catch (e) {
-    ElMessage.error(e.message)
-  }
-}
-
-async function openSession(s) {
-  currentSessionId.value = s.session_id
-  try {
-    messages.value = await listMessages(s.session_id)
-    await scrollBottom()
-  } catch (e) {
-    ElMessage.error(e.message)
-  }
-}
-
-async function newSession() {
-  if (!selectedProfileId.value) return
-  try {
-    const s = await createSession({ user_id: user.user_id, profile_id: selectedProfileId.value, title: '新的健康咨询' })
-    sessions.value.unshift(s)
-    currentSessionId.value = s.session_id
-    messages.value = []
-    input.value = ''
-  } catch (e) {
-    ElMessage.error(e.message)
-  }
-}
-
-async function removeSession(s) {
-  try {
-    await deleteSession(s.session_id)
-    sessions.value = sessions.value.filter((x) => x.session_id !== s.session_id)
-    if (currentSessionId.value === s.session_id) {
-      currentSessionId.value = null
-      messages.value = []
-    }
-  } catch (e) {
-    ElMessage.error(e.message)
-  }
-}
-
-function onSwitchProfile() {
-  currentSessionId.value = null
-  messages.value = []
-}
-
-async function send() {
-  const content = input.value.trim()
-  if (!content || !selectedProfileId.value) return
-  if (!currentSessionId.value) await newSession()
-  if (!currentSessionId.value) return
-
-  input.value = ''
-  messages.value.push({ message_id: 'tmp-u', session_id: currentSessionId.value, role: 'user', content })
-  loading.value = true
-  await scrollBottom()
-  try {
-    const aiMsg = await sendMessage({
-      session_id: currentSessionId.value,
-      profile_id: selectedProfileId.value,
-      content,
-    })
-    messages.value.push(aiMsg)
-    if (!sessions.value.some((s) => s.session_id === currentSessionId.value)) {
-      sessions.value = await listSessions({ user_id: user.user_id })
-    }
-  } catch (e) {
-    messages.value.push({ message_id: 'tmp-e', session_id: currentSessionId.value, role: 'assistant', content: e.message, safety_level: null })
-    ElMessage.error(e.message)
-  } finally {
-    loading.value = false
-    await scrollBottom()
-  }
-}
-
-function sendPreset(q) {
-  input.value = q
-  send()
-}
-
-async function scrollBottom() {
-  await nextTick()
-  if (chatBody.value) chatBody.value.scrollTop = chatBody.value.scrollHeight
-}
-
-onMounted(async () => {
-  await loadProfiles()
-  await loadSessions()
-})
+function sendPreset(q){input.value=q;send()}
+async function scrollBottom(){await nextTick();if(chatBody.value)chatBody.value.scrollTop=chatBody.value.scrollHeight}
+onMounted(async()=>{try{profiles.value=await listProfiles();selectedProfileId.value=profiles.value.find(p=>p.profile_id===Number(route.query.profile_id))?.profile_id||profiles.value[0]?.profile_id;await loadSessions()}catch(e){error.value=e.message}})
 </script>
+
 
 <style scoped>
 .ai-layout {

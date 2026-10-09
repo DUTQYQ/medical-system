@@ -1,0 +1,22 @@
+{
+  "database": "isolated SQLite",
+  "production_mysql": false,
+  "real_model": false,
+  "results": [
+    {
+      "seven_knowledge_categories": true
+    },
+    {
+      "knowledge_select_real_save": true
+    },
+    {
+      "care_measured_range_real_filter": true,
+      "url": "http://127.0.0.1:5174/api/care/elders?start_at=2099-01-01T00:00:00&end_at=2099-01-02T00:00:00"
+    },
+    {
+      "actual_statistics_chart": true
+    }
+  ],
+  "page_errors": [],
+  "console": []
+}

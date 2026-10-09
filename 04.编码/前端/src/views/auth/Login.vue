@@ -19,22 +19,20 @@
         <el-link type="info" @click="$router.push('/forgot')">忘记密码？</el-link>
       </div>
 
-      <el-alert type="info" :closable="false" style="margin-top: 24px" title="演示账号（密码任意，mock 阶段不校验）">
-        <div>老人端：13000000002（张桂兰）</div>
-        <div>家属端：13000000003（李强）</div>
-      </el-alert>
+      <el-alert v-if="route.query.expired" type="warning" :closable="false" style="margin-top:24px" :title="route.query.expired === '1003' ? '账号已禁用，请联系管理员' : '会话已过期，请重新登录'" />
     </div>
   </div>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { login } from '@/api'
 import { setToken, setUser, roleHome } from '@/utils/auth'
 
 const router = useRouter()
+const route = useRoute()
 const form = reactive({ phone: '', password: '' })
 const loading = ref(false)
 

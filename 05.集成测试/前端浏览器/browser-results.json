@@ -1,0 +1,88 @@
+{
+  "database": "isolated SQLite",
+  "production_mysql": false,
+  "real_model": false,
+  "results": [
+    {
+      "path": "/elder/home",
+      "rendered": true
+    },
+    {
+      "path": "/elder/profile",
+      "rendered": true
+    },
+    {
+      "abnormal_input": true,
+      "warning_id": 1
+    },
+    {
+      "path": "/elder/history",
+      "rendered": true
+    },
+    {
+      "path": "/elder/trend",
+      "rendered": true
+    },
+    {
+      "path": "/family/home",
+      "rendered": true
+    },
+    {
+      "path": "/family/notifications",
+      "rendered": true
+    },
+    {
+      "family_handle": true
+    },
+    {
+      "path": "/family/elder/1",
+      "rendered": true
+    },
+    {
+      "ai_unavailable_input_retained": true
+    },
+    {
+      "path": "/care/elders",
+      "rendered": true
+    },
+    {
+      "path": "/care/alerts",
+      "rendered": true
+    },
+    {
+      "path": "/care/handles",
+      "rendered": true
+    },
+    {
+      "path": "/admin/statistics",
+      "rendered": true
+    },
+    {
+      "path": "/admin/users",
+      "rendered": true
+    },
+    {
+      "path": "/admin/thresholds",
+      "rendered": true
+    },
+    {
+      "path": "/admin/indicators",
+      "rendered": true
+    },
+    {
+      "path": "/admin/knowledge",
+      "rendered": true
+    },
+    {
+      "path": "/admin/bindings",
+      "rendered": true
+    },
+    {
+      "cross_role_route_guard": true
+    },
+    {
+      "expired_token": true
+    }
+  ],
+  "page_errors": []
+}

@@ -19,7 +19,7 @@
           <el-input v-model="form.phone" placeholder="请输入 11 位手机号" maxlength="11" />
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="form.password" type="password" show-password placeholder="6-20 位密码" />
+          <el-input v-model="form.password" type="password" show-password placeholder="8-72 位密码" />
         </el-form-item>
         <el-form-item label="确认密码">
           <el-input v-model="form.confirm" type="password" show-password placeholder="再次输入密码" />
@@ -47,7 +47,7 @@ const loading = ref(false)
 async function onRegister() {
   if (!form.name.trim()) return ElMessage.warning('请输入姓名')
   if (!/^1\d{10}$/.test(form.phone)) return ElMessage.warning('请输入正确的 11 位手机号')
-  if (form.password.length < 6) return ElMessage.warning('密码至少 6 位')
+  if (form.password.length < 8) return ElMessage.warning('密码至少 8 位')
   if (form.password !== form.confirm) return ElMessage.warning('两次输入的密码不一致')
   loading.value = true
   try {

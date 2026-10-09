@@ -5,9 +5,12 @@
 export default [
   {
     path: '/family',
+    meta: { role: 'FAMILY', scope: 'family' },
     component: () => import('../components/family/FamilyLayout.vue'),
     redirect: '/family/home',
     children: [
+      { path: 'profile/edit', component: () => import('../views/elder/ProfileEdit.vue') },
+      { path: 'input', component: () => import('../components/common/HealthInput.vue') },
       { path: 'home', name: 'FamilyHome', component: () => import('../views/family/Home.vue') },
       { path: 'bind', name: 'FamilyBind', component: () => import('../views/family/BindElder.vue') },
       { path: 'elder/:id', name: 'FamilyElderOverview', component: () => import('../views/family/ElderOverview.vue') },

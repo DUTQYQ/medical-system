@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "disclaimer": "健康建议不构成医疗诊断。知识用于一般健康教育，不替代专业评估，不提供个体诊断或调整用药方案。",
+  "documents": [
+    {
+      "seed_id": "official-hypertension-v1",
+      "title": "高血压：测量与日常管理",
+      "category": "高血压",
+      "content": "高血压往往没有明显症状，测量血压有助于发现问题。血压记录包含收缩压和舒张压。健康饮食、减少盐摄入、规律活动与避免烟草有助于管理血压；自测不能替代医务人员评估。按专业人员的既有处方管理用药，不根据 AI 回答自行调整。",
+      "sources": [
+        {
+          "title": "Hypertension",
+          "publisher": "世界卫生组织（WHO）",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/hypertension",
+          "published_or_reviewed_at": "2025-09-25",
+          "accessed_at": "2026-10-08"
+        }
+      ]
+    },
+    {
+      "seed_id": "official-diabetes-v1",
+      "title": "糖尿病与血糖：日常管理基础",
+      "category": "糖尿病",
+      "content": "糖尿病涉及胰岛素不足或不能有效发挥作用，可能造成血糖升高。均衡饮食、规律身体活动与不使用烟草有助于预防或延缓 2 型糖尿病。糖尿病管理包括专业人员指导的饮食、活动、治疗和并发症筛查；定期检查血糖并关注眼、肾及足部健康。症状或一次血糖记录不能替代专业检查。",
+      "sources": [
+        {
+          "title": "Diabetes",
+          "publisher": "世界卫生组织（WHO）",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+          "published_or_reviewed_at": "2024-11-14",
+          "accessed_at": "2026-10-08"
+        }
+      ]
+    },
+    {
+      "seed_id": "official-palpitations-v1",
+      "title": "心率异常与心悸：不适和求助信号",
+      "category": "心率异常",
+      "content": "心悸是心跳变得明显、不适或不寻常的感觉，可能表现为过快、乱跳或漏跳。反复出现、越来越频繁或持续几分钟以上，应联系医务人员评估。若当前心悸持续不消失，或伴胸痛、呼吸困难、将要晕倒或昏厥，应立即寻求急救，不等待 AI 回复，不自行驾车前往急诊。心率数字本身不能判断病因。",
+      "sources": [
+        {
+          "title": "Heart palpitations",
+          "publisher": "英国国家医疗服务体系（NHS）",
+          "url": "https://www.nhs.uk/symptoms/heart-palpitations/",
+          "published_or_reviewed_at": "2026-03-17",
+          "accessed_at": "2026-10-08"
+        }
+      ]
+    },
+    {
+      "seed_id": "official-sleep-v1",
+      "title": "睡眠：规律作息与失眠就诊提示",
+      "category": "睡眠",
+      "content": "睡眠需求因人而异。每天在相近时间起床，睡前放松，保持卧室安静和较暗，并在白天规律活动，有助于改善睡眠习惯。避免深夜大餐及临睡前使用手机等设备。若调整习惯仍无改善、失眠持续数月或影响日常生活，应咨询医务人员；使用助眠产品前先咨询医生，困倦时不要驾驶。",
+      "sources": [
+        {
+          "title": "Insomnia",
+          "publisher": "英国国家医疗服务体系（NHS）",
+          "url": "https://www.nhs.uk/conditions/insomnia/",
+          "published_or_reviewed_at": "2024-03-19",
+          "accessed_at": "2026-10-08"
+        }
+      ]
+    },
+    {
+      "seed_id": "official-older-activity-v1",
+      "title": "老年运动：减少久坐与适合自己的活动",
+      "category": "老年运动",
+      "content": "身体活动不只指专门运动，步行、出行及家务中的身体活动也计算在内。任何适量活动都比完全不动更好，应减少久坐；规律活动对老年人的跌倒预防、心理健康和睡眠有益。运动安排需结合个人能力与健康状况，患慢病或身体受限者应寻求专业指导，本条不提供个体运动强度或处方。",
+      "sources": [
+        {
+          "title": "Physical activity",
+          "publisher": "世界卫生组织（WHO）",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity",
+          "published_or_reviewed_at": "2024-06-26",
+          "accessed_at": "2026-10-08"
+        }
+      ]
+    },
+    {
+      "seed_id": "official-older-diet-v1",
+      "title": "老年饮食：多样均衡与少盐",
+      "category": "老年饮食",
+      "content": "健康饮食强调充足、均衡、适度和多样。可选择多种蔬菜、水果、豆类和全谷物，减少高盐及高度加工食品，关注食品标签中的钠含量。具体饮食组成受年龄、活动水平及个人情况影响；本条提供一般科普，不规定每位老人的统一食谱，已有疾病的个体饮食方案应由专业人员评估。",
+      "sources": [
+        {
+          "title": "Healthy diet",
+          "publisher": "世界卫生组织（WHO）",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet",
+          "published_or_reviewed_at": "2026-01-26",
+          "accessed_at": "2026-10-08"
+        }
+      ]
+    },
+    {
+      "seed_id": "official-common-bp-question-v1",
+      "title": "常见问题：一次血压升高能判断疾病吗",
+      "category": "常见问题",
+      "content": "一次血压升高不能作为系统自动确诊的依据。WHO 资料说明，高血压诊断涉及不同日期的测量，且应由专业人员评估。记录测量结果并向医务人员咨询，不用 AI 回答替代诊断或自行更换药物。若血压很高并伴胸痛、呼吸困难等症状，应立即就医求助，不只等待下一次测量。",
+      "sources": [
+        {
+          "title": "Hypertension",
+          "publisher": "世界卫生组织（WHO）",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/hypertension",
+          "published_or_reviewed_at": "2025-09-25",
+          "accessed_at": "2026-10-08"
+        }
+      ]
+    }
+  ]
+}

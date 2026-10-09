@@ -1,0 +1,17 @@
+{
+  "database": "isolated SQLite",
+  "production_mysql": false,
+  "real_model": false,
+  "results": [
+    {
+      "care_abnormal_tag": true
+    },
+    {
+      "care_resolved_tag": true
+    },
+    {
+      "read_state_chinese_tag": true
+    }
+  ],
+  "page_errors": []
+}

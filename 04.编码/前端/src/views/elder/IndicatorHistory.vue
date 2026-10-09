@@ -1,7 +1,7 @@
 <template>
   <div class="ky-page">
     <div class="ky-page-header">
-      <h2 class="ky-page-title">指标历史</h2>
+      <h2 class="ky-page-title">指标历史</h2><el-select v-if="profiles.length>1" v-model="profileId" style="width:160px" @change="reload"><el-option v-for="p in profiles" :key="p.profile_id" :label="p.name" :value="p.profile_id" /></el-select>
       <div style="display: flex; gap: 12px">
         <el-button @click="$router.push('/elder/input')">＋ 录入指标</el-button>
         <el-button type="primary" @click="$router.push('/elder/trend')">查看趋势图</el-button>
@@ -32,6 +32,7 @@
         </el-table-column>
         <el-table-column prop="entered_by" label="录入人" width="120" />
         <el-table-column prop="remark" label="备注" min-width="140" />
+        <el-table-column label="操作" width="90"><template #default="{row}"><el-button link type="danger" @click="remove(row)">删除</el-button></template></el-table-column>
       </el-table>
 
       <el-pagination
@@ -49,10 +50,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUser } from '@/utils/auth'
-import { fmtDate } from '@/api/mock'
-import { listProfiles, getIndicators, listRecords } from '@/api'
+import { fmtDate } from '@/utils/format'
+import { listProfiles, getIndicators, listRecords, deleteRecord } from '@/api'
 import StatusTag from '@/components/common/StatusTag.vue'
 
 const user = getUser()
@@ -63,6 +64,7 @@ const total = ref(0)
 const page = ref(1)
 const pageSize = 10
 const loading = ref(false)
+const profiles = ref([])
 const profileId = ref(null)
 
 const UNIT = { BLOOD_PRESSURE: 'mmHg', BLOOD_SUGAR: 'mmol/L', HEART_RATE: '次/分', SLEEP: '小时', STEP: '步' }
@@ -101,11 +103,14 @@ function onPage(p) {
   load()
 }
 
+async function remove(row) { try { await ElMessageBox.confirm('确认删除这条指标记录？既有预警及处理留痕将保留。', '删除记录', { type:'warning' }); await deleteRecord(row.record_id); await load(); ElMessage.success('指标记录已删除') } catch(e) { if (!['cancel','close'].includes(e)) ElMessage.error(e.message) } }
+
 onMounted(async () => {
   try {
-    const [inds, profiles] = await Promise.all([getIndicators(), listProfiles(user.user_id, 'ELDER')])
+    const [inds, ps] = await Promise.all([getIndicators(), listProfiles(user.user_id, 'ELDER')])
     indicators.value = inds
-    if (profiles.length) profileId.value = profiles[0].profile_id
+    profiles.value = ps
+    if (ps.length) profileId.value = ps[0].profile_id
     await load()
   } catch (e) {
     ElMessage.error(e.message)

@@ -1,117 +1,16 @@
-<template>
-  <div class="ky-page">
-    <div class="ky-page-header">
-      <h2 class="ky-page-title">个人中心</h2>
-    </div>
-
-    <div class="ky-card">
-      <div class="profile-head">
-        <div class="profile-avatar">{{ (user?.name || '康')[0] }}</div>
-        <div>
-          <div class="profile-name">{{ user?.name || '未登录' }} <el-tag size="small" type="primary">{{ roleText }}</el-tag></div>
-          <div class="ky-sub">手机号：{{ user?.phone || '—' }}</div>
-        </div>
-      </div>
-
-      <el-descriptions :column="1" border style="margin-top: 20px">
-        <el-descriptions-item label="姓名">{{ user?.name || '—' }}</el-descriptions-item>
-        <el-descriptions-item label="手机号">{{ user?.phone || '—' }}</el-descriptions-item>
-        <el-descriptions-item label="角色">{{ roleText }}</el-descriptions-item>
-        <el-descriptions-item label="账号 ID">{{ user?.user_id || '—' }}</el-descriptions-item>
-      </el-descriptions>
-    </div>
-
-    <div class="ky-card">
-      <div class="ky-card__title">快捷入口</div>
-      <div class="quick-grid">
-        <div v-for="l in links" :key="l.path" class="quick-item" @click="$router.push(l.path)">
-          <div class="quick-icon">{{ l.icon }}</div>
-          <div>{{ l.label }}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ky-card">
-      <div class="ky-card__title">关于系统</div>
-      <p class="ky-sub" style="line-height: 1.8">
-        基于 AI 智能体的康养系统（大工软院 2026 秋季实训 · 第 17 组）。<br />
-        本系统面向老人提供健康档案管理、指标监测、AI 健康咨询与异常预警；面向家属提供远程照护与健康概况查看。<br />
-        适老化设计：大字号（正文 ≥18px）、大触控热区、主流程 ≤3 步。
-      </p>
-    </div>
-  </div>
-</template>
-
+<template><div class="ky-page" style="max-width:800px" v-loading="loading"><div class="ky-page-header"><h2 class="ky-page-title">个人中心</h2></div><div class="ky-card"><el-descriptions :column="1" border><el-descriptions-item label="账号">{{ user.user_id }}</el-descriptions-item><el-descriptions-item label="角色">{{ roles[user.role] }}</el-descriptions-item><el-descriptions-item label="手机号">{{ user.phone || '—' }}</el-descriptions-item></el-descriptions><el-form label-position="top" style="margin-top:20px"><el-form-item label="姓名"><el-input v-model="form.name" maxlength="30" /></el-form-item><el-form-item label="手机号"><el-input v-model="form.phone" maxlength="11" /></el-form-item><el-form-item label="当前密码（修改密码时填写）"><el-input v-model="form.current_password" type="password" show-password /></el-form-item><el-form-item label="新密码（不修改请留空）"><el-input v-model="form.new_password" type="password" show-password /></el-form-item><el-button type="primary" :loading="saving" @click="save">保存个人信息</el-button></el-form></div>
+<div class="ky-card"><div class="ky-card__title">隐私授权</div><p style="line-height:1.8">健康档案、指标、咨询与预警用于本系统的健康管理；授权家属与负责护工可按权限查看。解绑后访问权限即时收回。模型仅接收本次咨询所需的有限健康上下文，不获取账号密码。您可删除档案与会话，历史预警处理记录保留以便追溯。</p><el-tag v-if="user.privacy_consent?.accepted || consentSaved" type="success">已记录隐私授权</el-tag><template v-else><el-checkbox v-model="consent">我已阅读并同意以上健康数据使用说明</el-checkbox><el-button type="primary" :disabled="!consent" :loading="consenting" @click="authorize">记录授权</el-button></template></div>
+<div class="ky-card"><div class="ky-card__title">功能入口</div><el-button v-for="link in links" :key="link.path" @click="$router.push(link.path)">{{ link.label }}</el-button></div></div></template>
 <script setup>
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { getUser } from '@/utils/auth'
-
-const router = useRouter()
-const user = getUser()
-
-const ROLE_TEXT = { ELDER: '老人', FAMILY: '家属', CARE: '照护人员', ADMIN: '管理员' }
-const roleText = computed(() => ROLE_TEXT[user?.role] || user?.role || '—')
-
-const links = computed(() => {
-  if (user?.role === 'FAMILY') {
-    return [
-      { label: '绑定老人', path: '/family/bind', icon: '👨‍👩‍👧' },
-      { label: '健康日报周报', path: '/family/report', icon: '📊' },
-    ]
-  }
-  return [
-    { label: '绑定确认', path: '/elder/bind', icon: '🔗' },
-    { label: '健康打卡', path: '/elder/checkin', icon: '✅' },
-    { label: '用药信息', path: '/elder/medication', icon: '💊' },
-  ]
-})
+import { reactive,ref,onMounted,computed } from 'vue'
+import { ElMessage } from 'element-plus'
+import { getUser,setUser } from '@/utils/auth'
+import { getMe,updateMe,updatePassword,acceptPrivacy } from '@/api'
+const user=reactive(getUser()||{}),loading=ref(false),saving=ref(false),consent=ref(false),consenting=ref(false),consentSaved=ref(false)
+const form=reactive({name:user.name||'',phone:user.phone||'',current_password:'',new_password:''})
+const roles={ELDER:'老人',FAMILY:'家属',CARE:'护工',ADMIN:'管理员'}
+const links=computed(()=>user.role==='ELDER'?[{label:'绑定确认',path:'/elder/bind'},{label:'【选配】健康打卡',path:'/elder/checkin'},{label:'【选配】本机用药备忘',path:'/elder/medication'}]:user.role==='FAMILY'?[{label:'绑定老人',path:'/family/bind'},{label:'【选配】健康报告',path:'/family/report'}]:user.role==='CARE'?[{label:'负责老人',path:'/care/elders'}]:[{label:'用户管理',path:'/admin/users'}])
+async function save(){if(!form.name.trim())return ElMessage.warning('请填写姓名');if(!/^1\d{10}$/.test(form.phone))return ElMessage.warning('请输入正确手机号');saving.value=true;try{const p={name:form.name,phone:form.phone};await updateMe(p);if(form.new_password){await updatePassword({old_password:form.current_password,new_password:form.new_password});ElMessage.success('密码已修改，请重新登录');window.location.assign('/login?expired=1001');return;}const d=await getMe();Object.assign(user,d);setUser(d);form.current_password='';form.new_password='';ElMessage.success('个人信息已保存')}catch(e){ElMessage.error(e.message)}finally{saving.value=false}}
+async function authorize(){consenting.value=true;try{await acceptPrivacy();consentSaved.value=true;Object.assign(user,await getMe());setUser(user);ElMessage.success('隐私授权已记录')}catch(e){ElMessage.error(e.message)}finally{consenting.value=false}}
+onMounted(async()=>{loading.value=true;try{Object.assign(user,await getMe());form.name=user.name;form.phone=user.phone;setUser(user)}catch(e){ElMessage.error(e.message)}finally{loading.value=false}})
 </script>
-
-<style scoped>
-.profile-head {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.profile-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  color: #fff;
-  font-size: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.profile-name {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.quick-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 16px;
-}
-.quick-item {
-  border: 1px solid var(--color-border-light);
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.quick-item:hover {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-card);
-}
-.quick-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
-}
-</style>

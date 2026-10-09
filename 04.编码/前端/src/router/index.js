@@ -1,39 +1,29 @@
-// 路由总入口（梁霁鸣）
-// 职责：只负责 import 各人的路由文件并拼装 + 全局登录守卫，不写任何具体路由。
-// 各角色路由分别维护在 auth.js / elder.js / family.js，care/admin 由对应负责人后续补充。
-
 import { createRouter, createWebHistory } from 'vue-router'
 import authRoutes from './auth'
 import elderRoutes from './elder'
 import familyRoutes from './family'
-import { getToken, getUser, roleHome } from '../utils/auth'
-
-const routes = [
-  ...authRoutes,
-  ...elderRoutes,
-  ...familyRoutes,
-  { path: '/', redirect: '/login' },
-  { path: '/:pathMatch(.*)*', redirect: '/login' },
-]
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-})
-
-// 全局守卫：未登录跳登录；已登录访问登录页则按角色跳首页
-const PUBLIC_PATHS = ['/login', '/register', '/forgot']
-
-router.beforeEach((to) => {
-  const hasToken = !!getToken()
-  if (!hasToken && !PUBLIC_PATHS.includes(to.path)) {
-    return '/login'
+import careRoutes from './care'
+import adminRoutes from './admin'
+import systemRoutes from './system'
+import { getToken, getUser, setUser, clearAuth, roleHome } from '../utils/auth'
+import { getMe } from '../api/auth'
+const router = createRouter({ history: createWebHistory(), routes: [...authRoutes, ...elderRoutes, ...familyRoutes, ...careRoutes, ...adminRoutes, ...systemRoutes] })
+router.beforeEach(async to => {
+  const publicPage = ['/login', '/register', '/forgot'].includes(to.path)
+  if (!getToken()) return publicPage ? true : { path: '/login', query: { redirect: to.fullPath } }
+  try {
+    const user = await getMe()
+    setUser(user)
+    if (publicPage) return roleHome(user.role)
+    if (user.privacy_consent?.accepted !== true && to.path !== roleHome(user.role) + '/mine') return roleHome(user.role) + '/mine'
+    if (to.meta.role && to.meta.role !== user.role) return { path: '/forbidden' }
+    return true
+  } catch (e) {
+    if ([1001, 1003].includes(e.code)) { clearAuth(); return publicPage ? true : '/login' }
+    // 服务短暂断开时仍允许展示已有登录用户的错误状态；所有数据访问仍需服务器鉴权。
+    if (!getUser()) { clearAuth(); return publicPage ? true : '/login' }
+    if (to.meta.role && to.meta.role !== getUser().role) return '/forbidden'
+    return true
   }
-  if (hasToken && to.path === '/login') {
-    const user = getUser()
-    return roleHome(user ? user.role : null)
-  }
-  return true
 })
-
 export default router

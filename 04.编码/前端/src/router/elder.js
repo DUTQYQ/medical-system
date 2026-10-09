@@ -5,6 +5,7 @@
 export default [
   {
     path: '/elder',
+    meta: { role: 'ELDER', scope: 'elder' },
     component: () => import('../components/elder/ElderLayout.vue'),
     redirect: '/elder/home',
     children: [

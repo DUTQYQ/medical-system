@@ -37,7 +37,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getUser } from '@/utils/auth'
-import { fmtDate } from '@/api/mock'
+import { fmtDate } from '@/utils/format'
 import { listNotifications, markRead, markAllRead } from '@/api'
 
 const router = useRouter()
