@@ -2,7 +2,8 @@ import json
 import math
 import re
 from sqlalchemy import select
-from app.models import SysConfig
+from app.models import SysConfig, ProfileThreshold
+from app.services.serializers import age
 from app.core.errors import APIError
 
 INDICATORS = {
@@ -136,6 +137,86 @@ def risk_level(db, type, val1, val2=None):
             continue
         try:
             levels.append(evaluate(row.config_value, float(value)))
+        except (ValueError, TypeError, KeyError):
+            raise APIError(5001, '预警阈值配置无效：' + key, 503)
+    return max(levels, default=0)
+
+
+def _shift_loosen(levels, delta):
+    """将 level0 正常区间上界与 level1 下界各放宽 delta（老年阈值调整）。
+
+    仅当两者都是单段 ``low~high`` 型区间、且放宽后仍满足 level0 上界 ≤ level1 下界
+    （level1 不被倒转）时才生效；否则原样返回，避免产生重叠或倒转区间。
+    """
+    def bounds(expr):
+        parts = range_parts(expr)
+        if len(parts) != 1:
+            return None
+        low, high, _, _ = parts[0]
+        if not (math.isfinite(low) and math.isfinite(high)):
+            return None
+        return low, high
+
+    result = dict(levels)
+    b0 = bounds(result.get('level0', ''))
+    b1 = bounds(result.get('level1', ''))
+    if not b0 or not b1:
+        return result
+    low0, high0 = b0
+    low1, high1 = b1
+    new_high0 = high0 + delta
+    new_low1 = low1 + delta
+    if new_high0 <= new_low1 and new_low1 <= high1:
+        result['level0'] = f'{low0:g}~{new_high0:g}'
+        result['level1'] = f'{new_low1:g}~{high1:g}'
+    return result
+
+
+def effective_threshold(db, profile, key):
+    """解析某档案在某指标上的「生效阈值」（dict，含 level0..level3）。
+
+    优先级：按人覆盖 → 全局基准（可叠加年龄放宽）。禁用时返回 None（等同跳过检测）。
+    """
+    override = db.scalar(select(ProfileThreshold).where(
+        ProfileThreshold.profile_id == profile.id, ProfileThreshold.config_key == key, ProfileThreshold.enabled == 1))
+    if override:
+        try:
+            return json.loads(override.config_value)
+        except (ValueError, TypeError):
+            raise APIError(5001, '个性化阈值配置无效：' + key, 503)
+    base = db.scalar(select(SysConfig).where(SysConfig.config_key == key))
+    if not base:
+        raise APIError(5001, '预警阈值尚未配置：' + key, 503)
+    if not base.enabled:
+        return None
+    try:
+        levels = json.loads(base.config_value)
+    except (ValueError, TypeError):
+        raise APIError(5001, '预警阈值配置无效：' + key, 503)
+    age_rule = db.scalar(select(SysConfig).where(
+        SysConfig.config_key == 'age:' + key, SysConfig.group_name == 'threshold_age', SysConfig.enabled == 1))
+    if age_rule:
+        try:
+            rule = json.loads(age_rule.config_value)
+        except (ValueError, TypeError):
+            rule = {}
+        person_age = age(profile.birthday)
+        if person_age is not None and person_age >= int(rule.get('min_age', 0)):
+            delta = float(rule.get('delta', 0))
+            if delta:
+                levels = _shift_loosen(levels, delta)
+    return levels
+
+
+def personal_level(db, profile, type, val1, val2=None):
+    """按档案个性化阈值判定风险等级，结构与 risk_level 一致。"""
+    levels = []
+    for key, value in zip(INDICATORS[type]['keys'], [val1, val2]):
+        thresholds = effective_threshold(db, profile, key)
+        if thresholds is None:
+            continue
+        try:
+            levels.append(evaluate(json.dumps(thresholds, ensure_ascii=False), float(value)))
         except (ValueError, TypeError, KeyError):
             raise APIError(5001, '预警阈值配置无效：' + key, 503)
     return max(levels, default=0)

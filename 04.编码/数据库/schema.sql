@@ -23,6 +23,7 @@ USE `kangyang`;
 
 -- 按依赖倒序清理（仅首次执行有效，重复执行安全）
 DROP TABLE IF EXISTS `ai_log`;
+DROP TABLE IF EXISTS `activity`;
 DROP TABLE IF EXISTS `knowledge_chunk`;
 DROP TABLE IF EXISTS `knowledge_document`;
 DROP TABLE IF EXISTS `medication`;
@@ -34,13 +35,14 @@ DROP TABLE IF EXISTS `health_warning`;
 DROP TABLE IF EXISTS `health_record`;
 DROP TABLE IF EXISTS `care_relation`;
 DROP TABLE IF EXISTS `family_bind`;
+DROP TABLE IF EXISTS `profile_threshold`;
 DROP TABLE IF EXISTS `elder_profile`;
 DROP TABLE IF EXISTS `sys_config`;
 DROP TABLE IF EXISTS `user`;
 
 
 -- ============================================================
--- 一、核心表（11 张）
+-- 一、核心表（13 张）
 -- ============================================================
 
 -- ---------- 1. user 用户主表 ----------
@@ -255,11 +257,49 @@ CREATE TABLE `sys_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统配置与预警阈值（禁止硬编码）';
 
 
+-- ---------- 12. profile_threshold 按人个性化阈值（康养个性化，管理员覆盖） ----------
+-- 语义：覆盖全局 sys_config 阈值；config_value 与全局同格式 JSON {level0..level3}
+CREATE TABLE `profile_threshold` (
+  `id`           BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键（threshold_id）',
+  `profile_id`   BIGINT       NOT NULL                COMMENT '老人档案 ID（FK → elder_profile.id）',
+  `config_key`   VARCHAR(50)  NOT NULL                COMMENT '指标键，如 BLOOD_PRESSURE_SYSTOLIC',
+  `config_value` VARCHAR(500) NOT NULL                COMMENT '覆盖值（JSON {level0..level3}）',
+  `remark`       VARCHAR(255)     NULL                COMMENT '说明（覆盖原因）',
+  `enabled`      TINYINT      NOT NULL DEFAULT 1      COMMENT '是否启用：1 是 / 0 否',
+  `create_time`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_pthreshold_profile_key` (`profile_id`, `config_key`),
+  KEY `idx_pthreshold_profile` (`profile_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='按人个性化预警阈值（覆盖全局，体现同值不同判）';
+
+
+-- ---------- 13. activity 康养活动库（规则引擎推荐） ----------
+-- rules 为 JSON 规则（suitable/avoid/caution），由 app/services/recommend.py 解释，不依赖 LLM
+CREATE TABLE `activity` (
+  `id`               BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键（activity_id）',
+  `code`             VARCHAR(50)  NOT NULL                COMMENT '活动编码（唯一，如 SUNBATH/TAICHI）',
+  `name`             VARCHAR(100) NOT NULL                COMMENT '活动名称',
+  `category`         VARCHAR(50)      NULL                COMMENT '分类：户外/养生/有氧/康复',
+  `intensity`        VARCHAR(20)      NULL                COMMENT '强度：LOW/MODERATE/HIGH',
+  `description`      TEXT             NULL                COMMENT '活动说明',
+  `benefits`         TEXT             NULL                COMMENT '康养效果',
+  `duration_hint`    VARCHAR(100)     NULL                COMMENT '建议时长/时段',
+  `rules`            VARCHAR(1000)    NULL                COMMENT '推荐规则（JSON）',
+  `contraindications` VARCHAR(500)    NULL                COMMENT '禁忌/注意事项',
+  `enabled`          TINYINT      NOT NULL DEFAULT 1      COMMENT '是否启用：1 是 / 0 否',
+  `create_time`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_activity_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='康养活动库（规则引擎推荐，体现主动康养建议）';
+
+
 -- ============================================================
 -- 二、选配表（4 张，本期可不实现）
 -- ============================================================
 
--- ---------- 12. medication 用药信息【选配】 ----------
+-- ---------- 14. medication 用药信息【选配】 ----------
 CREATE TABLE `medication` (
   `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
   `profile_id`  BIGINT       NOT NULL                COMMENT '归属档案 ID（FK → elder_profile.id）',
@@ -274,7 +314,7 @@ CREATE TABLE `medication` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='【选配】用药信息';
 
 
--- ---------- 13. knowledge_document 知识库文档【选配】 ----------
+-- ---------- 15. knowledge_document 知识库文档【选配】 ----------
 CREATE TABLE `knowledge_document` (
   `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
   `title`       VARCHAR(200) NOT NULL                COMMENT '标题',
@@ -288,7 +328,7 @@ CREATE TABLE `knowledge_document` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='【选配】知识库文档';
 
 
--- ---------- 14. knowledge_chunk 知识分块向量【选配】 ----------
+-- ---------- 16. knowledge_chunk 知识分块向量【选配】 ----------
 CREATE TABLE `knowledge_chunk` (
   `id`          BIGINT   NOT NULL AUTO_INCREMENT COMMENT '主键',
   `doc_id`      BIGINT   NOT NULL                COMMENT '所属文档 ID（FK → knowledge_document.id）',
@@ -302,7 +342,7 @@ CREATE TABLE `knowledge_chunk` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='【选配】知识库分块与向量';
 
 
--- ---------- 15. ai_log AI 调用日志【选配】 ----------
+-- ---------- 17. ai_log AI 调用日志【选配】 ----------
 CREATE TABLE `ai_log` (
   `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id`     BIGINT           NULL                COMMENT '调用人 ID（可空；日志表不设外键以保留审计记录）',
@@ -338,6 +378,9 @@ ALTER TABLE `care_relation`
   ADD CONSTRAINT `fk_care_user`    FOREIGN KEY (`care_user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT,
   ADD CONSTRAINT `fk_care_profile` FOREIGN KEY (`profile_id`)   REFERENCES `elder_profile` (`id`) ON DELETE RESTRICT;
 
+ALTER TABLE `profile_threshold`
+  ADD CONSTRAINT `fk_pthreshold_profile` FOREIGN KEY (`profile_id`) REFERENCES `elder_profile` (`id`) ON DELETE CASCADE;
+
 ALTER TABLE `health_record`
   ADD CONSTRAINT `fk_record_profile`  FOREIGN KEY (`profile_id`)  REFERENCES `elder_profile` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_record_recorder` FOREIGN KEY (`recorder_id`) REFERENCES `user` (`id`) ON DELETE SET NULL;
@@ -369,6 +412,6 @@ ALTER TABLE `knowledge_chunk`
   ADD CONSTRAINT `fk_kchunk_doc` FOREIGN KEY (`doc_id`) REFERENCES `knowledge_document` (`id`) ON DELETE CASCADE;
 
 -- ============================================================
--- 建表完成：15 张表（核心 11 + 选配 4）
+-- 建表完成：17 张表（核心 13 + 选配 4）
 -- 下一步：执行 init_data.sql 写入阈值配置、预置管理员与演示数据
 -- ============================================================

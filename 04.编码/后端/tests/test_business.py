@@ -271,10 +271,11 @@ def test_multiple_profiles_self_and_delegated_are_isolated(setup):
     client, sessions = setup
     elder, family, care, admin = [login(client, index) for index in (2, 3, 4, 1)]
     source_id = first_profile(client, elder)
+    before = len(client.get('/api/profiles', headers=elder).json()['data'])
     own = client.post('/api/profiles', headers=elder, json={'name': '本人第二档案'}).json()
     assert own['code'] == 0
     own_id = own['data']['profile_id']
-    assert len(client.get('/api/profiles', headers=elder).json()['data']) == 2
+    assert len(client.get('/api/profiles', headers=elder).json()['data']) == before + 1
     assert client.get(f'/api/profiles/{own_id}', headers=family).status_code == 403
     assert client.post('/api/profiles', headers=family, json={'name': '任意代建'}).json()['code'] == 2001
     family_created = client.post('/api/profiles', headers=family, json={'name': '家属代建档案', 'source_profile_id': source_id}).json()

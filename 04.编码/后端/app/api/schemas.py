@@ -136,3 +136,26 @@ class IndicatorInput(StrictModel):
     unit: str = Field(min_length=1, max_length=20)
     enabled: bool = True
     ranges: dict[str, tuple[float, float]] = Field(default_factory=dict)
+
+
+class ActivityInput(StrictModel):
+    code: str = Field(min_length=1, max_length=50)
+    name: str = Field(min_length=1, max_length=100)
+    category: str = Field(default='', max_length=50)
+    intensity: Literal['LOW', 'MODERATE', 'HIGH'] = 'LOW'
+    description: str = Field(default='', max_length=5000)
+    benefits: str = Field(default='', max_length=5000)
+    duration_hint: str = Field(default='', max_length=100)
+    rules: dict = Field(default_factory=dict)
+    contraindications: str = Field(default='', max_length=500)
+    enabled: bool = True
+
+
+class ProfileThresholdInput(StrictModel):
+    config_key: str = Field(min_length=1, max_length=50)
+    level0_range: str = Field(min_length=1, max_length=100)
+    level1_range: str = Field(min_length=1, max_length=100)
+    level2_range: str = Field(min_length=1, max_length=100)
+    level3_range: str = Field(min_length=1, max_length=100)
+    enabled: bool = True
+    remark: str = Field(default='', max_length=255)

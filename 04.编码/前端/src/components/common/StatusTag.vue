@@ -48,6 +48,23 @@ const MAPS = {
     true: { text: '异常', type: 'danger' },
     false: { text: '正常', type: 'success' },
   },
+  judgement: {
+    '健康': { text: '健康', type: 'success' },
+    '需关注（波动）': { text: '需关注（波动）', type: 'warning' },
+    '轻度异常': { text: '轻度异常', type: 'warning' },
+    '较高异常': { text: '较高异常', type: 'danger' },
+    '高风险异常': { text: '高风险异常', type: 'danger' },
+    '未记录': { text: '未记录', type: 'info' },
+  },
+  suitability: {
+    '适合': { text: '适合', type: 'success' },
+    '需谨慎': { text: '需谨慎', type: 'warning' },
+    '不建议': { text: '不建议', type: 'danger' },
+  },
+  fluctuation: {
+    true: { text: '需关注', type: 'warning' },
+    false: { text: '平稳', type: 'success' },
+  },
 }
 
 const conf = computed(() => {

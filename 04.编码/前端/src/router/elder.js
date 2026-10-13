@@ -1,5 +1,5 @@
 // 老人端路由（梁霁鸣）
-// 顶部导航 6 项：首页 / 健康档案 / 指标录入 / AI 健康咨询 / 通知中心 / 我的
+// 顶部导航 8 项：首页 / 健康档案 / 指标录入 / 健康判断 / 活动推荐 / AI 健康咨询 / 通知中心 / 我的
 // 其中「健康档案」「指标录入」「我的」为分组，组内子页面通过页内链接进入。
 
 export default [
@@ -17,6 +17,9 @@ export default [
       { path: 'input', name: 'ElderInput', component: () => import('../views/elder/IndicatorInput.vue') },
       { path: 'history', name: 'ElderHistory', component: () => import('../views/elder/IndicatorHistory.vue') },
       { path: 'trend', name: 'ElderTrend', component: () => import('../views/elder/TrendChart.vue') },
+      // 康养个性化（新增）
+      { path: 'health-status', name: 'ElderHealthStatus', component: () => import('../views/elder/HealthStatus.vue') },
+      { path: 'activity', name: 'ElderActivity', component: () => import('../views/elder/ActivityRecommend.vue') },
       // AI 健康咨询（共用组件）
       { path: 'ai', name: 'ElderAI', meta: { scope: 'elder' }, component: () => import('../components/common/AIConsult.vue') },
       { path: 'consult-history', name: 'ElderConsultHistory', component: () => import('../views/elder/ConsultHistory.vue') },

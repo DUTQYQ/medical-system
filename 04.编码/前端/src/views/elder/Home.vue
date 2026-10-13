@@ -110,6 +110,8 @@ const services = [
   { name: '健康档案', icon: '📋', desc: '查看基本信息与慢病标签', path: '/elder/profile' },
   { name: '指标录入', icon: '✍️', desc: '录入血压、血糖等指标', path: '/elder/input' },
   { name: '指标历史', icon: '📈', desc: '查看历史与趋势图', path: '/elder/history' },
+  { name: '健康判断', icon: '🩺', desc: '个性化正常范围与波动预警', path: '/elder/health-status' },
+  { name: '活动推荐', icon: '🧘', desc: '为您推荐合适的康养活动', path: '/elder/activity' },
   { name: 'AI 健康咨询', icon: '🤖', desc: 'AI 助手随时答疑', path: '/elder/ai' },
   { name: '【选配】健康打卡', icon: '✅', desc: '每日健康习惯打卡', path: '/elder/checkin' },
   { name: '【选配】本机用药备忘', icon: '💊', desc: '管理常用药物', path: '/elder/medication' },

@@ -140,6 +140,32 @@ class SysConfig(Times, Base):
     enabled: Mapped[int] = mapped_column(Integer, default=1)
 
 
+class ProfileThreshold(Times, Base):
+    __tablename__ = 'profile_threshold'
+    __table_args__ = (UniqueConstraint('profile_id', 'config_key'),)
+    id: Mapped[int] = mapped_column(ID, primary_key=True, autoincrement=True)
+    profile_id: Mapped[int] = mapped_column(ID, ForeignKey('elder_profile.id'))
+    config_key: Mapped[str] = mapped_column(String(50))
+    config_value: Mapped[str] = mapped_column(String(500))
+    remark: Mapped[str | None] = mapped_column(String(255))
+    enabled: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class Activity(Times, Base):
+    __tablename__ = 'activity'
+    id: Mapped[int] = mapped_column(ID, primary_key=True, autoincrement=True)
+    code: Mapped[str] = mapped_column(String(50), unique=True)
+    name: Mapped[str] = mapped_column(String(100))
+    category: Mapped[str | None] = mapped_column(String(50))
+    intensity: Mapped[str | None] = mapped_column(String(20))
+    description: Mapped[str | None] = mapped_column(Text)
+    benefits: Mapped[str | None] = mapped_column(Text)
+    duration_hint: Mapped[str | None] = mapped_column(String(100))
+    rules: Mapped[str | None] = mapped_column(String(1000))
+    contraindications: Mapped[str | None] = mapped_column(String(500))
+    enabled: Mapped[int] = mapped_column(Integer, default=1)
+
+
 class Medication(Times, Base):
     __tablename__ = 'medication'
     id: Mapped[int] = mapped_column(ID, primary_key=True, autoincrement=True)

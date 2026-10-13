@@ -10,7 +10,7 @@ import { getUser, clearAuth } from '@/utils/auth'
 import { getUnreadCount, logout } from '@/api'
 const user = getUser(), route = useRoute(), router = useRouter(), admin = user?.role === 'ADMIN'
 const unread = ref(0), pollError = ref(false), base = admin ? '/admin' : '/care'
-const navs = computed(() => (admin ? [['统计','statistics'],['用户管理','users'],['健康档案','profiles'],['预警阈值','thresholds'],['指标配置','indicators'],['知识库','knowledge'],['绑定审核','bindings'],['预警中心','alerts'],['我的','mine']] : [['负责老人','elders'],['预警中心','alerts'],['处理记录','handles'],['我的','mine']]).map(([label,path]) => ({ label, path: base + '/' + path, alert: path === 'alerts' })))
+const navs = computed(() => (admin ? [['统计','statistics'],['用户管理','users'],['健康档案','profiles'],['预警阈值','thresholds'],['按人阈值','profile-thresholds'],['活动库','activities'],['指标配置','indicators'],['知识库','knowledge'],['绑定审核','bindings'],['预警中心','alerts'],['我的','mine']] : [['负责老人','elders'],['预警中心','alerts'],['处理记录','handles'],['我的','mine']]).map(([label,path]) => ({ label, path: base + '/' + path, alert: path === 'alerts' })))
 let timer
 async function poll() { if (!getUser()?.privacy_consent?.accepted) return; try { unread.value = (await getUnreadCount()).count; pollError.value = false } catch { pollError.value = true } }
 async function signOut() { try { await logout() } catch {} finally { clearAuth(); router.replace('/login') } }

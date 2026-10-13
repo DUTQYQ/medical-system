@@ -54,6 +54,8 @@ const navs = [
   { label: '首页', path: '/elder/home', prefixes: ['/elder/home'] },
   { label: '健康档案', path: '/elder/profile', prefixes: ['/elder/profile'] },
   { label: '指标录入', path: '/elder/input', prefixes: ['/elder/input', '/elder/history', '/elder/trend'] },
+  { label: '健康判断', path: '/elder/health-status', prefixes: ['/elder/health-status'] },
+  { label: '活动推荐', path: '/elder/activity', prefixes: ['/elder/activity'] },
   { label: 'AI 健康咨询', path: '/elder/ai', prefixes: ['/elder/ai', '/elder/consult-history'] },
   { label: '通知中心', path: '/elder/notifications', prefixes: ['/elder/notifications', '/elder/alert'], badge: true },
   { label: '我的', path: '/elder/mine', prefixes: ['/elder/mine', '/elder/bind', '/elder/checkin', '/elder/medication'] },

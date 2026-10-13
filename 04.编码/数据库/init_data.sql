@@ -26,6 +26,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- 清空既有数据（幂等，可重复执行）
 TRUNCATE TABLE `ai_log`;
+TRUNCATE TABLE `activity`;
 TRUNCATE TABLE `knowledge_chunk`;
 TRUNCATE TABLE `knowledge_document`;
 TRUNCATE TABLE `medication`;
@@ -37,6 +38,7 @@ TRUNCATE TABLE `health_warning`;
 TRUNCATE TABLE `health_record`;
 TRUNCATE TABLE `care_relation`;
 TRUNCATE TABLE `family_bind`;
+TRUNCATE TABLE `profile_threshold`;
 TRUNCATE TABLE `elder_profile`;
 TRUNCATE TABLE `sys_config`;
 TRUNCATE TABLE `user`;
@@ -89,11 +91,28 @@ INSERT INTO `sys_config` (`config_key`, `config_value`, `config_type`, `group_na
 ('ai_summary_retry',       '1',  'number', 'system', 'AI 摘要失败重试次数（D-04）', 1),
 ('emergency_keywords',     '["胸痛","呼吸困难","意识丧失","昏厥","无法起身","大量出血","言语不清"]',
  'json', 'system', '紧急关键词：即使模型未判紧急，命中即由代码强制升级为 L4（R-01）', 1),
-('llm_provider',           'deepseek', 'string', 'system', '大模型提供方（代码读取，切换模型只改此项 + .env 的 Key）', 1);
+('llm_provider',           'deepseek', 'string', 'system', '大模型提供方（代码读取，切换模型只改此项 + .env 的 Key）', 1),
+-- ---------------- 康养个性化（新增：个人基线波动 + 老年阈值放宽） ----------------
+('FLUCTUATION_THRESHOLD', '0.2', 'number', 'system', '个人基线波动预警阈值（偏离近 7 天均值比例，默认 0.2 即 20%）', 1),
+('age:BLOOD_PRESSURE_SYSTOLIC', '{"min_age":65,"delta":10}', 'json', 'threshold_age', '老年收缩压正常区间放宽（65 岁以上上界 +10）', 1),
+('age:BLOOD_PRESSURE_DIASTOLIC', '{"min_age":65,"delta":5}', 'json', 'threshold_age', '老年舒张压正常区间放宽（65 岁以上上界 +5）', 1);
 
 
 -- ============================================================
--- 三、演示数据：档案 / 绑定 / 指标 / 预警
+-- 三、康养活动库 activity（规则引擎推荐，体现主动康养建议）
+-- ============================================================
+-- rules 为 JSON 规则（suitable/avoid/caution），由后端规则引擎解释，不依赖大模型。
+INSERT INTO `activity` (`code`, `name`, `category`, `intensity`, `description`, `benefits`, `duration_hint`, `rules`, `contraindications`, `enabled`) VALUES
+('SUNBATH', '日光浴', '户外', 'LOW', '在柔和阳光下适度照射，促进维生素 D 合成与骨骼健康。', '促进钙吸收、改善情绪、增强免疫力，有助于预防骨质疏松。', '上午 8~10 点或下午 4~5 点，每次 15~30 分钟', '{"suitable":{"min_age":60,"seasons_in":["spring","autumn","winter"]},"avoid":{"seasons_in":["summer"],"chronic_in":["皮肤癌","光敏性皮肤病"]}}', '皮肤敏感或服用光敏药物者不宜久晒；避免正午暴晒。', 1),
+('TAICHI', '太极拳', '养生', 'MODERATE', '缓慢连贯的传统拳法，锻炼平衡与柔韧，适合长期坚持。', '改善平衡、降低跌倒风险、辅助调节血压与情绪。', '每天 20~40 分钟，早晨或傍晚为宜', '{"suitable":{"min_age":50},"caution":{"max_risk_level":2}}', '膝关节炎急性期、严重骨质疏松者量力而行。', 1),
+('WALK', '散步', '有氧', 'MODERATE', '饭后或晨间缓步行走，是最易坚持的低门槛有氧运动。', '促进血液循环、辅助控制血糖与血压。', '每次 30~45 分钟，步速以微汗为宜', '{"suitable":{"chronic_in":["高血压","糖尿病"]}}', '雨天路滑注意防跌倒；足部溃疡者先咨询医生。', 1),
+('FINGER', '手指操', '康复', 'LOW', '手指精细动作训练，激活末梢神经与手脑协调。', '锻炼手脑协调、延缓认知衰退。', '每次 10~15 分钟，每日 2~3 次', '{"suitable":{"min_age":70}}', '手部急性损伤者暂停。', 1),
+('BREATH', '呼吸训练', '康复', 'LOW', '腹式呼吸与缓慢呼气训练，随时随地可进行。', '缓解焦虑、改善睡眠、辅助降压。', '每次 5~10 分钟，睡前进行', '{"suitable":{"chronic_in":["高血压"]}}', '严重心肺疾病急性期请遵医嘱。', 1),
+('STRETCH', '关节拉伸', '康复', 'LOW', '温和的关节活动度拉伸，改善僵硬与活动受限。', '保持关节灵活、缓解晨僵。', '每次 10~15 分钟，动作缓慢不弹震', '{"suitable":{"min_age":55}}', '急性关节红肿热痛时停止。', 1);
+
+
+-- ============================================================
+-- 四、演示数据：档案 / 绑定 / 指标 / 预警
 -- ============================================================
 
 -- ---------- 老人档案 ----------
@@ -146,7 +165,7 @@ INSERT INTO `alert_receiver` (`id`, `warning_id`, `user_id`, `read_status`, `rea
 (70003, 40001, 2, 'UNREAD', NULL);
 
 -- ============================================================
--- 四、初始化完成
+-- 五、初始化完成
 -- ============================================================
 -- 演示账号（密码统一 Abc123456）：
 --   管理员  13000000001 / 王护工 13000000004 / 老人 张桂兰 13000000002 / 家属 李强 13000000003

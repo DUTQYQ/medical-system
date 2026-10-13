@@ -41,3 +41,22 @@ def record_data(record):
 
 def value_text(type, val1, val2=None):
     return f'{float(val1):g}/{float(val2):g}' if type == 'BLOOD_PRESSURE' else f'{float(val1):g}'
+
+
+def activity_data(row):
+    return {'activity_id': row.id, 'code': row.code, 'name': row.name, 'category': row.category,
+            'intensity': row.intensity, 'description': row.description, 'benefits': row.benefits,
+            'duration_hint': row.duration_hint, 'rules': json.loads(row.rules or '{}'),
+            'contraindications': row.contraindications, 'enabled': bool(row.enabled),
+            'created_at': dt(row.create_time), 'updated_at': dt(row.update_time)}
+
+
+def profile_threshold_data(row):
+    try:
+        levels = json.loads(row.config_value)
+    except (ValueError, TypeError):
+        levels = {}
+    return {'threshold_id': row.id, 'profile_id': row.profile_id, 'config_key': row.config_key,
+            'indicator': row.config_key, 'remark': row.remark or '', 'enabled': bool(row.enabled),
+            **{f'level{i}_range': levels.get(f'level{i}', '') for i in range(4)},
+            'created_at': dt(row.create_time), 'updated_at': dt(row.update_time)}

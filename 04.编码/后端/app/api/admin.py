@@ -8,10 +8,10 @@ from app.core.database import get_db, now
 from app.core.permissions import require_roles
 from app.core.security import hash_password, set_config
 from app.core.errors import APIError, ok
-from app.models import User, ElderProfile, HealthRecord, HealthWarning, ChatSession, ChatMessage, SysConfig, KnowledgeDocument, KnowledgeChunk, CareRelation, FamilyBind, WarningHandleRecord
-from app.services.serializers import user_data, dt
+from app.models import User, ElderProfile, HealthRecord, HealthWarning, ChatSession, ChatMessage, SysConfig, KnowledgeDocument, KnowledgeChunk, CareRelation, FamilyBind, WarningHandleRecord, ProfileThreshold
+from app.services.serializers import user_data, dt, profile_threshold_data
 from app.services.thresholds import INDICATORS, indicator, threshold_data, parse_threshold
-from .schemas import Register, EnabledInput, RoleInput, ThresholdInput, KnowledgeInput, AssignmentInput, IndicatorInput
+from .schemas import Register, EnabledInput, RoleInput, ThresholdInput, KnowledgeInput, AssignmentInput, IndicatorInput, ProfileThresholdInput
 
 router = APIRouter(prefix='/admin', tags=['管理员'], dependencies=[Depends(require_roles('ADMIN'))])
 config_router = APIRouter(prefix='/config', tags=['系统配置'], dependencies=[Depends(require_roles('ELDER', 'FAMILY', 'CARE', 'ADMIN'))])
@@ -105,6 +105,47 @@ def update_threshold(config_id: int, body: ThresholdInput, db: Session = Depends
     row.config_value, row.enabled = value, int(body.enabled)
     db.commit()
     return ok(threshold_data(row))
+
+
+VALID_KEYS = {key for meta in INDICATORS.values() for key in meta['keys']}
+
+
+def _find_profile(db, profile_id):
+    profile = db.scalar(select(ElderProfile).where(ElderProfile.id == profile_id, ElderProfile.deleted == 0))
+    if not profile:
+        raise APIError(2002, '档案不存在', 404)
+    return profile
+
+
+@router.get('/profiles/{profile_id}/thresholds')
+def profile_thresholds(profile_id: int, db: Session = Depends(get_db)):
+    _find_profile(db, profile_id)
+    return ok([profile_threshold_data(row) for row in db.scalars(
+        select(ProfileThreshold).where(ProfileThreshold.profile_id == profile_id).order_by(ProfileThreshold.id))])
+
+
+@router.put('/profiles/{profile_id}/thresholds')
+def update_profile_thresholds(profile_id: int, body: list[ProfileThresholdInput], db: Session = Depends(get_db)):
+    _find_profile(db, profile_id)
+    for item in body:
+        if item.config_key not in VALID_KEYS:
+            raise APIError(2001, '不支持的指标键：' + item.config_key)
+        value = json.dumps({f'level{i}': getattr(item, f'level{i}_range') for i in range(4)}, ensure_ascii=False)
+        try:
+            parse_threshold(value)
+        except (ValueError, TypeError):
+            raise APIError(2001, '阈值表达式无效，支持 90~139、>=180、<40 或 >130')
+        if len(value) > 500:
+            raise APIError(2001, '阈值配置超过 500 字符')
+        row = db.scalar(select(ProfileThreshold).where(
+            ProfileThreshold.profile_id == profile_id, ProfileThreshold.config_key == item.config_key).with_for_update())
+        if not row:
+            row = ProfileThreshold(profile_id=profile_id, config_key=item.config_key)
+            db.add(row)
+        row.config_value, row.enabled, row.remark = value, int(item.enabled), item.remark
+    db.commit()
+    return ok([profile_threshold_data(row) for row in db.scalars(
+        select(ProfileThreshold).where(ProfileThreshold.profile_id == profile_id).order_by(ProfileThreshold.id))])
 
 
 @router.get('/indicators')
