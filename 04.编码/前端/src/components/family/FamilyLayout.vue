@@ -21,7 +21,7 @@
           @click="$router.push(navTarget(item))" @keydown.enter="$router.push(navTarget(item))" @keydown.space.prevent="$router.push(navTarget(item))"
         >
           {{ item.label }}
-          <span v-if="item.badge && unread > 0" class="ky-dot" />
+          <span v-if="(item.badge && unread > 0) || (item.service && serviceUnread>0)" class="ky-dot" />
         </li>
       </ul>
     </nav>
@@ -36,18 +36,22 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getUser, clearAuth } from '@/utils/auth'
-import { getUnreadCount, listElders, logout } from '@/api'
+import { getUnreadCount, listServiceNotifications, listElders, logout } from '@/api'
 
 const route = useRoute()
 const router = useRouter()
 const user = getUser()
 const unread = ref(0)
+const serviceUnread=ref(0)
 const firstElderId = ref(null)
 
 const navs = [
   { label: '首页', path: '/family/home', target: '/family/home', prefixes: ['/family/home'] },
   { label: '绑定老人', path: '/family/bind', target: '/family/bind', prefixes: ['/family/bind'] },
-  { label: '健康概况', path: '/family/elder', target: '/family/elder', prefixes: ['/family/elder', '/family/report', '/family/ai'] },
+  { label: '健康概况', path: '/family/elder', target: '/family/elder', prefixes: ['/family/elder', '/family/report'] },
+  { label: '康养助手', path: '/family/ai', target:'/family/ai', prefixes:['/family/ai'] },
+  { label: '院内生活服务', path:'/family/services', target:'/family/services', prefixes:['/family/services'],service:true },
+  { label: '个人健康阈值', path:'/family/personal-thresholds', target:'/family/personal-thresholds', prefixes:['/family/personal-thresholds'] },
   { label: '通知中心', path: '/family/notifications', target: '/family/notifications', prefixes: ['/family/notifications', '/family/alert'], badge: true },
   { label: '我的', path: '/family/mine', target: '/family/mine', prefixes: ['/family/mine'] },
 ]
@@ -64,6 +68,7 @@ function isActive(item) {
 }
 
 async function refreshUnread() {
+  try{serviceUnread.value=(await listServiceNotifications()).unread_count || 0}catch{}
   if (!user || !getUser()?.privacy_consent?.accepted) return
   try {
     const d = await getUnreadCount(user.user_id)
@@ -74,7 +79,7 @@ async function refreshUnread() {
 }
 
 async function loadFirstElder() {
-  if (!user) return
+  if (!user || !getUser()?.privacy_consent?.accepted) return
   try {
     const elders = await listElders(user.user_id)
     if (elders.length) firstElderId.value = elders[0].profile_id

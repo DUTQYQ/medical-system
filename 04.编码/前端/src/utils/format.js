@@ -22,7 +22,7 @@ export function measuredNow() {
 }
 export function thresholdHint(thresholds, type) {
   const list = asList(thresholds)
-  if (list.length) return list.filter(t => (t.indicator || t.type || '').startsWith(type)).map(t => `${({BLOOD_PRESSURE_SYSTOLIC:'收缩压',BLOOD_PRESSURE_DIASTOLIC:'舒张压',BLOOD_SUGAR:'血糖',HEART_RATE:'心率',SLEEP_HOURS:'睡眠时长',STEP_COUNT:'步数'})[t.indicator] || t.indicator_name || t.indicator}: ${t.level0_range || '以后台配置为准'} ${t.unit || ''}`).join('；')
+  if (list.length) return list.filter(t => (t.indicator || t.type || '').startsWith(type)).map(t => `${({BLOOD_PRESSURE_SYSTOLIC:'收缩压',BLOOD_PRESSURE_DIASTOLIC:'舒张压',BLOOD_SUGAR:'血糖',HEART_RATE:'心率',SLEEP_HOURS:'睡眠时长',STEP_COUNT:'步数'})[t.indicator] || t.indicator_name || t.indicator}: ${t.level0_range || '以后台配置为准'} ${t.unit || ''}${t.source?'（'+(t.source==='PERSONAL'?'个体设置':'院内默认')+'，版本 '+(t.version_id ?? '默认')+'）':''}`).join('；')
   const t = thresholds?.[type]
   if (!t) return ''
   if (t.level0_range) return t.level0_range

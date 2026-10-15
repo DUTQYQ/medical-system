@@ -6,12 +6,15 @@ from app.core.database import get_db, now
 from app.core.security import get_current_user
 from app.core.permissions import visible_profile_ids, get_profile, require_roles
 from app.core.errors import APIError, ok
-from app.models import HealthWarning, AlertReceiver, ElderProfile, WarningHandleRecord, User
+from app.models import HealthWarning, AlertReceiver, ElderProfile, WarningHandleRecord, User, HealthRecordVoid
+from app.services.health_records import void_data
 from app.services.serializers import age, dt
 from app.services.thresholds import indicator, INDICATORS
 from app.services.alerts import generate_summary
 from .schemas import HandleInput, StatusInput
 from .health import trend_data
+from app.models.personal_threshold import HealthAssessment
+from app.services.personal_threshold import evidence_data
 
 router = APIRouter(prefix='/alerts', tags=['预警中心'])
 notifications = APIRouter(prefix='/notifications', tags=['站内通知'])
@@ -38,6 +41,7 @@ def handle_data(db, record):
     warning = db.get(HealthWarning, record.warning_id)
     profile = db.get(ElderProfile, warning.profile_id) if warning else None
     return {'handle_id': record.id, 'warning_id': record.warning_id, 'handler_id': record.handler_id, 'handler_name': handler.name if handler else None,
+            'handler_role': handler.role if handler else None, 'record_type': 'FOLLOW_UP' if handler and handler.role == 'FAMILY' else 'RESOLUTION',
             'elder_name': profile.name if profile else None, 'profile_id': profile.id if profile else None,
             'action': record.action, 'result': record.result, 'created_at': dt(record.create_time)}
 
@@ -47,12 +51,20 @@ def warning_data(db, user, warning):
     receiver = db.scalar(select(AlertReceiver).where(AlertReceiver.warning_id == warning.id, AlertReceiver.user_id == user.id))
     handle = db.scalar(select(WarningHandleRecord).where(WarningHandleRecord.warning_id == warning.id).order_by(WarningHandleRecord.id.desc()).limit(1))
     meta = indicator(db, warning.type) if warning.type in INDICATORS else {'unit': ''}
+    summary_message = None
+    if warning.summary_status in ('FAILED', 'SKIPPED'):
+        from app.models import AILog
+        summary_message = db.scalar(select(AILog.error_msg).where(AILog.model == f'warning:{warning.id}',
+            AILog.agent.in_(['ALERT_ATTEMPT', 'ALERT_QUOTA', 'ALERT_SKIP']), AILog.success == 0, AILog.error_msg.is_not(None))
+            .order_by(AILog.id.desc()).limit(1))
     return {'warning_id': warning.id, 'profile_id': warning.profile_id, 'elder_name': profile.name if profile else None,
             'elder_age': age(profile.birthday) if profile else None, 'type': warning.type, 'value_text': warning.value_text, 'unit': meta['unit'],
             'level': warning.level, 'level_text': ['正常', '轻度', '较高', '高风险'][warning.level], 'ai_summary': warning.ai_summary,
-            'summary_status': warning.summary_status, 'status': warning.status, 'my_read_status': receiver.read_status if receiver else ('READ' if user.role == 'ADMIN' else 'UNREAD'),
+            'summary_status': warning.summary_status, 'summary_message': summary_message, 'status': warning.status, 'my_read_status': receiver.read_status if receiver else ('READ' if user.role == 'ADMIN' else 'UNREAD'),
             'trigger_source': warning.trigger_source, 'created_at': dt(warning.create_time),
-            'handler_name': handle_data(db, handle)['handler_name'] if handle else None, 'handle_result': handle.result if handle else None}
+            'record_void_audit': void_data(db, db.scalar(select(HealthRecordVoid).where(HealthRecordVoid.record_id == warning.record_id))) if warning.record_id else None,
+            'handler_name': handle_data(db, handle)['handler_name'] if handle else None, 'handle_result': handle.result if handle else None,
+            'assessment': evidence_data(db.scalar(select(HealthAssessment).where(HealthAssessment.warning_id == warning.id)))}
 
 
 def read_warning(db, user, warning):
@@ -108,14 +120,16 @@ def handle(warning_id: int, body: HandleInput, user=Depends(require_roles('FAMIL
         raise APIError(2001, '预警已处理或忽略，请刷新查看处理记录', 409)
     record = WarningHandleRecord(warning_id=warning.id, handler_id=user.id, action=body.action, result=body.result)
     db.add(record)
-    warning.status = 'RESOLVED'
+    # A family report is evidence for staff follow-up, not a resolution decision.
+    if user.role in ('CARE', 'ADMIN'):
+        warning.status = 'RESOLVED'
     read_warning(db, user, warning)
     db.commit()
     return ok({'warning_id': warning.id, 'status': warning.status, 'handle': handle_data(db, record)})
 
 
 @router.put('/{warning_id}/status')
-def change_status(warning_id: int, body: StatusInput, user=Depends(require_roles('FAMILY', 'CARE', 'ADMIN')), db: Session = Depends(get_db)):
+def change_status(warning_id: int, body: StatusInput, user=Depends(require_roles('CARE', 'ADMIN')), db: Session = Depends(get_db)):
     warning = get_warning(db, user, warning_id, lock=True)
     if warning.status not in ('PENDING', 'PROCESSING'):
         raise APIError(2001, '预警已终结，不能再次变更状态', 409)
@@ -141,6 +155,10 @@ def retry(warning_id: int, tasks: BackgroundTasks, user=Depends(get_current_user
     warning = get_warning(db, user, warning_id, lock=True)
     if warning.summary_status != 'FAILED':
         raise APIError(2001, '仅生成失败的摘要可以重试', 409)
+    from app.services.summary_budget import allowance
+    allowed, reason = allowance(db, warning.id)
+    if not allowed:
+        raise APIError(3002, reason, 429)
     warning.summary_status = 'PENDING'
     db.commit()
     tasks.add_task(generate_summary, warning.id)

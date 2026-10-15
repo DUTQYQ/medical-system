@@ -1,4 +1,4 @@
-param([switch]$Demo, [int]$Port = 8000, [switch]$Install)
+﻿param([switch]$Demo, [int]$Port = 8000, [switch]$Install, [switch]$PrepareOnly)
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
 $pythonPath = Join-Path $PSScriptRoot '.venv/Scripts/python.exe'
@@ -26,8 +26,14 @@ if ($Demo) {
     & $pythonPath -m scripts.seed --demo
     if ($LASTEXITCODE -ne 0) { throw 'Demo database initialization failed.' }
 } else {
+    if ($env:DEMO_MODE -eq 'true' -and $env:DATABASE_URL -like 'sqlite:*') {
+        Remove-Item Env:DATABASE_URL -ErrorAction SilentlyContinue
+        Remove-Item Env:DEMO_MODE -ErrorAction SilentlyContinue
+        Remove-Item Env:SECRET_KEY -ErrorAction SilentlyContinue
+    }
     & $pythonPath -m scripts.configure_local
     if ($LASTEXITCODE -ne 0) { throw 'Local database configuration is required, or use -Demo.' }
 }
+if ($PrepareOnly) { return }
 & $pythonPath -m uvicorn app.main:app --host 127.0.0.1 --port $Port
 if ($LASTEXITCODE -ne 0) { throw 'Backend startup failed.' }

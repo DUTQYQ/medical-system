@@ -11,6 +11,7 @@ from app.core.errors import APIError, ok
 from app.models import User, ElderProfile, HealthRecord, HealthWarning, ChatSession, ChatMessage, SysConfig, KnowledgeDocument, KnowledgeChunk, CareRelation, FamilyBind, WarningHandleRecord
 from app.services.serializers import user_data, dt
 from app.services.thresholds import INDICATORS, indicator, threshold_data, parse_threshold
+from app.services.personal_threshold import validate_rule
 from .schemas import Register, EnabledInput, RoleInput, ThresholdInput, KnowledgeInput, AssignmentInput, IndicatorInput
 
 router = APIRouter(prefix='/admin', tags=['管理员'], dependencies=[Depends(require_roles('ADMIN'))])
@@ -96,12 +97,7 @@ def update_threshold(config_id: int, body: ThresholdInput, db: Session = Depends
     if not row:
         raise APIError(2002, '阈值不存在', 404)
     value = json.dumps({f'level{i}': getattr(body, f'level{i}_range') for i in range(4)}, ensure_ascii=False)
-    try:
-        parse_threshold(value)
-    except (ValueError, TypeError):
-        raise APIError(2001, '阈值表达式无效，支持 90~139、>=180、<40 或 >130')
-    if len(value) > 500:
-        raise APIError(2001, '阈值配置超过 500 字符')
+    validate_rule(value)
     row.config_value, row.enabled = value, int(body.enabled)
     db.commit()
     return ok(threshold_data(row))
@@ -195,7 +191,10 @@ def statistics(range: str = Query('7d', pattern=r'^(1d|7d|30d|90d|day|week|month
     consults = list(db.scalars(select(ChatMessage).where(ChatMessage.role == 'user', ChatMessage.create_time >= start, ChatMessage.create_time <= end)))
     warnings = list(db.scalars(select(HealthWarning).where(HealthWarning.create_time >= start, HealthWarning.create_time <= end)))
     users = list(db.scalars(select(User).where(User.create_time >= start, User.create_time <= end)))
-    handles = db.scalar(select(func.count()).select_from(WarningHandleRecord).where(WarningHandleRecord.create_time >= start, WarningHandleRecord.create_time <= end))
+    handles = db.scalar(select(func.count()).select_from(WarningHandleRecord).join(User, User.id == WarningHandleRecord.handler_id)
+        .where(User.role.in_(['CARE', 'ADMIN']), WarningHandleRecord.create_time >= start, WarningHandleRecord.create_time <= end))
+    family_followups = db.scalar(select(func.count()).select_from(WarningHandleRecord).join(User, User.id == WarningHandleRecord.handler_id)
+        .where(User.role == 'FAMILY', WarningHandleRecord.create_time >= start, WarningHandleRecord.create_time <= end))
     dates = [(start + timedelta(days=i)).strftime('%Y-%m-%d') for i in builtins_range(days + 1)]
     totals = {name: db.scalar(select(func.count()).select_from(model)) for name, model in (
         ('users', User), ('health_records', HealthRecord), ('chat_sessions', ChatSession), ('chat_messages', ChatMessage),
@@ -205,9 +204,9 @@ def statistics(range: str = Query('7d', pattern=r'^(1d|7d|30d|90d|day|week|month
     totals['care_relations'] = db.scalar(select(func.count()).select_from(CareRelation).where(CareRelation.status == 1))
     return ok({'users': users_total, 'total_users': users_total, 'registered_users': len(users), 'active_users': active,
                'consultations': len(consults), 'warnings': len(warnings), 'module_totals': totals,
-               'pending': sum(row.status in ('PENDING', 'PROCESSING') for row in warnings), 'handled': handles,
+               'pending': sum(row.status in ('PENDING', 'PROCESSING') for row in warnings), 'handled': handles, 'family_followups': family_followups,
                'resolved': sum(row.status == 'RESOLVED' for row in warnings), 'range': range, 'period_start': dt(start), 'period_end': dt(end),
-               'statistic_basis': '新增/咨询/预警按创建时间；待处理为周期内创建且当前待处理预警；已处理次数按处理记录时间；活跃用户按最后登录时间；模块总量为全部历史实际记录。',
+               'statistic_basis': '新增/咨询/预警按创建时间；待处理为周期内创建且当前待处理预警；已处理次数仅统计工作人员结论，家属反馈单列；活跃用户按最后登录时间；模块总量为全部历史实际记录。',
                'role_counts': {role: db.scalar(select(func.count()).select_from(User).where(User.role == role)) for role in ('ELDER', 'FAMILY', 'CARE', 'ADMIN')},
                'chart': {'dates': dates, 'users': [sum(row.create_time.strftime('%Y-%m-%d') == date for row in users) for date in dates],
                          'consultations': [sum(row.create_time.strftime('%Y-%m-%d') == date for row in consults) for date in dates],

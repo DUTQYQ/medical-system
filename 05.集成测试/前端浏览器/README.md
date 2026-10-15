@@ -55,3 +55,25 @@ node.exe 05.集成测试/前端浏览器/status-tags-smoke.cjs
 ```
 
 脚本以自身目录为输出目录，可从项目根运行。重新执行会对隔离测试库增加记录；结果截图数值随测试记录变化。SQLite和向量缓存均按仓库已有 `config.local.*` 规则忽略，无需修改 `.gitignore`。本版未对短信、语音、PDF等选配能力做接入验收。
+
+## 2026-10-13 养老院 B 档扩展
+
+本轮在本机 Chrome 和独立 SQLite 完成 44 项检查，三份 JSON 的 `passed` 与 `results.length` 一致、`page_errors` 均为空，真实模型未调用。旧 45 项是 2026-10-08 的历史证据，不与本轮相加宣称全部重跑。
+
+| 脚本 | 检查数 | 本轮覆盖 |
+|---|---:|---|
+| b-expansion-smoke.cjs | 20 | 主动问询、词条、建议预填确认、工单处理、通知、设备借还、活动、个体阈值与失败状态 |
+| b-management-smoke.cjs | 14 | 无健康授权的新老人可呼叫、跳过续答、词条新增撤销、活动关闭取消、设备维护、类别及响应设置 |
+| b-final-regression.cjs | 10 | 最新单卡、完整导航、稳定截图、工作人员私人聊天只读，以及原医疗预警闭环和 ECharts |
+
+新脚本固定使用 `http://127.0.0.1:5175`，API 由 Vite 代理至隔离 8003。不能把这些端口代理至已有 MySQL；脚本会创建演示申请、活动、设备和测量。
+
+复现时使用上文的独立后端方法，把 SQLite 路径换成后端 `config.local.v2-browser.db`，端口改为 8003，模型 Key 均置空。前端当前进程设置 `VITE_BACKEND_URL=http://127.0.0.1:8003`，启动 `--port 5175 --strictPort`。设置 bundled Playwright 的 `NODE_PATH` 后执行：
+
+```powershell
+node.exe 05.集成测试/前端浏览器/b-expansion-smoke.cjs
+node.exe 05.集成测试/前端浏览器/b-management-smoke.cjs
+node.exe 05.集成测试/前端浏览器/b-final-regression.cjs
+```
+
+结果及截图写入 `config.local.b-qa`。最终前端构建使用 bundled Node 直接执行 Vite，通过 2298 模块且退出码 0；本机系统 Node 曾在清理阶段产生 libuv 断言，未据此宣称失败构建成功。

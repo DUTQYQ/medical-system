@@ -21,6 +21,8 @@ THRESHOLDS = {
     'STEP_COUNT': {'level0': '>=6000', 'level1': '4000~5999', 'level2': '2000~3999', 'level3': '<2000'},
 }
 SYSTEM_CONFIG = {
+    'ai_summary_daily_limit': '100', 'ai_summary_warning_daily_limit': '3', 'ai_summary_cooldown_seconds': '60',
+    'care_health_data_fresh_hours': '72',
     'family_bind_max': '5', 'alert_unread_poll_sec': '30', 'ai_summary_timeout_sec': '8',
     'ai_summary_retry': '1', 'ai_daily_limit': '50', 'ai_question_max_chars': '2000',
     'login_max_attempts': '5', 'login_lock_seconds': '900',
@@ -69,6 +71,8 @@ def seed_database(db, demo=False):
             # explicitly report that their vector index is unavailable.
             import_knowledge(db, reindex=False)
             print('官方知识条目已追加；向量索引未就绪，AI 检索将明确报告不可用。')
+    from scripts.seed_services import seed_services
+    seed_services(db, demo=demo)
     db.commit()
 
 

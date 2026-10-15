@@ -65,6 +65,10 @@ class HealthInput(StrictModel):
         return value
 
 
+class RecordVoidInput(StrictModel):
+    reason: str = Field(min_length=1, max_length=500)
+
+
 class BindInput(StrictModel):
     phone: str = Field(pattern=r'^1\d{10}$')
     profile_id: int | None = Field(default=None, gt=0)
@@ -113,6 +117,8 @@ class MeInput(StrictModel):
     name: str = Field(min_length=1, max_length=50)
     phone: str | None = Field(default=None, pattern=r'^1\d{10}$')
     avatar: str | None = Field(default=None, max_length=255)
+    current_password: str | None = Field(default=None, min_length=1, max_length=72)
+    new_password: str | None = Field(default=None, min_length=8, max_length=72)
 
 
 class PasswordInput(StrictModel):

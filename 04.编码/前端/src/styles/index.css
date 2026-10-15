@@ -367,11 +367,12 @@ a {
 
 .ky-nav__list {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   list-style: none;
   margin: 0;
   padding: 0;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .ky-nav__item {

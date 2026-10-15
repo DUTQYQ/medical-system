@@ -1,4 +1,4 @@
-"""SQLAlchemy 2 models, matching the existing 15-table schema exactly."""
+"""Existing core schema and explicitly migrated additive audit models."""
 from sqlalchemy import BigInteger, Integer, String, Text, Numeric, Date, DateTime, JSON, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from app.core.database import Base, now
@@ -73,6 +73,14 @@ class HealthRecord(Times, Base):
     is_abnormal: Mapped[int] = mapped_column(Integer, default=0)
     remark: Mapped[str | None] = mapped_column(String(255))
     recorder_id: Mapped[int | None] = mapped_column(ID, ForeignKey('user.id'))
+
+
+class HealthRecordVoid(Times, Base):
+    __tablename__ = 'health_record_void'
+    id: Mapped[int] = mapped_column(ID, primary_key=True, autoincrement=True)
+    record_id: Mapped[int] = mapped_column(ID, ForeignKey('health_record.id'), unique=True)
+    voided_by: Mapped[int] = mapped_column(ID, ForeignKey('user.id'))
+    reason: Mapped[str] = mapped_column(String(500))
 
 
 class HealthWarning(Times, Base):
@@ -183,3 +191,8 @@ class AILog(Base):
 
 
 AiLog = AILog
+
+# Additive models register with the same metadata; never create them at startup.
+from .personal_threshold import ProfileThresholdVersion, HealthAssessment
+from .consultation import ConsultationIntake, ProfileFact, ProfileFactRevision, AdviceCard
+from .care_services import ServiceCatalog, ServiceRequest, ServiceEvent, Activity, ActivityRegistration, Equipment, EquipmentLoan, ServiceNotification

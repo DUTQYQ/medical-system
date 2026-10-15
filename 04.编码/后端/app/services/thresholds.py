@@ -79,7 +79,7 @@ def range_parts(expression):
         match = re.fullmatch(fr'({NUMBER})\s*[~～]\s*({NUMBER})', part)
         if match:
             low, high = map(float, match.groups())
-            if low > high:
+            if not math.isfinite(low) or not math.isfinite(high) or low > high:
                 raise ValueError('reversed threshold range')
             result.append((low, high, True, True))
             continue
@@ -87,6 +87,8 @@ def range_parts(expression):
         if not match:
             raise ValueError('unsupported threshold expression')
         op, value = match.group(1), float(match.group(2))
+        if not math.isfinite(value):
+            raise ValueError('non-finite threshold boundary')
         result.append((value, math.inf, op == '>=', False) if op.startswith('>') else (-math.inf, value, False, op == '<='))
     return result
 
@@ -126,7 +128,10 @@ def evaluate(raw, value):
     raise APIError(5001, '预警阈值未覆盖此指标值，请联系管理员补全低值或高值区间', 503)
 
 
-def risk_level(db, type, val1, val2=None):
+def risk_level(db, type, val1, val2=None, *, profile_id=None):
+    if profile_id is not None:
+        from app.services.personal_threshold import assess
+        return assess(db, profile_id, type, val1, val2)[0]
     levels = []
     for key, value in zip(INDICATORS[type]['keys'], [val1, val2]):
         row = db.scalar(select(SysConfig).where(SysConfig.config_key == key))

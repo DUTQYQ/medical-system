@@ -9,6 +9,8 @@ export default [
     component: () => import('../components/elder/ElderLayout.vue'),
     redirect: '/elder/home',
     children: [
+      { path: 'services', meta: { service: true }, component: () => import('../components/common/ServiceCenter.vue') },
+      { path: 'personal-thresholds', component: () => import('../components/common/PersonalThresholds.vue') },
       { path: 'home', name: 'ElderHome', component: () => import('../views/elder/Home.vue') },
       // 健康档案
       { path: 'profile', name: 'ElderProfile', component: () => import('../views/elder/HealthProfile.vue') },

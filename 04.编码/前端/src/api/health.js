@@ -5,7 +5,7 @@ export async function addRecord(p) {
   return { ...r, warning_created: r.is_abnormal }
 }
 export const listRecords = params => request.get('/health/records', { params })
-export const deleteRecord = id => request.delete(`/health/records/${id}`)
+export const deleteRecord = (id, reason) => request.delete(`/health/records/${id}`, { data: { reason } })
 export async function getLatestIndicators(profileId) {
   return Object.fromEntries(await Promise.all(TYPES.map(async type => {
     const r = await listRecords({ profile_id: profileId, type, page: 1, page_size: 1 })

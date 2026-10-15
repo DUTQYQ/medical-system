@@ -22,7 +22,7 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { thresholdHint } from '@/utils/format'
 import { getUser } from '@/utils/auth'
-import { listProfiles, getIndicators, getThresholds, getTrend } from '@/api'
+import { listProfiles, getIndicators, getTrend } from '@/api'
 import TrendChart from '@/components/common/TrendChart.vue'
 
 const user = getUser()
@@ -48,6 +48,7 @@ async function load() {
     const d = await getTrend({ profile_id: profileId.value, type: type.value, days: 30 })
     dates.value = d.dates
     series.value = d.series
+    thresholds.value=d.current_thresholds || []
     abnormalIndexes.value = d.abnormalIndexes
     unit.value = UNIT[type.value] || ''
   } catch (e) {
@@ -61,9 +62,8 @@ function onPointClick({ date }) {
 
 onMounted(async () => {
   try {
-    const [inds, ths, ps] = await Promise.all([getIndicators(), getThresholds(), listProfiles(user.user_id, 'ELDER')])
+    const [inds, ps] = await Promise.all([getIndicators(), listProfiles(user.user_id, 'ELDER')])
     indicators.value = inds
-    thresholds.value = ths
     profiles.value = ps
     if (ps.length) profileId.value = ps[0].profile_id
     await load()

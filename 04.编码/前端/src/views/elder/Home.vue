@@ -8,6 +8,8 @@
       <el-select v-if="profiles.length>1" v-model="profileId" style="width:160px" @change="load"><el-option v-for="p in profiles" :key="p.profile_id" :label="p.name" :value="p.profile_id" /></el-select><el-button type="primary" size="large" @click="$router.push('/elder/input?profile_id='+profileId)">＋ 录入健康指标</el-button>
     </div>
 
+    <div class="ky-card"><div class="ky-card__title">院内生活服务</div><p>安排娱乐活动、锻炼、生活照料或借用设备，也可以呼叫工作人员。</p><el-space wrap><el-button type="primary" @click="$router.push('/elder/services?profile_id='+profileId)">进入生活服务</el-button><el-button type="danger" @click="$router.push('/elder/services?call=1&profile_id='+profileId)">立即呼叫</el-button><el-button @click="$router.push('/elder/services?tab=activities&profile_id='+profileId)">活动与报名</el-button></el-space></div>
+
     <!-- 今日健康速览 -->
     <div class="stat-grid">
       <div class="ky-stat">
@@ -110,7 +112,8 @@ const services = [
   { name: '健康档案', icon: '📋', desc: '查看基本信息与慢病标签', path: '/elder/profile' },
   { name: '指标录入', icon: '✍️', desc: '录入血压、血糖等指标', path: '/elder/input' },
   { name: '指标历史', icon: '📈', desc: '查看历史与趋势图', path: '/elder/history' },
-  { name: 'AI 健康咨询', icon: '🤖', desc: 'AI 助手随时答疑', path: '/elder/ai' },
+  { name: '康养助手', icon: '🤖', desc: '记录个人词条，形成可执行建议', path: '/elder/ai' },
+  { name: '个人健康阈值', icon: '📋', desc: '查看本人设置与来源', path: '/elder/personal-thresholds' },
   { name: '【选配】健康打卡', icon: '✅', desc: '每日健康习惯打卡', path: '/elder/checkin' },
   { name: '【选配】本机用药备忘', icon: '💊', desc: '管理常用药物', path: '/elder/medication' },
 ]

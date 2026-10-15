@@ -11,6 +11,8 @@
       </div>
     </div>
 
+    <div class="ky-card"><div class="ky-card__title">家人的院内生活服务</div><p>为已绑定老人申请生活照料、娱乐锻炼、设备，跟进接单与处理结果。</p><el-space wrap><el-button type="primary" @click="$router.push('/family/services')">查看生活服务</el-button><el-button @click="$router.push('/family/services?tab=activities')">院内活动</el-button><el-button @click="$router.push('/family/ai')">完善个人词条与建议</el-button></el-space></div>
+
     <!-- 预警概览 -->
     <div class="stat-grid">
       <div class="ky-stat">

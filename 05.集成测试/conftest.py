@@ -23,6 +23,8 @@ os.environ['LLM_PROVIDER'] = 'deepseek'
 os.environ['DEEPSEEK_API_KEY'] = ''
 os.environ['DASHSCOPE_API_KEY'] = ''
 os.environ['ZHIPU_API_KEY'] = ''
+for variable in ('LLM_API_KEY', 'QWEN_API_KEY', 'GLM_API_KEY'):
+    os.environ[variable] = ''
 os.environ['VECTOR_STORE_PATH'] = str(TEST_ROOT / 'vectors')
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
 

@@ -73,14 +73,18 @@ def test_abnormal_to_notifications_to_handling_and_independent_reads(setup):
     assert result['data']['risk_level'] == 3
     assert client.get('/api/notifications/unread', headers=family).json()['data']['unread'] == 1
     assert client.get(f'/api/alerts/{warning_id}', headers=family).json()['data']['my_read_status'] == 'READ'
+    assert client.put(f'/api/alerts/{warning_id}/status', headers=family, json={'status': 'PROCESSING'}).status_code == 403
     assert client.get('/api/notifications/unread', headers=care).json()['data']['unread'] == 1
     handled = client.post(f'/api/alerts/{warning_id}/handle', headers=family, json={'result': '联系老人复核指标', 'action': 'CONTACTED'})
-    assert handled.json()['data']['status'] == 'RESOLVED'
+    assert handled.json()['data']['status'] == 'PENDING'
+    assert handled.json()['data']['handle']['record_type'] == 'FOLLOW_UP'
     assert client.get('/api/notifications/unread', headers=care).json()['data']['unread'] == 1
+    resolved = client.post(f'/api/alerts/{warning_id}/handle', headers=care, json={'result': '现场复核并确认处理完成', 'action': 'OBSERVE'})
+    assert resolved.json()['data']['status'] == 'RESOLVED'
     duplicate = client.post(f'/api/alerts/{warning_id}/handle', headers=care, json={'result': '重复提交', 'action': 'OBSERVE'})
     assert duplicate.status_code == 409
     with sessions() as db:
-        assert len(list(db.scalars(select(WarningHandleRecord)))) == 1
+        assert len(list(db.scalars(select(WarningHandleRecord)))) == 2
         assert len(list(db.scalars(select(AlertReceiver)))) == 3
 
 
@@ -247,7 +251,8 @@ def test_phone_update_unique_validation_and_new_login(setup):
     elder = login(client, 2)
     assert client.put('/api/auth/me', headers=elder, json={'name': '张桂兰', 'phone': '13000000003'}).json()['code'] == 2001
     assert client.put('/api/auth/me', headers=elder, json={'name': '张桂兰', 'phone': 'bad'}).json()['code'] == 2001
-    assert client.put('/api/auth/me', headers=elder, json={'name': '张桂兰', 'phone': '13800000001'}).json()['data']['phone'] == '13800000001'
+    assert client.put('/api/auth/me', headers=elder, json={'name': '张桂兰', 'phone': '13800000001', 'current_password': 'Abc123456'}).json()['data']['phone'] == '13800000001'
+    assert client.get('/api/auth/me', headers=elder).status_code == 401
     assert client.post('/api/auth/login', json={'phone': '13800000001', 'password': 'Abc123456'}).json()['code'] == 0
 
 
@@ -259,8 +264,9 @@ def test_statistics_range_matches_real_counts(setup):
     result = client.get('/api/admin/statistics', headers=admin, params={'range': '1d'}).json()['data']
     assert result['registered_users'] == 4
     assert result['warnings'] == 1
-    assert result['pending'] == 0
-    assert result['handled'] == 1
+    assert result['pending'] == 1
+    assert result['handled'] == 0
+    assert result['family_followups'] == 1
     assert result['module_totals']['health_records'] == 1
     assert result['module_totals']['family_binds'] == 1
     assert sum(result['chart']['warnings']) == result['warnings']

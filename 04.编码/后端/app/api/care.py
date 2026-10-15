@@ -1,27 +1,37 @@
 from fastapi import APIRouter, Depends, Query
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
-from app.core.database import get_db
+from app.core.database import get_db, now
 from app.core.permissions import require_roles, visible_profile_ids, get_profile
 from app.core.errors import APIError, ok
 from app.models import ElderProfile, HealthRecord, HealthWarning, WarningHandleRecord
 from app.services.serializers import profile_data, record_data, age, dt, value_text
 from .alerts import warning_data, handle_data
+from app.services.health_records import active_records
+from app.services.thresholds import config_value
 
 router = APIRouter(prefix='/care', tags=['护工'])
 
 
 def care_data(db, profile):
-    records = list(db.scalars(select(HealthRecord).where(HealthRecord.profile_id == profile.id).order_by(HealthRecord.measured_at.desc(), HealthRecord.id.desc())))
+    records = list(db.scalars(select(HealthRecord).where(active_records(), HealthRecord.profile_id == profile.id).order_by(HealthRecord.measured_at.desc(), HealthRecord.id.desc())))
     latest = {}
     for record in records:
         latest.setdefault(record.type, record)
     warnings = list(db.scalars(select(HealthWarning).where(HealthWarning.profile_id == profile.id, HealthWarning.status.in_(['PENDING', 'PROCESSING']))))
     risk = max([row.level for row in warnings], default=0)
     bp, sugar, sleep = latest.get('BLOOD_PRESSURE'), latest.get('BLOOD_SUGAR'), latest.get('SLEEP')
+    try:
+        fresh_hours = max(1, min(720, int(config_value(db, 'care_health_data_fresh_hours', '72'))))
+    except (TypeError, ValueError):
+        fresh_hours = 72
+    data_status = 'NO_DATA' if not records else ('STALE' if records[0].measured_at < now() - timedelta(hours=fresh_hours) else 'CURRENT')
+    status = 'ABNORMAL' if risk >= 2 else 'WATCH' if risk else {'NO_DATA': 'UNKNOWN', 'STALE': 'STALE', 'CURRENT': 'NO_PENDING_ALERT'}[data_status]
     return {'profile_id': profile.id, 'elder_name': profile.name, 'age': age(profile.birthday), 'gender': profile.gender, 'address': None,
-            'status': 'ABNORMAL' if risk >= 2 else ('WATCH' if risk else 'NORMAL'), 'latest_bp': value_text(bp.type, bp.val1, bp.val2) if bp else None,
+            'status': status, 'data_status': data_status, 'fresh_hours': fresh_hours,
+            'latest_measured_at': dt(records[0].measured_at) if records else None,
+            'latest_bp': value_text(bp.type, bp.val1, bp.val2) if bp else None,
             'latest_sugar': float(sugar.val1) if sugar else None, 'sleep_hours': float(sleep.val1) if sleep else None,
             'pending_warnings': len(warnings), 'updated_at': dt(max([profile.update_time] + [row.update_time for row in records]))}
 
@@ -29,7 +39,9 @@ def care_data(db, profile):
 @router.get('/elders')
 def elders(status: str | None = None, start_at: datetime | None = None, end_at: datetime | None = None,
            user=Depends(require_roles('CARE')), db: Session = Depends(get_db)):
-    if status and status not in ('NORMAL', 'WATCH', 'ABNORMAL'):
+    if status == 'NORMAL':
+        status = 'NO_PENDING_ALERT'  # Legacy filter, without claiming clinical normality.
+    if status and status not in ('NO_PENDING_ALERT', 'UNKNOWN', 'STALE', 'WATCH', 'ABNORMAL'):
         raise APIError(2001, '老人状态无效')
     if (start_at and start_at.tzinfo) or (end_at and end_at.tzinfo):
         raise APIError(2001, '筛选时间须采用中国本地时间，不带时区后缀')
@@ -37,7 +49,7 @@ def elders(status: str | None = None, start_at: datetime | None = None, end_at: 
         raise APIError(2001, '开始时间不能晚于结束时间')
     criteria = [ElderProfile.id.in_(visible_profile_ids(db, user))]
     if start_at or end_at:
-        measured = select(HealthRecord.profile_id)
+        measured = select(HealthRecord.profile_id).where(active_records())
         if start_at:
             measured = measured.where(HealthRecord.measured_at >= start_at)
         if end_at:
@@ -46,14 +58,14 @@ def elders(status: str | None = None, start_at: datetime | None = None, end_at: 
     rows = [care_data(db, profile) for profile in db.scalars(select(ElderProfile).where(*criteria))]
     if status:
         rows = [row for row in rows if row['status'] == status]
-    rows.sort(key=lambda row: ({'ABNORMAL': 0, 'WATCH': 1, 'NORMAL': 2}[row['status']], row['profile_id']))
+    rows.sort(key=lambda row: ({'ABNORMAL': 0, 'WATCH': 1, 'UNKNOWN': 2, 'STALE': 3, 'NO_PENDING_ALERT': 4}[row['status']], row['profile_id']))
     return ok(rows)
 
 
 @router.get('/elders/{profile_id}')
 def detail(profile_id: int, user=Depends(require_roles('CARE')), db: Session = Depends(get_db)):
     profile = get_profile(db, user, profile_id)
-    records = db.scalars(select(HealthRecord).where(HealthRecord.profile_id == profile_id).order_by(HealthRecord.measured_at.desc()).limit(20))
+    records = db.scalars(select(HealthRecord).where(active_records(), HealthRecord.profile_id == profile_id).order_by(HealthRecord.measured_at.desc()).limit(20))
     warnings = db.scalars(select(HealthWarning).where(HealthWarning.profile_id == profile_id).order_by(HealthWarning.id.desc()).limit(20))
     return ok({'profile': profile_data(profile), 'latest_records': [record_data(row) for row in records], 'alerts': [warning_data(db, user, row) for row in warnings]})
 

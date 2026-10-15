@@ -41,6 +41,9 @@ def fixture(tmp_path, monkeypatch):
                     HealthRecord(id=101, profile_id=20, type='BLOOD_PRESSURE', val1=122, val2=81, measured_at=now(), is_abnormal=0),
                     HealthWarning(id=200, profile_id=10, record_id=100, type='BLOOD_PRESSURE', value_text='185/95', level=3, status='PENDING', summary_status='PENDING'),
                     SysConfig(config_key='emergency_keywords', config_value=json.dumps(workflow.DEFAULT_EMERGENCY_KEYWORDS, ensure_ascii=False), config_type='json', enabled=1)])
+        db.add_all([SysConfig(config_key='ai_summary_daily_limit', config_value='100', config_type='number', enabled=1),
+                    SysConfig(config_key='ai_summary_warning_daily_limit', config_value='3', config_type='number', enabled=1),
+                    SysConfig(config_key='ai_summary_cooldown_seconds', config_value='60', config_type='number', enabled=1)])
         # Explicit test authorization records: application registration never auto-consents.
         for user_id in (1, 2, 3, 4):
             db.add(SysConfig(config_key=f'privacy_consent:{user_id}', config_value=json.dumps({'accepted': True, 'version': '1.0', 'accepted_at': now().isoformat()}), config_type='json', enabled=1))
@@ -124,16 +127,67 @@ def test_original_mysql_keyword_configuration_understands_acceptance_example(fix
     assert result['code'] == 0 and result['data']['intent'] == 'EMERGENCY'
 
 
+@pytest.mark.parametrize('question,expected', [
+    ('我没有胸痛', False), ('以前发生过胸痛，现在没有不适', False),
+    ('护工应该怎样询问胸痛病史', False), ('胸痛是什么', False),
+    ('我没有胸痛和呼吸困难', False), ('胸痛已经消失', False),
+    ('没有胸痛，但现在呼吸困难', True), ('不是没有胸痛', True),
+    ('胸痛没有缓解', True), ('我现在胸痛是什么原因', True),
+    ('我没有发烧，但胸口很痛', True),
+])
+def test_triage_preserves_current_symptoms_and_ignores_explicit_denial_history_education(question, expected):
+    keywords = set(workflow.DEFAULT_EMERGENCY_KEYWORDS)
+    for values in workflow.EMERGENCY_ALIASES.values():
+        keywords.update(values)
+    assert workflow.current_emergency(question, keywords) is expected
+
+
+def test_care_education_does_not_create_emergency_warning(fixture, monkeypatch):
+    client, factory, user_ref = fixture
+    user_ref['id'] = 3
+    monkeypatch.setattr(workflow, 'retrieve', lambda *args: [])
+    monkeypatch.setattr(workflow, 'complete', lambda *args, **kwargs: '可在照护沟通中询问既往症状。')
+    result = client.post('/api/ai/chat', json={'profile_id': 10, 'question': '护工应该怎样询问胸痛病史'}).json()['data']
+    assert result['intent'] != 'EMERGENCY' and result['warning_id'] is None
+    with factory() as db:
+        assert db.scalar(select(func.count(HealthWarning.id))) == 1
+
+
+def test_emergency_notice_names_actual_recipients_and_falls_back_to_admin(fixture):
+    client, factory, _ = fixture
+    # Profile 11 has neither a family binding nor an assigned caregiver.
+    first = client.post('/api/ai/chat', json={'profile_id': 11, 'question': '我胸口疼'}).json()['data']
+    assert '当前没有可通知的已绑定家属或负责护工' in first['answer']
+    assert '站内通知不代表接收人已读' in first['answer']
+    with factory() as db:
+        assert set(db.scalars(select(AlertReceiver.user_id).where(AlertReceiver.warning_id == first['warning_id']))) == {1}
+        db.add(User(id=5, phone='13000000006', name='管理员', password_hash='unused', role='ADMIN', status=1))
+        db.commit()
+    second = client.post('/api/ai/chat', json={'profile_id': 11, 'question': '我胸口疼'}).json()['data']
+    assert '管理员' in second['answer']
+    with factory() as db:
+        assert set(db.scalars(select(AlertReceiver.user_id).where(AlertReceiver.warning_id == second['warning_id']))) == {1, 5}
+
+
 def test_missing_key_returns_3001_without_fake_model_success(fixture):
     client, _, _ = fixture
     result = client.post('/api/ai/chat', json={'profile_id': 10, 'question': '我最近血压怎么样'})
     assert result.status_code == 503 and result.json()['code'] == 3001
 
 
-def test_care_cannot_start_private_ai_consultations(fixture):
+def test_care_assistant_is_scoped_and_private_sessions_do_not_cross_roles(fixture, monkeypatch):
     client, _, user_ref = fixture
+    calls = []
+    monkeypatch.setattr(workflow, 'complete', lambda question, context, **kwargs: calls.append(kwargs) or '按护工工作场景提供参考。')
     user_ref['id'] = 3
-    assert client.post('/api/ai/chat', json={'profile_id': 10, 'question': '最近记录'}).json()['code'] == 1002
+    response = client.post('/api/ai/chat', json={'profile_id': 10, 'question': '老人最近睡眠怎么样'}).json()
+    assert response['code'] == 0 and calls[-1]['audience'] == 'CARE'
+    session_id = response['data']['session_id']
+    assert [row['session_id'] for row in client.get('/api/ai/sessions?profile_id=10').json()['data']] == [session_id]
+    assert client.post('/api/ai/chat', json={'profile_id': 20, 'question': '老人最近睡眠怎么样'}).status_code == 403
+    user_ref['id'] = 2
+    assert client.get('/api/ai/sessions?profile_id=10').json()['data'] == []
+    assert client.get(f'/api/ai/sessions/{session_id}/messages').status_code == 403
 
 
 def test_ai_requires_explicit_privacy_consent(fixture):
@@ -152,6 +206,9 @@ def test_session_profile_mismatch_and_data_ownership_are_rejected(fixture, monke
     stub(monkeypatch)
     session_id = client.post('/api/ai/chat', json={'profile_id': 10, 'question': '我最近血压怎么样'}).json()['data']['session_id']
     assert client.post('/api/ai/chat', json={'profile_id': 11, 'session_id': session_id, 'question': '最近记录'}).json()['code'] == 2001
+    user_ref['id'] = 2
+    assert client.get('/api/ai/sessions?profile_id=10').json()['data'] == []
+    assert client.get(f'/api/ai/sessions/{session_id}/messages').status_code == 403
     user_ref['id'] = 4
     assert client.get(f'/api/ai/sessions/{session_id}/messages').json()['code'] == 1002
     assert client.post('/api/ai/chat', json={'profile_id': 10, 'question': '最近记录'}).json()['code'] == 1002
@@ -160,8 +217,8 @@ def test_session_profile_mismatch_and_data_ownership_are_rejected(fixture, monke
 def test_unbinding_immediately_revokes_consultation_access(fixture, monkeypatch):
     client, factory, user_ref = fixture
     stub(monkeypatch)
-    result = client.post('/api/ai/chat', json={'profile_id': 10, 'question': '我最近血压怎么样'}).json()['data']
     user_ref['id'] = 2
+    result = client.post('/api/ai/chat', json={'profile_id': 10, 'question': '我担心老人最近血压偏高'}).json()['data']
     assert client.get(f"/api/ai/sessions/{result['session_id']}/messages").json()['code'] == 0
     with factory() as db:
         db.scalar(select(FamilyBind)).status = 'REVOKED'
@@ -176,6 +233,9 @@ def test_summary_failure_and_success_use_independent_db_session(fixture, monkeyp
         warning = db.get(HealthWarning, 200)
         assert warning.summary_status == 'FAILED' and warning.status == 'PENDING'
         warning.summary_status = 'PENDING'
+        from app.models import AILog
+        for row in db.scalars(select(AILog).where(AILog.agent == 'ALERT_ATTEMPT')):
+            row.create_time = now()-timedelta(seconds=61)
         db.commit()
     contexts = stub(monkeypatch)
     workflow.generate_summary(200)

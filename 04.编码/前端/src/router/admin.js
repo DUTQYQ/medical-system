@@ -1,6 +1,10 @@
 export default [{
   path: '/admin', meta: { role: 'ADMIN', scope: 'admin' }, component: () => import('../components/common/StaffLayout.vue'), redirect: '/admin/statistics',
   children: [
+    { path: 'services', meta: { service: true }, component: () => import('../components/common/ServiceCenter.vue') },
+    { path: 'personal-thresholds', component: () => import('../components/common/PersonalThresholds.vue') },
+    { path: 'threshold-review', component: () => import('../views/admin/ThresholdReview.vue') },
+    { path: 'ai', redirect: '/admin/knowledge' },
     { path: 'profiles', component: () => import('../views/admin/Profiles.vue') },
     { path: 'profile/edit', component: () => import('../views/elder/ProfileEdit.vue') },
     { path: 'statistics', component: () => import('../views/admin/Statistics.vue') },

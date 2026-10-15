@@ -6,7 +6,9 @@ from app.core.database import get_db, now
 from app.core.security import get_current_user
 from app.core.permissions import get_profile, profile_scope, require_roles, require_health_consent
 from app.core.errors import APIError, ok
-from app.models import ElderProfile, User, FamilyBind, CareRelation
+from app.models import ElderProfile, User, FamilyBind, CareRelation, HealthWarning
+from app.models.care_services import ServiceRequest, EquipmentLoan, ActivityRegistration
+from app.services.care_services import ACTIVE
 from app.services.serializers import profile_data
 from .schemas import ProfileInput
 
@@ -82,6 +84,18 @@ def update(profile_id: int, body: ProfileInput, user=Depends(get_current_user), 
 @router.delete('/{profile_id}')
 def remove(profile_id: int, user=Depends(require_roles('ELDER', 'ADMIN')), db: Session = Depends(get_db)):
     profile = get_profile(db, user, profile_id, lock=True)
+    # Locking reads see obligations created before this profile lock under MySQL RR.
+    requests = list(db.scalars(select(ServiceRequest.id).where(ServiceRequest.profile_id == profile_id,
+        ServiceRequest.status.in_(ACTIVE)).with_for_update()))
+    loans = list(db.scalars(select(EquipmentLoan.id).where(EquipmentLoan.profile_id == profile_id,
+        EquipmentLoan.status == 'BORROWED').with_for_update()))
+    registrations = list(db.scalars(select(ActivityRegistration.id).where(ActivityRegistration.profile_id == profile_id,
+        ActivityRegistration.status == 'REGISTERED').with_for_update()))
+    warnings = list(db.scalars(select(HealthWarning.id).where(HealthWarning.profile_id == profile_id,
+        HealthWarning.status.in_(['PENDING', 'PROCESSING'])).with_for_update()))
+    if requests or loans or registrations or warnings:
+        raise APIError(2001, f'档案仍有关联业务：未完成服务 {len(requests)} 项、未归还设备 {len(loans)} 项、'
+                       f'未结束报名 {len(registrations)} 项、待处理预警 {len(warnings)} 条。请先处理或撤回后再删除档案。', 409)
     profile.deleted = 1
     db.commit()
     return ok()

@@ -15,8 +15,8 @@ router.beforeEach(async to => {
     const user = await getMe()
     setUser(user)
     if (publicPage) return roleHome(user.role)
-    if (user.privacy_consent?.accepted !== true && to.path !== roleHome(user.role) + '/mine') return roleHome(user.role) + '/mine'
     if (to.meta.role && to.meta.role !== user.role) return { path: '/forbidden' }
+    if (user.privacy_consent?.accepted !== true && !to.meta.service && to.path !== roleHome(user.role) + '/mine') return roleHome(user.role) + '/mine'
     return true
   } catch (e) {
     if ([1001, 1003].includes(e.code)) { clearAuth(); return publicPage ? true : '/login' }

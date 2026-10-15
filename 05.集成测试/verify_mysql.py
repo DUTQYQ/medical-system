@@ -47,7 +47,7 @@ def main():
             continue
         actual_columns = {item['name'] for item in actual.get_columns(table.name)}
         missing.extend(table.name + '.' + column.name for column in table.columns if column.name not in actual_columns)
-    print('Existing database schema: ' + ('MATCH (15 tables; no data modified)' if not missing else 'MISSING ' + ', '.join(missing)))
+    print('Existing database schema: ' + (f'MATCH ({len(Base.metadata.tables)} tables; no data modified)' if not missing else 'MISSING ' + ', '.join(missing)))
     engine.dispose()
     if not parsed.run_tests:
         return 0 if not missing else 1

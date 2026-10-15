@@ -79,6 +79,14 @@ def me(user=Depends(get_current_user), db: Session = Depends(get_db)):
 
 @router.put('/me')
 def update_me(body: MeInput, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    user = db.scalar(select(User).where(User.id == user.id).with_for_update()
+                     .execution_options(populate_existing=True))
+    phone_changed = body.phone is not None and body.phone != user.phone
+    sensitive_change = phone_changed or body.new_password is not None
+    if sensitive_change and (not body.current_password or not verify_password(body.current_password, user.password_hash)):
+        raise APIError(2001, '修改登录手机号或密码须填写正确的当前密码')
+    if body.new_password is not None and len(body.new_password.encode()) > 72:
+        raise APIError(2001, '新密码 UTF-8 字节长度不能超过 72')
     if body.avatar and not body.avatar.startswith(('https://', 'http://', '/')):
         raise APIError(2001, '头像须为 HTTP 地址或本站路径')
     if body.phone is not None:
@@ -88,8 +96,13 @@ def update_me(body: MeInput, user=Depends(get_current_user), db: Session = Depen
     user.name = body.name
     if body.avatar is not None:
         user.avatar = body.avatar
+    if sensitive_change:
+        if body.new_password is not None:
+            user.password_hash = hash_password(body.new_password)
+        set_config(db, f'auth_epoch:{user.id}', uuid.uuid4().hex)
     db.commit()
-    return ok(user_data(user))
+    return ok({**user_data(user), 'reauth_required': sensitive_change},
+              message='登录信息已更新，请重新登录' if sensitive_change else '个人信息已保存')
 
 
 @router.put('/password')

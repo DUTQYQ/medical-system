@@ -13,6 +13,8 @@ def create_warning(db, profile, *, type, value_text, level, record_id=None, trig
     ids.update(db.scalars(select(FamilyBind.family_user_id).where(FamilyBind.profile_id == profile.id, FamilyBind.status == 'APPROVED').with_for_update()))
     ids.update(db.scalars(select(CareRelation.care_user_id).where(CareRelation.profile_id == profile.id, CareRelation.status == 1).with_for_update()))
     enabled_ids = set(db.scalars(select(User.id).where(User.id.in_(ids), User.status == 1).with_for_update()))
+    if level >= 3 and not db.scalar(select(User.id).where(User.id.in_(enabled_ids), User.role == 'CARE').limit(1)):
+        enabled_ids.update(db.scalars(select(User.id).where(User.role == 'ADMIN', User.status == 1).with_for_update()))
     db.add_all(AlertReceiver(warning_id=warning.id, user_id=user_id, read_status='UNREAD') for user_id in enabled_ids)
     db.flush()
     return warning

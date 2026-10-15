@@ -315,11 +315,13 @@ POST /api/health/records
 GET /api/health/records?profile_id=2001&type=BLOOD_PRESSURE&page=1&page_size=20
 ```
 
-### 4.3 删除指标
+### 4.3 作废误录指标并保留审计
 
 ```
 DELETE /api/health/records/{id}
 ```
+
+请求体为 `{ "reason": "复核发现误录" }`，原因必填。老人、家属和护工只能作废本人录入的记录；管理员可核验后作废其他记录。接口追加 `health_record_void`，保留原始测量及预警、检测证据关联；重复操作不重复写审计。默认历史列表、趋势、护工最新指标和 AI 数据上下文排除作废记录。历史列表传 `include_voided=true` 可查看原始数值、作废人及原因，返回 `is_voided`、`void_audit`、`can_void`。作废不会关闭原预警。
 
 ### 4.4 趋势数据（供 ECharts）
 
@@ -359,7 +361,7 @@ GET /api/health/trend?profile_id=2001&type=BLOOD_PRESSURE&days=30
 POST /api/ai/chat
 ```
 
-权限：老人 / 家属（代管老人）
+权限：老人（本人档案）/ 家属（已批准绑定的老人档案）/ 护工（当前负责的老人档案）
 
 请求体：
 
@@ -414,6 +416,13 @@ POST /api/ai/chat
 | GET | `/api/ai/sessions/{id}/messages` | 会话内消息 |
 | DELETE | `/api/ai/sessions/{id}` | 删除会话 |
 
+### 5.3 角色范围
+
+- 老人只能以本人档案发起咨询；家属只能使用已批准绑定的老人档案；护工只能使用当前负责的老人档案。
+- 老人、家属、护工的会话列表仅返回本人发起的会话；读取消息和删除会话也必须是本人会话。角色生成的建议历史同样仅返回当前生成者的记录。即使其他用户有权访问同一老人档案，也不能查看这段私密咨询或他人的角色建议。
+- 管理员维护知识库和系统配置，不使用老人健康咨询入口。护工使用护理工作助手；老人和家属分别使用本人健康生活助手、家属照护助手。
+- 家属可对本人有权查看的预警登记联系、探访或送医结论；预警状态推进或忽略由护工、管理员执行。
+
 ---
 
 ## 6. 主动预警（ALERT）
@@ -432,7 +441,8 @@ POST /api/ai/chat
 补充规则：
 
 - 任一人点开详情 → 只更新自己那条 `alert_receiver`，**不影响其他接收人**
-- 任一人提交处理结果 → `status = RESOLVED`，写入 `warning_handle_record`，其余人界面显示"已由 XXX 于 XX 时间处理"
+- 家属提交跟进反馈 → 保持 `PENDING` 或 `PROCESSING`，追加 `warning_handle_record`，返回 `record_type=FOLLOW_UP`。
+- 负责护工或管理员确认处理完成 → `status = RESOLVED`，追加 `record_type=RESOLUTION` 的处理记录。管理员统计的已处理次数不包含家属反馈。
 - **已处理不等于已读**：未读的接收人仍应看到该预警及其处理结果
 
 ### 6.1 预警列表
@@ -514,7 +524,7 @@ POST /api/alerts/{id}/handle
 
 `action`：`CONTACTED` / `ARRANGED_VISIT` / `SENT_HOSPITAL` / `OBSERVE`
 
-处理后 `status` 流转为 `RESOLVED`，并写入 `warning_handle_record`（记录处理人、方式、说明、时间）。
+负责护工或管理员提交结论后 `status` 流转为 `RESOLVED`；家属提交反馈时保持原状态。两者均写入 `warning_handle_record`，返回处理人角色和记录类型。家属只能登记已批准绑定档案的实际跟进情况，不能关闭、推进或忽略预警。
 
 处理过程中可先置为中间态（护工已接单但尚未完成）：
 
@@ -523,6 +533,7 @@ PUT /api/alerts/{id}/status
 ```
 
 请求体 `{ "status": "PROCESSING" }`；取值 `PROCESSING` / `IGNORED`。
+仅护工和管理员可推进或忽略预警；家属使用上述处理结论接口登记跟进，不可改变预警处理阶段。
 
 ### 6.4 标记已读（作用于当前用户）
 
@@ -662,7 +673,7 @@ GET /api/notifications/unread
 }
 ```
 
-`status`：`NORMAL` / `WATCH` / `ABNORMAL`
+`status`：`UNKNOWN`（暂无健康数据）/ `STALE`（数据待更新）/ `NO_PENDING_ALERT`（暂无待处理预警）/ `WATCH` / `ABNORMAL`。待处理异常优先；没有预警不表示健康正常。数据新鲜度按 `sys_config.care_health_data_fresh_hours` 判定，默认 72 小时，仅用于提示记录待更新。旧 `NORMAL` 查询参数兼容映射至 `NO_PENDING_ALERT`。
 
 ---
 
@@ -760,3 +771,20 @@ D-05 引入的接收人概念需要新增一张表，v0.1 契约未体现：
 
 > 本契约是前后端并行的基础。接口有变，先改文档，再改代码。
 > 设计层面的裁决见 `03.概要设计/设计决策记录_康养系统_v1.0.md`。
+
+## 2026-10-14 功能边界修复补充
+
+本节记录当前代码的安全修复，原有接口路径保留。
+
+| 接口 | 补充行为 |
+|---|---|
+| `PUT /api/auth/me` | 修改登录手机号或密码时要求 `current_password`。可选 `new_password` 为 8 至 72 字符且 UTF-8 不超过 72 字节；姓名、手机号和密码在同一事务更新。成功返回 `reauth_required`，为真时所有旧会话失效，前端清除登录状态并返回登录页。仅改姓名无需二次验证。原 `PUT /api/auth/password` 保留。 |
+| `DELETE /api/profiles/{id}` | 存在未完成服务、借出设备、未结束报名或待处理预警时返回 HTTP 409，并提示各项数量；不会删除业务记录。 |
+| `POST /api/ai/chat` | 紧急信息先确定症状对象。本人、其他人或对象不清时仍给即时求助提示，但 `warning_id` 为 null，不给所选老人误建预警。只有指向当前档案的当前症状才创建该老人紧急预警；软件分流不能替代现场急救。 |
+| 异常咨询 | 已解决、已忽略及关联测量已作废的历史预警保留来源说明，但不加入返回的当前未处理有效预警等级。此等级不等于临床健康诊断。 |
+| 预警详情和列表 | 新增 `summary_message`，说明摘要预算不足、模型失败或关联测量作废；只有真正生成的内容进入 `ai_summary`。 |
+| `POST /api/alerts/{id}/summary/retry` | 非失败摘要返回 409；每日额度、单条次数或冷却限制触发时返回 429。失败请求的额度预留持久保存，不能通过删除咨询记录绕过。 |
+
+可选摘要使用 `sys_config.ai_summary_daily_limit`（全院每日默认 100 次）、`ai_summary_warning_daily_limit`（单条每日默认 3 次）及 `ai_summary_cooldown_seconds`（手动重试间隔默认 60 秒）。每次上游请求都占一次额度，包括自动重试和失败请求；上限不限制测量、确定性预警、通知或处理。已作废测量跳过摘要；模型生成期间作废则丢弃返回分析，原预警仍需人工核验。
+
+生活服务、健康录入和个人阈值页面在切换档案时清空原表单并忽略旧响应。服务、设备申请及阈值提案始终使用打开表单时的档案编号；借还列表按所选档案筛选，工作人员可切回全部授权任务。

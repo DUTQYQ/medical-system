@@ -1,6 +1,9 @@
 export default [{
   path: '/care', meta: { role: 'CARE', scope: 'care' }, component: () => import('../components/common/StaffLayout.vue'), redirect: '/care/elders',
   children: [
+    { path: 'services', meta: { service: true }, component: () => import('../components/common/ServiceCenter.vue') },
+    { path: 'personal-thresholds', component: () => import('../components/common/PersonalThresholds.vue') },
+    { path: 'ai', component: () => import('../components/common/AIConsult.vue') },
     { path: 'profile/edit', component: () => import('../views/elder/ProfileEdit.vue') },
     { path: 'elders', component: () => import('../views/care/Elders.vue') },
     { path: 'elder/:id', component: () => import('../views/care/ElderDetail.vue') },

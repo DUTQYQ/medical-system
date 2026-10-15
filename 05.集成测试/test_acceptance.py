@@ -53,13 +53,15 @@ def test_warning_notification_handle_and_read_are_independent(client):
     assert detail['summary_status'] in ('PENDING', 'FAILED')
     assert detail['ai_summary'] is None
     assert expect(client.get('/api/notifications/unread', headers=other))['unread'] == 1
-    expect(client.post(f'/api/alerts/{warning_id}/handle', json={'action': 'CONTACTED', 'result': '已联系老人并安排复诊'}, headers=family))
+    feedback = expect(client.post(f'/api/alerts/{warning_id}/handle', json={'action': 'CONTACTED', 'result': '已联系老人并安排复诊'}, headers=family))
+    assert feedback['status'] == 'PENDING'
+    expect(client.post(f'/api/alerts/{warning_id}/handle', json={'action': 'OBSERVE', 'result': '护工现场复核并完成处理'}, headers=care))
     other_list = expect(client.get('/api/alerts', headers=other))['list']
     assert other_list[0]['status'] == 'RESOLVED'
     assert other_list[0]['my_read_status'] == 'UNREAD'
     assert other_list[0]['handler_name']
     with SessionLocal() as db:
-        assert len(list(db.scalars(select(WarningHandleRecord).where(WarningHandleRecord.warning_id == warning_id)))) == 1
+        assert len(list(db.scalars(select(WarningHandleRecord).where(WarningHandleRecord.warning_id == warning_id)))) == 2
     expect(client.get('/api/care/handles', headers=care))
 
 
@@ -164,12 +166,12 @@ def test_model_free_statistics_return_real_counts(client):
 
 @pytest.mark.skipif(engine.dialect.name != 'mysql', reason='Requires real MySQL row locks')
 def test_concurrent_handles_persist_one_result(client):
-    elder, family, other = login(client, 2), login(client, 3), login(client, 5)
+    elder, care, admin = login(client, 2), login(client, 4), login(client, 1)
     warning_id = expect(record(client, elder))['warning_id']
     def handle(headers):
         return client.post(f'/api/alerts/{warning_id}/handle', json={'action': 'CONTACTED', 'result': '并发处理验收'}, headers=headers).json()
     with ThreadPoolExecutor(max_workers=2) as workers:
-        results = list(workers.map(handle, [family, other]))
+        results = list(workers.map(handle, [care, admin]))
     assert sorted(result['code'] for result in results) == [0, 2001], results
     with SessionLocal() as db:
         assert len(list(db.scalars(select(WarningHandleRecord).where(WarningHandleRecord.warning_id == warning_id)))) == 1

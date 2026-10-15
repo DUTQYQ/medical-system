@@ -9,6 +9,8 @@ export default [
     component: () => import('../components/family/FamilyLayout.vue'),
     redirect: '/family/home',
     children: [
+      { path: 'services', meta: { service: true }, component: () => import('../components/common/ServiceCenter.vue') },
+      { path: 'personal-thresholds', component: () => import('../components/common/PersonalThresholds.vue') },
       { path: 'profile/edit', component: () => import('../views/elder/ProfileEdit.vue') },
       { path: 'input', component: () => import('../components/common/HealthInput.vue') },
       { path: 'home', name: 'FamilyHome', component: () => import('../views/family/Home.vue') },
