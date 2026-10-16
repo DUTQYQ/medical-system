@@ -41,3 +41,17 @@ def record_data(record):
 
 def value_text(type, val1, val2=None):
     return f'{float(val1):g}/{float(val2):g}' if type == 'BLOOD_PRESSURE' else f'{float(val1):g}'
+
+
+def activity_data(row):
+    from app.api.schemas import ActivityRules
+    try:
+        rules = ActivityRules.model_validate(json.loads(row.rules or '{}')).model_dump(exclude_none=True, exclude_defaults=True)
+        rules_error = None
+    except (ValueError, TypeError):
+        rules, rules_error = {}, '规则无效，请重新核验保存；该条目不会直接推荐参与'
+    return {'activity_id': row.id, 'code': row.code, 'name': row.name, 'category': row.category,
+            'intensity': row.intensity, 'description': row.description, 'benefits': row.benefits,
+            'duration_hint': row.duration_hint, 'rules': rules, 'rules_error': rules_error,
+            'contraindications': row.contraindications, 'enabled': bool(row.enabled),
+            'created_at': dt(row.create_time), 'updated_at': dt(row.update_time)}

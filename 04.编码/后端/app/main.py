@@ -11,6 +11,7 @@ from app.core.errors import install_handlers, ok
 from app.core.database import get_db, SessionLocal
 from app.core.runtime import RUNTIME_REVISION
 from app.api import auth, profiles, health, alerts, family, care, admin, ai, personal_threshold, intake, services
+from app.api import activities
 from app.services.recovery import recovery_enabled, recover_once
 
 
@@ -62,7 +63,7 @@ app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_cr
                    allow_methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], allow_headers=['Authorization', 'Content-Type'])
 install_handlers(app)
 for router in (auth.router, profiles.router, health.router, alerts.router, alerts.notifications, family.router,
-               care.router, admin.router, admin.config_router, ai.router, personal_threshold.router, intake.router, services.router):
+               care.router, admin.router, admin.config_router, ai.router, personal_threshold.router, intake.router, services.router, activities.router):
     app.include_router(router, prefix='/api')
 
 

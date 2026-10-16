@@ -109,6 +109,8 @@ const bpText = computed(() => {
 })
 
 const services = [
+  { name: '健康判断', icon: '🩺', desc: '当前参考范围与历史波动提醒', path: '/elder/health-status' },
+  { name: '活动推荐', icon: '🧘', desc: '了解康养活动并申请工作人员协助', path: '/elder/activity' },
   { name: '健康档案', icon: '📋', desc: '查看基本信息与慢病标签', path: '/elder/profile' },
   { name: '指标录入', icon: '✍️', desc: '录入血压、血糖等指标', path: '/elder/input' },
   { name: '指标历史', icon: '📈', desc: '查看历史与趋势图', path: '/elder/history' },

@@ -9,7 +9,7 @@ def test_migration_preview_accepts_complete_extension_schema(setup, monkeypatch)
     _, sessions = setup
     monkeypatch.setattr(migrate_v2, 'engine', sessions.kw['bind'])
     assert migrate_v2.schema_preview() == []
-    assert len(migrate_v2.extension_tables()) == 15
+    assert len(migrate_v2.extension_tables()) == 16
 
 
 def test_migration_refuses_existing_extension_without_intake_unique_key(setup, monkeypatch):

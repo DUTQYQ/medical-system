@@ -20,6 +20,12 @@ from app.services.health_records import active_records, void_data
 router = APIRouter(prefix='/health', tags=['健康指标'])
 
 
+@router.get('/status')
+def status(profile_id: int = Query(gt=0), user=Depends(get_current_user), db: Session = Depends(get_db)):
+    from app.services.status import personal_status
+    return ok(personal_status(db, get_profile(db, user, profile_id)))
+
+
 def trend_data(db, profile_id, type, days):
     if type not in INDICATORS:
         raise APIError(2001, '不支持的指标类型')

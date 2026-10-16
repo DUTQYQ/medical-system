@@ -16,6 +16,7 @@ from app.core.database import Base, engine, SessionLocal, now
 import app.models
 
 EXTENSION_NAMES = {
+    'activity',
     'profile_threshold_version', 'health_assessment',
     'health_record_void',
     'consultation_intake', 'profile_fact', 'profile_fact_revision', 'advice_card',

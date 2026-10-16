@@ -196,3 +196,4 @@ AiLog = AILog
 from .personal_threshold import ProfileThresholdVersion, HealthAssessment
 from .consultation import ConsultationIntake, ProfileFact, ProfileFactRevision, AdviceCard
 from .care_services import ServiceCatalog, ServiceRequest, ServiceEvent, Activity, ActivityRegistration, Equipment, EquipmentLoan, ServiceNotification
+from .activity_template import ActivityTemplate

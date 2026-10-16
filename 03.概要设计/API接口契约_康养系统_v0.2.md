@@ -788,3 +788,17 @@ D-05 引入的接收人概念需要新增一张表，v0.1 契约未体现：
 可选摘要使用 `sys_config.ai_summary_daily_limit`（全院每日默认 100 次）、`ai_summary_warning_daily_limit`（单条每日默认 3 次）及 `ai_summary_cooldown_seconds`（手动重试间隔默认 60 秒）。每次上游请求都占一次额度，包括自动重试和失败请求；上限不限制测量、确定性预警、通知或处理。已作废测量跳过摘要；模型生成期间作废则丢弃返回分析，原预警仍需人工核验。
 
 生活服务、健康录入和个人阈值页面在切换档案时清空原表单并忽略旧响应。服务、设备申请及阈值提案始终使用打开表单时的档案编号；借还列表按所选档案筛选，工作人员可切回全部授权任务。
+
+## 2026-10-16 梁霁鸣提交整合
+
+`GET /api/health/status?profile_id={id}` 返回当前授权档案的五类指标参考。当前比较使用院内默认或已审核个体阈值；原始检测证据单独保存在 `recorded_assessment`，不重算历史预警。`data_status` 为 `NO_DATA`、`STALE` 或 `FRESH`；无数据、数据待更新或检测停用时 `risk_level` 可为 null，不能视作健康正常。
+
+基线排除本次、后续、未来及已作废测量，使用本次之前七天内最多五百条有效历史样本，至少两条才计算均值。血压两个分量分别给出 `baseline_components`，不足或分母为零时波动比例为 null，不能显示为平稳。波动提醒参数位于 `sys_config.FLUCTUATION_THRESHOLD`，缺失则不作波动提醒；不新增自动医疗预警，也不替代健康诊断。
+
+活动建议接口为 `GET /api/activities`、`GET /api/activities/recommend?profile_id={id}`，及管理员专用 `POST /api/activities`、`PUT /api/activities/{id}`、`DELETE /api/activities/{id}`。建议读取按档案权限校验；停用条目只在管理员列表显示。DELETE 表示停用建议，不影响已排期活动和报名。
+
+规则字段 `rules.suitable` 与 `rules.avoid` 支持 `min_age`、`max_age`、`chronic_in`、`seasons_in`、`seasons_not_in`，同组条件全部满足才命中；年龄上下限须有序，季节仅可选 spring、summer、autumn、winter。`caution.max_risk_level` 为 1 至 3 的整数。未知字段、错误类型或矛盾条件返回 422；不能直接保存任意 JSON。历史规则损坏时返回需确认且禁止通过该卡申请。
+
+建议返回 `profile_id`、`suitability`、`reasons`、`can_request` 及 `service_category`。无近期有效记录返回需确认，有高风险记录或待处理高风险预警时暂缓参与；“可了解”不等于医学适宜性或已报名。前端只预填现有服务申请，用户确认地点与需求后才能提交，工作人员继续接单处理。
+
+不启用分支中的独立 `profile_threshold` 直写体系和年龄自动放宽。管理员旧页面入口 `/admin/profile-thresholds` 复用当前 `PersonalThresholds`，继续使用 `/api/profiles/{id}/threshold-proposals` 与审核接口。

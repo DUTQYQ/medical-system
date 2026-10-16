@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from typing import Literal
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator, StrictInt
 from app.core.database import now
 
 
@@ -142,3 +142,49 @@ class IndicatorInput(StrictModel):
     unit: str = Field(min_length=1, max_length=20)
     enabled: bool = True
     ranges: dict[str, tuple[float, float]] = Field(default_factory=dict)
+
+
+class ActivityCondition(StrictModel):
+    min_age: StrictInt | None = Field(default=None, ge=0, le=150)
+    max_age: StrictInt | None = Field(default=None, ge=0, le=150)
+    chronic_in: list[str] = Field(default_factory=list, max_length=30)
+    seasons_in: list[Literal['spring', 'summer', 'autumn', 'winter']] = Field(default_factory=list, max_length=4)
+    seasons_not_in: list[Literal['spring', 'summer', 'autumn', 'winter']] = Field(default_factory=list, max_length=4)
+
+    @field_validator('chronic_in')
+    @classmethod
+    def tags(cls, value):
+        if any(not tag.strip() or len(tag) > 50 for tag in value):
+            raise ValueError('慢病标签须为 1 至 50 字')
+        return list(dict.fromkeys(tag.strip() for tag in value))
+
+    @model_validator(mode='after')
+    def age_order(self):
+        if self.min_age is not None and self.max_age is not None and self.min_age > self.max_age:
+            raise ValueError('最小年龄不能大于最大年龄')
+        if set(self.seasons_in) & set(self.seasons_not_in):
+            raise ValueError('适用与排除季节不能重叠')
+        return self
+
+
+class ActivityCaution(StrictModel):
+    max_risk_level: StrictInt | None = Field(default=None, ge=1, le=3)
+
+
+class ActivityRules(StrictModel):
+    suitable: ActivityCondition = Field(default_factory=ActivityCondition)
+    avoid: ActivityCondition = Field(default_factory=ActivityCondition)
+    caution: ActivityCaution = Field(default_factory=ActivityCaution)
+
+
+class ActivityInput(StrictModel):
+    code: str = Field(pattern=r'^[A-Z][A-Z0-9_]{0,49}$')
+    name: str = Field(min_length=1, max_length=100)
+    category: str = Field(default='', max_length=50)
+    intensity: Literal['LOW', 'MODERATE', 'HIGH'] = 'LOW'
+    description: str = Field(default='', max_length=2000)
+    benefits: str = Field(default='', max_length=2000)
+    duration_hint: str = Field(default='', max_length=100)
+    rules: ActivityRules = Field(default_factory=ActivityRules)
+    contraindications: str = Field(default='', max_length=500)
+    enabled: bool = True

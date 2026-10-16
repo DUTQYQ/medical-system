@@ -10,6 +10,8 @@ export default [{
     { path: 'statistics', component: () => import('../views/admin/Statistics.vue') },
     { path: 'users', component: () => import('../views/admin/Users.vue') },
     { path: 'thresholds', component: () => import('../views/admin/Thresholds.vue') },
+    { path: 'profile-thresholds', component: () => import('../views/admin/ProfileThresholds.vue') },
+    { path: 'activities', component: () => import('../views/admin/Activities.vue') },
     { path: 'indicators', component: () => import('../views/admin/Indicators.vue') },
     { path: 'knowledge', component: () => import('../views/admin/Knowledge.vue') },
     { path: 'bindings', component: () => import('../views/elder/BindConfirm.vue') },

@@ -16,3 +16,4 @@ export async function getTrend(params) {
   const d = await request.get('/health/trend', { params })
   return { ...d, unit: d.unit || UNIT[params.type], abnormalIndexes: d.abnormalIndexes || d.abnormal_indexes || [...new Set((d.abnormal_points || []).map(p => d.dates.indexOf(p.date)).filter(i => i >= 0))] }
 }
+export const getHealthStatus = profileId => request.get('/health/status', { params: { profile_id: profileId } })

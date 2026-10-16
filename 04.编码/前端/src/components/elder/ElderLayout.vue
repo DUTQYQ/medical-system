@@ -54,6 +54,8 @@ const fontClass = computed(() => ({ 'ky-font-lg': fontScale.value === 1, 'ky-fon
 const navs = [
   { label: '首页', path: '/elder/home', prefixes: ['/elder/home'] },
   { label: '健康档案', path: '/elder/profile', prefixes: ['/elder/profile'] },
+  { label: '健康判断', path: '/elder/health-status', prefixes: ['/elder/health-status'] },
+  { label: '活动推荐', path: '/elder/activity', prefixes: ['/elder/activity'] },
   { label: '指标录入', path: '/elder/input', prefixes: ['/elder/input', '/elder/history', '/elder/trend'] },
   { label: '康养助手', path: '/elder/ai', prefixes: ['/elder/ai', '/elder/consult-history'] },
   { label: '院内生活服务', path: '/elder/services', prefixes: ['/elder/services'], service:true },
